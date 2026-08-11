@@ -1,0 +1,1885 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Aoibh — The creative operating system</title>
+<meta name="description" content="Aoibh pairs generative AI with a vetted global talent network inside one operating system — so design, brand, motion, and UX/UI ship in days, art-directed and quality-checked by people, end to end.">
+<link rel="icon" href="assets/favicon/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="assets/favicon/favicon.ico" sizes="any">
+<link rel="apple-touch-icon" href="assets/favicon/apple-touch-icon.png">
+<link rel="canonical" href="https://aoibh.ai/">
+<meta property="og:type" content="website">
+<meta property="og:title" content="Aoibh — The creative operating system">
+<meta property="og:description" content="AI + a vetted global talent network. Design, brand, motion, and UX/UI shipped in days, art-directed and quality-checked by people.">
+<meta property="og:url" content="https://aoibh.ai/">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Aoibh — The creative operating system">
+<meta name="twitter:description" content="AI + a vetted global talent network. Design, brand, motion, and UX/UI shipped in days, art-directed and quality-checked by people.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,450;0,9..144,600;1,9..144,450;1,9..144,600&family=JetBrains+Mono:wght@400;500;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "What counts as \"one project\"?",
+      "acceptedAnswer": { "@type": "Answer", "text": "A single deliverable — one logo, one set of brand guidelines, one packaging concept, one landing page, and so on. Multi-part work like a full identity system is scoped and quoted separately." }
+    },
+    {
+      "@type": "Question",
+      "name": "Can I pause or cancel my subscription?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Yes — subscriptions run month to month with no long-term lock-in. You can pause or cancel ahead of your next billing date; access continues through the end of the period you've already paid for." }
+    },
+    {
+      "@type": "Question",
+      "name": "Can I try Aoibh without subscribing?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Yes — Trial Project is a one-off way to try Aoibh on a single project, available to new clients only. Same matching, same AI + human re-check, no ongoing commitment." }
+    },
+    {
+      "@type": "Question",
+      "name": "What if I need more revisions than my plan includes?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Each plan includes a set number of revision rounds per project. If you need more, an additional round can be added to that project rather than forcing you to wait for next month." }
+    },
+    {
+      "@type": "Question",
+      "name": "Do unused projects roll over to the next month?",
+      "acceptedAnswer": { "@type": "Answer", "text": "No — each plan's monthly project allowance resets at the start of your billing cycle and doesn't carry over." }
+    },
+    {
+      "@type": "Question",
+      "name": "How fast will I get my first draft?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Two days is the standard turnaround from an approved brief to first drafts. Growth and Enterprise plans get priority turnaround on top of that." }
+    },
+    {
+      "@type": "Question",
+      "name": "How does designer matching actually work?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Every brief is matched against a growing global network and only assigned once the match reaches 80%+ confidence. Below that threshold, a producer matches you by hand." }
+    },
+    {
+      "@type": "Question",
+      "name": "Is this AI-generated work, or does a person actually design it?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Both. A designer produces the first draft by hand, an art director refines it using AI for fast iteration, and every delivery is re-checked by both a human and AI before it ships." }
+    },
+    {
+      "@type": "Question",
+      "name": "My project needs real functionality, not just design — can you build that too?",
+      "acceptedAnswer": { "@type": "Answer", "text": "Subscriptions cover design. Anything requiring functionality — ecommerce integration, custom development, backend logic — sits outside subscription scope and is quoted separately." }
+    }
+  ]
+}
+</script>
+</head>
+<body>
+
+<header>
+  <nav class="wrap">
+    <div class="logo logo-header">Aoibh <span>CREATIVE OS</span></div>
+    <div class="navlinks">
+      <a href="#feed">Production</a>
+      <a href="#process">Process</a>
+      <a href="#network">Network</a>
+      <a href="#capabilities">Capabilities</a>
+      <a href="journal/index.html">Journal</a>
+    </div>
+    <div class="navcta">
+      <a class="btn btn-ghost" href="#">Sign in</a>
+      <a class="btn btn-primary js-start-brief" href="#cta">Start a brief</a>
+    </div>
+  </nav>
+</header>
+
+<section class="hero">
+  <div class="wrap">
+    <div class="hero-top">
+      <div>
+        <div class="eyebrow"><span class="dot"></span>AI-NATIVE CREATIVE OPERATING SYSTEM</div>
+        <h1>Creative production,<br>run like <em>software</em>,<br>made by <span class="tag">humans</span></h1>
+        <p class="hero-sub">Aoibh pairs generative AI with a vetted global talent network inside one operating system — so design, brand, motion, and UX/UI ship in days, art-directed and quality-checked by people, end to end.</p>
+        <div class="hero-cta">
+          <a class="btn btn-primary js-start-brief" href="#cta">Start a brief →</a>
+          <button class="btn btn-ghost" id="howBtn" type="button">See how it works</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="hero-stats">
+      <div class="stat"><div class="num" id="statAssets">4,812</div><div class="lbl">Assets shipped this week</div></div>
+      <div class="stat"><div class="num">Global</div><div class="lbl">A growing network, not one office</div></div>
+      <div class="stat"><div class="num">11 hrs</div><div class="lbl">Median brief-to-first-draft</div></div>
+      <div class="stat"><div class="num">100%</div><div class="lbl">Human-reviewed before delivery</div></div>
+    </div>
+  </div>
+</section>
+
+<div class="hero-photo">
+  <div class="hero-photo-track">
+    <img src="assets/showcase/showcase-01.png" alt="Client work sample — brand website design">
+    <img src="assets/showcase/showcase-02.png" alt="Client work sample — app icon and mobile UI">
+    <img src="assets/showcase/showcase-03.png" alt="Client work sample — social media content design">
+    <img src="assets/showcase/showcase-04.png" alt="Client work sample — mobile app interface">
+    <img src="assets/showcase/showcase-05.png" alt="Client work sample — gallery website design">
+    <img src="assets/showcase/showcase-06.png" alt="Client work sample — event poster and design system">
+    <img src="assets/showcase/showcase-07.png" alt="Client work sample — brand identity packaging suite">
+    <img src="assets/showcase/showcase-08.png" alt="Client work sample — logotype design">
+    <img src="assets/showcase/showcase-09.png" alt="Client work sample — editorial book cover design">
+    <img src="assets/showcase/showcase-10.png" alt="Client work sample — AI-generated campaign photography">
+    <img src="assets/showcase/showcase-11.png" alt="Client work sample — brand typography system">
+    <img src="assets/showcase/showcase-12.png" alt="Client work sample — app interface design">
+    <!-- duplicate set, identical, so the loop point is seamless -->
+    <img src="assets/showcase/showcase-01.png" alt="" aria-hidden="true">
+    <img src="assets/showcase/showcase-02.png" alt="" aria-hidden="true">
+    <img src="assets/showcase/showcase-03.png" alt="" aria-hidden="true">
+    <img src="assets/showcase/showcase-04.png" alt="" aria-hidden="true">
+    <img src="assets/showcase/showcase-05.png" alt="" aria-hidden="true">
+    <img src="assets/showcase/showcase-06.png" alt="" aria-hidden="true">
+    <img src="assets/showcase/showcase-07.png" alt="" aria-hidden="true">
+    <img src="assets/showcase/showcase-08.png" alt="" aria-hidden="true">
+    <img src="assets/showcase/showcase-09.png" alt="" aria-hidden="true">
+    <img src="assets/showcase/showcase-10.png" alt="" aria-hidden="true">
+    <img src="assets/showcase/showcase-11.png" alt="" aria-hidden="true">
+    <img src="assets/showcase/showcase-12.png" alt="" aria-hidden="true">
+  </div>
+  <div class="caption"><span class="dot"></span>World-class designers, handpicked for every project. from all around the globe</div>
+</div>
+
+<section class="feed-section" id="feed">
+  <div class="wrap">
+    <div class="feed-head reveal">
+      <div>
+        <div class="eyebrow gold"><span class="dot"></span>LIVE ON THE PLATFORM</div>
+        <h2>Every job, visible from brief to delivery.</h2>
+      </div>
+      <p>Working around the globe, 24/7.</p>
+    </div>
+
+    <div class="feed-panel">
+      <div class="feed-panel-head">
+        <span>PRODUCTION_FEED — aoibh.ai/ops</span>
+        <div class="dots"><span></span><span></span><span></span></div>
+      </div>
+      <div class="feed-cols">
+        <span>Job</span><span>Stage</span><span>Handled by</span><span>Node</span><span>Updated</span>
+      </div>
+      <div class="feed-viewport">
+        <div class="feed-track" id="feedTrack"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="process" id="process">
+  <div class="wrap">
+    <div class="eyebrow reveal"><span class="dot"></span>THE PIPELINE</div>
+    <h2 style="font-family:var(--serif); font-weight:450; font-size:clamp(26px,3vw,36px); margin-top:14px; max-width:600px;" class="reveal">Four stages. One system. No handoff gaps.</h2>
+
+    <div class="process-grid">
+      <div class="process-step reveal">
+        <div class="idx">01 / BRIEF</div>
+        <h3>Structured intake</h3>
+        <p>A brief goes in through a short structured form. Aoibh breaks it into tasks, formats, and deadlines automatically — no scoping calls required.</p>
+      </div>
+      <div class="process-step reveal">
+        <div class="idx">02 / DRAFT</div>
+        <h3>Designers create the first draft</h3>
+        <p>A matched designer from the network produces the first set of directions and variations by hand, informed by the brief and the brand's existing system.</p>
+      </div>
+      <div class="process-step reveal">
+        <div class="idx">03 / REFINE</div>
+        <h3>Art direction &amp; refinement</h3>
+        <p>A senior art director selects the strongest draft and refines it — using AI for fast iteration — checking it against brand and craft standards before it moves to delivery.</p>
+      </div>
+      <div class="process-step reveal">
+        <div class="idx">04 / SHIP</div>
+        <h3>Delivered, checked, and paid</h3>
+        <p>Every asset is re-checked in full before it ships, then delivered directly into the brand's own systems alongside the final invoice — nothing goes out until it's been verified end to end.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="stats" id="results">
+  <div class="wrap">
+    <div class="eyebrow reveal"><span class="dot"></span>THE RETURN YOU WANT</div>
+    <h2 style="font-family:var(--serif); font-weight:450; font-size:clamp(26px,3vw,36px); margin-top:14px;" class="reveal">What the process actually delivers.</h2>
+    <p class="reveal" style="color:var(--ink-soft); font-size:15px; max-width:520px; margin-top:12px;">Every figure below reflects how the studio runs day to day — not aspirational marketing math.</p>
+
+    <div class="stats-grid">
+      <div class="stat-item reveal">
+        <div class="stat-value">2 days</div>
+        <p class="stat-desc">Average time to a first draft — most agencies quote one to two weeks.</p>
+      </div>
+      <div class="stat-item reveal">
+        <div class="stat-value">80%</div>
+        <p class="stat-desc">Minimum match confidence required before a designer is ever assigned to a brief.</p>
+      </div>
+      <div class="stat-item reveal">
+        <div class="stat-value">Global</div>
+        <p class="stat-desc">A growing network of designers — the studio floor spans real cities, not one office.</p>
+      </div>
+      <div class="stat-item reveal">
+        <div class="stat-value">100%</div>
+        <p class="stat-desc">Of AI-assisted work is re-checked by a human art director before it ships.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="gallery" id="gallery">
+  <div class="wrap">
+    <div class="gallery-head">
+      <div>
+        <div class="eyebrow reveal"><span class="dot"></span>THE STUDIO</div>
+        <h2 class="reveal">Vetted designers around the globe, 24/7.</h2>
+        <button class="pricing-info-trigger reveal" id="vettingInfoBtn" type="button">
+          <span class="pricing-info-icon">i</span>
+          See how we vet every designer
+        </button>
+      </div>
+      <p class="reveal">A growing network of nodes worldwide — AI infrastructure paired with vetted talent working in-market.</p>
+    </div>
+    <div class="gallery-grid">
+      <div class="g-item reveal">
+        <img src="assets/designers/eve_berlin.jpeg" alt="Eve, designer in Berlin">
+        <span class="g-cap">Eve — Berlin</span>
+      </div>
+      <div class="g-item reveal">
+        <img src="assets/designers/zac_melbourne.jpg" alt="Zac, designer in San Francisco">
+        <span class="g-cap">Zac — San Francisco</span>
+      </div>
+      <div class="g-item reveal">
+        <img src="assets/designers/nicole_paris.jpeg" alt="Nicole, designer in Paris">
+        <span class="g-cap">Nicole — Paris</span>
+      </div>
+      <div class="g-item reveal">
+        <img src="assets/designers/gemma_melbourne.jpeg" alt="Gemma, designer in Melbourne">
+        <span class="g-cap">Gemma — Melbourne</span>
+      </div>
+      <div class="g-item reveal">
+        <img src="assets/designers/marc_belfast.jpeg" alt="Marc, designer in Belfast">
+        <span class="g-cap">Marc — Belfast</span>
+      </div>
+      <div class="g-item reveal">
+        <img src="assets/designers/naomi_copenhagen.jpeg" alt="Naomi, designer in Copenhagen">
+        <span class="g-cap">Naomi — Copenhagen</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="split" id="network">
+  <div class="wrap">
+    <div class="split-grid">
+      <div class="split-col reveal">
+        <div class="eyebrow gold"><span class="dot"></span>THE NETWORK</div>
+        <h3>Human craft, everywhere.</h3>
+        <p>Every specialist is vetted, portfolio-reviewed, and matched to briefs by discipline and category experience, not availability. Spread across timezones from San Francisco to Warsaw, work on your brief doesn't stop when your day does.</p>
+        <div class="nodegrid">
+          <div class="nodeitem"><span class="city">Warsaw</span><span class="count">142</span></div>
+          <div class="nodeitem"><span class="city">Belfast</span><span class="count">96</span></div>
+          <div class="nodeitem"><span class="city">Berlin</span><span class="count">258</span></div>
+          <div class="nodeitem"><span class="city">San Francisco</span><span class="count">54</span></div>
+          <div class="nodeitem"><span class="city">Zurich</span><span class="count">61</span></div>
+          <div class="nodeitem"><span class="city">Milan</span><span class="count">241</span></div>
+        </div>
+        <p class="network-coverage">Across six timezones, someone is always working on your project.</p>
+      </div>
+      <div class="split-col reveal">
+        <div class="eyebrow"><span class="dot"></span>THE ENGINE</div>
+        <h3>AI that knows the brand.</h3>
+        <p>Not a generic model — a system trained per client on their guidelines, past approvals, and rejections, so drafts start closer to right.</p>
+        <div class="enginelist">
+          <div class="engineitem"><span class="mark">GEN</span><div class="txt"><strong>Generation</strong><span>First-pass concepts and copy across every format a brief calls for.</span></div></div>
+          <div class="engineitem"><span class="mark">VAR</span><div class="txt"><strong>Variation</strong><span>Resizes, localizations, and A/B sets produced without a new brief.</span></div></div>
+          <div class="engineitem"><span class="mark">QA</span><div class="txt"><strong>Quality check</strong><span>Automatic flags for brand, legal, and accessibility issues before human review.</span></div></div>
+          <div class="engineitem"><span class="mark">MEM</span><div class="txt"><strong>Brand memory</strong><span>Every approval and rejection feeds back in, so the system improves per account.</span></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="capabilities" id="capabilities">
+  <div class="wrap">
+    <div class="eyebrow reveal"><span class="dot"></span>WHAT SHIPS</div>
+    <h2 style="font-family:var(--serif); font-weight:450; font-size:clamp(26px,3vw,36px); margin-top:14px;" class="reveal">One studio, every discipline.</h2>
+    <div class="cap-grid">
+      <div class="cap-item reveal">
+        <img src="assets/capabilities/brand-identity.png" alt="Brand identity work sample — Nether logotype">
+        <span class="n">01</span><h4>Brand identity</h4>
+      </div>
+      <div class="cap-item reveal">
+        <img src="assets/capabilities/motion-video.png" alt="Motion and video work sample — environmental typographic animation">
+        <span class="n">02</span><h4>Motion &amp; video</h4>
+      </div>
+      <div class="cap-item reveal">
+        <img src="assets/capabilities/product-packaging.png" alt="Product and packaging work sample — Eiva bottle range">
+        <span class="n">03</span><h4>Product &amp; packaging</h4>
+      </div>
+      <div class="cap-item reveal">
+        <img src="assets/capabilities/social-campaign.jpg" alt="Social and campaign work sample — fashion story ads">
+        <span class="n">04</span><h4>Social &amp; campaign</h4>
+      </div>
+      <div class="cap-item reveal">
+        <img src="assets/capabilities/web-product-design.png" alt="Web and product design work sample — Sedai app interface">
+        <span class="n">05</span><h4>Web &amp; product design</h4>
+      </div>
+      <div class="cap-item reveal">
+        <img src="assets/capabilities/presentation-design.png" alt="Presentation design work sample — investor pitch deck">
+        <span class="n">06</span><h4>Presentation design</h4>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="stats" id="client-results">
+  <div class="wrap">
+    <div class="eyebrow reveal"><span class="dot"></span>THE RETURN YOU WANT</div>
+    <h2 style="font-family:var(--serif); font-weight:450; font-size:clamp(26px,3vw,36px); margin-top:14px;" class="reveal">What our clients achieve.</h2>
+    <p class="reveal" style="color:var(--ink-soft); font-size:15px; max-width:520px; margin-top:12px;">Every metric reflects a client advancing their brand with the studio's partnership.</p>
+
+    <div class="stats-grid">
+      <div class="stat-item reveal">
+        <div class="stat-value">€18K</div>
+        <p class="stat-desc">Client-reported average annual savings after switching from a traditional agency retainer.</p>
+      </div>
+      <div class="stat-item reveal">
+        <div class="stat-value">2x</div>
+        <p class="stat-desc">Faster than the average agency — first drafts land in 2 days, not the usual 1–2 weeks.</p>
+      </div>
+      <div class="stat-item reveal">
+        <div class="stat-value">3x</div>
+        <p class="stat-desc">More creative output shipped per month compared with a single in-house hire.</p>
+      </div>
+      <div class="stat-item reveal">
+        <div class="stat-value">94%</div>
+        <p class="stat-desc">Of clients choose to keep working with the studio past their first project.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="clients">
+  <div class="wrap">
+    <div class="eyebrow reveal"><span class="dot"></span>BUILT FOR TEAMS LIKE</div>
+    <div class="clientmarks reveal">
+      <span>CREATIVE AGENCIES</span><span>SAAS STARTUPS</span><span>E-COMMERCE BRANDS</span><span>MARKETING&nbsp;TEAMS</span><span>PRODUCT STUDIOS</span><span>GROWTH-STAGE STARTUPS</span><span>BRAND STUDIOS</span><span>SCALE-UPS</span>
+    </div>
+  </div>
+</section>
+
+<section class="pricing" id="pricing">
+  <div class="wrap">
+    <div class="eyebrow reveal"><span class="dot"></span>SUBSCRIPTIONS</div>
+    <h2 style="font-family:var(--serif); font-weight:450; font-size:clamp(26px,3vw,36px); margin-top:14px;" class="reveal">Simple, premium, scalable.</h2>
+    <p class="reveal" style="color:var(--ink-soft); font-size:15px; max-width:560px; margin-top:12px;">Every plan runs on the same system: designers matched at 80%+ confidence from a growing global network, every delivery re-checked by an art director and AI, and your project visualized end to end in your dashboard.</p>
+    <button class="pricing-info-trigger reveal" id="pricingInfoBtn" type="button">
+      <span class="pricing-info-icon">i</span>
+      What counts as a project?
+    </button>
+
+    <div class="pricing-grid">
+      <div class="pricing-card reveal">
+        <div class="pricing-name">Starter</div>
+        <div class="pricing-price">€1,250<span>/month</span></div>
+        <p class="pricing-audience">Startups, small agencies, marketing teams</p>
+        <ul class="pricing-features">
+          <li>Aoibh, your AI project manager</li>
+          <li>Matched from a growing global talent network at 80%+ confidence</li>
+          <li>Up to 1 project per month</li>
+          <li>Standard turnaround</li>
+          <li>Live project tracker dashboard</li>
+          <li>AI + human art director re-check on every delivery</li>
+          <li>Up to 2 rounds of revisions per project</li>
+          <li>Email support</li>
+        </ul>
+        <a class="btn btn-ghost pricing-cta" href="#cta">Get started</a>
+      </div>
+
+      <div class="pricing-card pricing-featured reveal">
+        <div class="pricing-badge">Most popular</div>
+        <div class="pricing-name">Growth</div>
+        <div class="pricing-price">€2,795<span>/month</span></div>
+        <p class="pricing-audience">Growing agencies, SaaS companies, scale-ups</p>
+        <ul class="pricing-features">
+          <li>Everything in Starter, plus:</li>
+          <li>Up to 3 projects per month</li>
+          <li>Priority turnaround</li>
+          <li>Senior creative specialists</li>
+          <li>Dedicated AI workflow</li>
+          <li>Slack / Microsoft Teams integration</li>
+          <li>Monthly strategy call</li>
+          <li>Performance reporting</li>
+        </ul>
+        <a class="btn btn-primary pricing-cta" href="#cta">Get started</a>
+      </div>
+
+      <div class="pricing-card reveal">
+        <div class="pricing-name">Enterprise</div>
+        <div class="pricing-price">From €5,595<span>/month</span></div>
+        <p class="pricing-audience">Mid-size and large agencies, enterprise marketing teams, global software companies</p>
+        <ul class="pricing-features">
+          <li>Dedicated creative team</li>
+          <li>Named client success manager</li>
+          <li>Custom AI workflows</li>
+          <li>API integrations</li>
+          <li>Executive reporting</li>
+          <li>Service Level Agreement (SLA)</li>
+          <li>Enterprise security</li>
+          <li>Up to 6 projects per month included, more available on negotiated terms</li>
+        </ul>
+        <a class="btn btn-ghost pricing-cta" href="#cta">Talk to us</a>
+      </div>
+    </div>
+
+    <div class="trial-project reveal">
+      <div class="trial-project-info">
+        <div class="trial-project-eyebrow">NEW HERE?</div>
+        <h3 class="trial-project-name">Trial Project</h3>
+        <p class="trial-project-desc">Not ready for a subscription? Try Aoibh on a single project first — the same 80%+ match, the same AI + human re-check, no ongoing commitment.</p>
+        <ul class="trial-project-features">
+          <li>One project (same definition as above)</li>
+          <li>1 round of revisions</li>
+          <li>For new clients only</li>
+        </ul>
+      </div>
+      <div class="trial-project-buy">
+        <div class="trial-project-price">€695<span>one-off</span></div>
+        <a class="btn btn-primary pricing-cta" href="#cta">Start your trial project</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="faq" id="faq">
+  <div class="wrap">
+    <div class="eyebrow reveal"><span class="dot"></span>QUESTIONS</div>
+    <h2 style="font-family:var(--serif); font-weight:450; font-size:clamp(26px,3vw,36px); margin-top:14px;" class="reveal">Before you start a brief.</h2>
+
+    <div class="faq-list">
+      <details class="faq-item reveal">
+        <summary class="faq-question">What counts as "one project"?</summary>
+        <p class="faq-answer">A single deliverable — one logo, one set of brand guidelines, one packaging concept, one landing page, and so on. Multi-part work like a full identity system is scoped and quoted separately. See the pricing section's "What counts as a project?" for the full definition.</p>
+      </details>
+
+      <details class="faq-item reveal">
+        <summary class="faq-question">Can I pause or cancel my subscription?</summary>
+        <p class="faq-answer">Yes — subscriptions run month to month with no long-term lock-in. You can pause or cancel ahead of your next billing date; access continues through the end of the period you've already paid for.</p>
+      </details>
+
+      <details class="faq-item reveal">
+        <summary class="faq-question">Can I try Aoibh without subscribing?</summary>
+        <p class="faq-answer">Yes — Trial Project is a one-off way to try Aoibh on a single project, available to new clients only. Same matching, same AI + human re-check, no ongoing commitment. See pricing above.</p>
+      </details>
+
+      <details class="faq-item reveal">
+        <summary class="faq-question">What if I need more revisions than my plan includes?</summary>
+        <p class="faq-answer">Each plan includes a set number of revision rounds per project. If you need more, an additional round can be added to that project rather than forcing you to wait for next month.</p>
+      </details>
+
+      <details class="faq-item reveal">
+        <summary class="faq-question">Do unused projects roll over to the next month?</summary>
+        <p class="faq-answer">No — each plan's monthly project allowance resets at the start of your billing cycle and doesn't carry over. This keeps turnaround fast and consistent for every active client, rather than allowances stacking up unpredictably.</p>
+      </details>
+
+      <details class="faq-item reveal">
+        <summary class="faq-question">How fast will I get my first draft?</summary>
+        <p class="faq-answer">Two days is the standard turnaround from an approved brief to first drafts. Growth and Enterprise plans get priority turnaround on top of that.</p>
+      </details>
+
+      <details class="faq-item reveal">
+        <summary class="faq-question">How does designer matching actually work?</summary>
+        <p class="faq-answer">Every brief is matched against a growing global network and only assigned once the match reaches 80%+ confidence. Below that threshold, a producer steps in and matches you by hand instead of forcing a shaky fit.</p>
+      </details>
+
+      <details class="faq-item reveal">
+        <summary class="faq-question">Is this AI-generated work, or does a person actually design it?</summary>
+        <p class="faq-answer">Both, deliberately. A designer from the network produces the first draft by hand; an art director refines the chosen direction using AI for fast iteration; and every delivery is re-checked by both a human and AI before it ships. AI speeds up the mechanical parts of the process — a person is always responsible for the actual craft.</p>
+      </details>
+
+      <details class="faq-item reveal">
+        <summary class="faq-question">My project needs real functionality, not just design — can you build that too?</summary>
+        <p class="faq-answer">Subscriptions cover design. Anything requiring functionality — ecommerce integration, custom development, backend logic — sits outside subscription scope and is quoted separately. Talk to us if your project has both a design and a build side to it.</p>
+      </details>
+    </div>
+  </div>
+</section>
+
+<section class="cta" id="cta">
+  <div class="wrap">
+    <div class="eyebrow reveal"><span class="dot"></span>GET STARTED</div>
+    <h2 class="reveal">Send the first brief.<br>See a draft by tomorrow.</h2>
+    <div class="cta-actions reveal">
+      <a class="btn btn-primary js-start-brief" href="#">Start a brief →</a>
+      <a class="btn btn-ghost js-start-brief" href="#">Talk to the studio</a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap foot-grid">
+    <div>
+      <div class="logo">Aoibh <span>CREATIVE OS</span></div>
+      <div class="foot-copy">© 2026 Aoibh Studio. Brief in, brand out.</div>
+    </div>
+    <div class="foot-right">
+      <div class="foot-links">
+        <a href="#feed">Production</a>
+        <a href="#process">Process</a>
+        <a href="#network">Network</a>
+        <a href="#capabilities">Capabilities</a>
+        <a href="#pricing">Pricing</a>
+        <a href="#faq">FAQ</a>
+        <a href="journal/index.html">Journal</a>
+        <a href="#">Careers</a>
+        <a href="terms.html">Terms</a>
+        <a href="privacy.html">Privacy</a>
+        <a href="#" id="contactLink">Contact</a>
+      </div>
+      <div class="foot-social">
+        <!-- Placeholder hrefs — swap for real profile URLs before launch -->
+        <a href="#" class="foot-social-link" aria-label="LinkedIn" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M6.94 8.5H3.56V20.5H6.94V8.5Z" fill="currentColor"/><path d="M5.25 7C6.35 7 7.25 6.1 7.25 5C7.25 3.9 6.35 3 5.25 3C4.15 3 3.25 3.9 3.25 5C3.25 6.1 4.15 7 5.25 7Z" fill="currentColor"/><path d="M13.5 8.5H10.25V20.5H13.5V14.35C13.5 12.65 14.15 11.4 15.65 11.4C17.5 11.4 17.75 13.1 17.75 14.45V20.5H21V13.75C21 10.15 19.6 8.2 16.75 8.2C14.9 8.2 13.85 9.1 13.5 9.95V8.5Z" fill="currentColor"/></svg>
+        </a>
+        <a href="#" class="foot-social-link" aria-label="Instagram" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" fill="none"><rect x="3" y="3" width="18" height="18" rx="5" stroke="currentColor" stroke-width="1.6"/><circle cx="12" cy="12" r="4" stroke="currentColor" stroke-width="1.6"/><circle cx="17.2" cy="6.8" r="1.1" fill="currentColor"/></svg>
+        </a>
+        <a href="#" class="foot-social-link" aria-label="X" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M4 4L20 20M20 4L4 20" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/></svg>
+        </a>
+        <a href="#" class="foot-social-link" aria-label="Facebook" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M14.5 8.5H16.5V5.3C16.16 5.26 15 5.17 13.65 5.17C10.82 5.17 8.89 6.9 8.89 10.06V12.75H5.75V16.3H8.89V21H12.55V16.3H15.66L16.14 12.75H12.55V10.42C12.55 9.38 12.83 8.5 14.5 8.5Z" fill="currentColor"/></svg>
+        </a>
+        <a href="#" class="foot-social-link" aria-label="TikTok" target="_blank" rel="noopener">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M16.5 3C16.85 5.1 18.15 6.55 20.25 6.75V9.75C18.9 9.8 17.7 9.35 16.55 8.55V15.1C16.55 18.7 14.15 21 10.9 21C7.85 21 5.5 18.75 5.5 15.65C5.5 12.5 8.05 10.15 11.15 10.4V13.5C10.9 13.4 10.65 13.35 10.35 13.35C8.95 13.35 7.9 14.35 7.9 15.65C7.9 17 8.95 18 10.35 18C11.9 18 13.3 16.85 13.3 14.75V3H16.5Z" fill="currentColor"/></svg>
+        </a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<div class="brief-overlay" id="briefOverlay">
+  <div class="brief-modal" role="dialog" aria-modal="true" aria-labelledby="briefTitle">
+    <div class="brief-head">
+      <div class="brief-head-title" id="briefTitle"><img class="brief-head-avatar" src="assets/aoibh-avatar.jpg" alt="Aoibh, AI project manager"><span class="pulse"></span>New brief — aoibh.ai/intake</div>
+      <button class="brief-close" id="briefClose" aria-label="Close">✕</button>
+    </div>
+    <div class="brief-chat" id="briefChat"></div>
+    <div class="brief-review hidden" id="briefReview">
+      <div class="review-intro">That's everything I need. Here's your brief summary and matched designer — a member of the studio will follow up shortly.</div>
+      <div class="review-grid" id="reviewGrid"></div>
+      <div class="review-designer" id="reviewDesigner"></div>
+      <div class="review-upload" id="reviewUpload">
+        <div class="review-upload-head">
+          <span>Attach files (optional)</span>
+          <span class="review-upload-count" id="uploadCount"></span>
+        </div>
+        <div class="review-dropzone" id="dropzone" tabindex="0" role="button" aria-label="Upload files">
+          <div class="review-dropzone-icon">↑</div>
+          <div class="review-dropzone-text">Drag files here, or <span class="review-dropzone-browse">browse</span></div>
+          <div class="review-dropzone-hint">Logo files, brand guides, videos — anything that helps your designer get started.</div>
+          <input type="file" id="fileInput" multiple hidden>
+        </div>
+        <div class="review-file-list" id="fileList"></div>
+      </div>
+    </div>
+    <form class="brief-input-row" id="briefForm">
+      <input type="text" id="briefInput" class="brief-input" placeholder="Type your answer…" autocomplete="off" />
+      <button type="submit" class="btn btn-primary">Send</button>
+    </form>
+    <div class="brief-actions hidden" id="briefActions">
+      <button class="btn btn-primary" id="briefApprove" type="button">Approve &amp; begin project →</button>
+      <a class="btn btn-ghost" id="briefEmail" href="#">Email us this brief</a>
+      <button class="btn btn-ghost" id="briefRestart" type="button">Start another brief</button>
+    </div>
+    <div class="brief-status hidden" id="briefStatus"></div>
+  </div>
+</div>
+
+<div class="how-overlay" id="howOverlay">
+  <div class="how-modal" role="dialog" aria-modal="true" aria-labelledby="howTitle">
+    <div class="how-head">
+      <span id="howTitle">How it works</span>
+      <button class="how-close" id="howClose" aria-label="Close">✕</button>
+    </div>
+
+    <div class="how-slides" id="howSlides">
+      <div class="how-slide">
+        <div class="how-eyebrow">THE WHOLE PROCESS</div>
+        <h3 class="how-headline how-headline-sm">See it all in motion</h3>
+        <div class="journey-track how-journey-track">
+          <div class="journey-line"><div class="journey-line-fill"></div></div>
+          <div class="journey-step" data-step="0">
+            <div class="journey-dot"><span class="journey-check">✓</span></div>
+            <div class="journey-label"><strong>Brief received</strong><span>Aoibh breaks it into a 2-day plan</span></div>
+          </div>
+          <div class="journey-step" data-step="1">
+            <div class="journey-dot"><span class="journey-check">✓</span></div>
+            <div class="journey-label"><strong>Matched to a designer</strong><span>The right specialist is assigned from the network</span></div>
+          </div>
+          <div class="journey-step" data-step="2">
+            <div class="journey-dot"><span class="journey-check">✓</span></div>
+            <div class="journey-label"><strong>First drafts created</strong><span>Design samples are produced by hand</span></div>
+          </div>
+          <div class="journey-step" data-step="3">
+            <div class="journey-dot"><span class="journey-check">✓</span></div>
+            <div class="journey-label"><strong>Samples sent to you</strong><span>You review the first directions</span></div>
+          </div>
+          <div class="journey-step" data-step="4">
+            <div class="journey-dot"><span class="journey-check">✓</span></div>
+            <div class="journey-label"><strong>Changes requested</strong><span>You flag what needs adjusting</span></div>
+          </div>
+          <div class="journey-step" data-step="5">
+            <div class="journey-dot"><span class="journey-check">✓</span></div>
+            <div class="journey-label"><strong>Designer revises</strong><span>The chosen direction is updated</span></div>
+          </div>
+          <div class="journey-step" data-step="6">
+            <div class="journey-dot"><span class="journey-check">✓</span></div>
+            <div class="journey-label"><strong>Re-checked</strong><span>Art director + AI verify brand and quality</span></div>
+          </div>
+          <div class="journey-step" data-step="7">
+            <div class="journey-dot"><span class="journey-check">✓</span></div>
+            <div class="journey-label"><strong>Delivered &amp; paid</strong><span>Final assets ship, invoice settled</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="how-nav">
+      <button class="how-arrow" id="howPrev" aria-label="Previous">←</button>
+      <div class="how-dots" id="howDots"></div>
+      <button class="how-arrow" id="howNext" aria-label="Next">→</button>
+    </div>
+  </div>
+</div>
+
+<div class="studio-overlay hidden" id="studioOverlay">
+  <div class="studio-shell">
+    <aside class="studio-sidebar">
+      <div class="studio-logo">Aoibh</div>
+      <nav class="studio-nav">
+        <a class="active">Dashboard</a>
+        <a>Projects</a>
+        <a>Creative Assets</a>
+        <a>Team</a>
+        <a>Calendar</a>
+        <a>Settings</a>
+      </nav>
+      <button class="studio-exit" id="studioExit">← Back to site</button>
+    </aside>
+    <main class="studio-main">
+      <header class="studio-header">
+        <h1>Dashboard</h1>
+        <div class="studio-search">Search</div>
+      </header>
+
+      <section class="studio-team">
+        <h2>Your Team</h2>
+        <div class="studio-team-grid" id="studioTeamGrid"></div>
+      </section>
+
+      <div class="studio-secondary-row">
+        <section class="studio-overview">
+          <h2>Project Overview</h2>
+          <div class="studio-card">
+            <div class="studio-brief-row"><span>Project</span><strong id="studioProject">—</strong></div>
+            <div class="studio-brief-row"><span>Assets</span><strong id="studioAssets">—</strong></div>
+            <div class="studio-brief-row"><span>Budget</span><strong id="studioBudget">—</strong></div>
+            <div class="studio-brief-row"><span>Timeline</span><strong id="studioDeadline">—</strong></div>
+          </div>
+        </section>
+
+        <section class="studio-assets-section">
+          <h2>Files</h2>
+          <div class="review-upload studio-upload-card">
+            <div class="review-upload-head">
+              <span>Logo, brand guides, videos, or anything else your designer should see</span>
+              <span class="review-upload-count" id="studioUploadCount"></span>
+            </div>
+            <div class="review-dropzone" id="studioDropzone" tabindex="0" role="button" aria-label="Upload files">
+              <div class="review-dropzone-icon">↑</div>
+              <div class="review-dropzone-text">Drag files here, or <span class="review-dropzone-browse">browse</span></div>
+              <div class="review-dropzone-hint">Files added here or during your original brief both show up in the same place.</div>
+              <input type="file" id="studioFileInput" multiple hidden>
+            </div>
+            <div class="review-file-list" id="studioFileList"></div>
+          </div>
+        </section>
+      </div>
+
+      <div class="studio-clock-card">
+        <div class="studio-clock-label">Time until deadline</div>
+        <div class="studio-clock-face" id="studioClockFace">—:—:—</div>
+        <div class="studio-clock-sub" id="studioClockSub">Set once the project is approved</div>
+      </div>
+
+      <section class="studio-kanban">
+        <h2>Creative Tasks</h2>
+        <div class="studio-kanban-grid">
+          <div class="studio-col">
+            <div class="studio-col-head">To Do</div>
+            <div class="studio-task-list" id="studioTodo"></div>
+          </div>
+          <div class="studio-col">
+            <div class="studio-col-head studio-col-head-active">In Progress</div>
+            <div class="studio-task-list" id="studioInProgress"></div>
+          </div>
+          <div class="studio-col">
+            <div class="studio-col-head studio-col-head-done">Done</div>
+            <div class="studio-task-list" id="studioDone"></div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+</div>
+
+<div class="brief-overlay" id="contactOverlay">
+  <div class="brief-modal">
+    <div class="brief-head">
+      <div class="brief-head-title" id="contactTitle"><img class="brief-head-avatar" src="assets/aoibh-avatar.jpg" alt="Aoibh, AI project manager"><span class="pulse"></span>Contact the studio</div>
+      <button class="brief-close" id="contactClose" aria-label="Close">✕</button>
+    </div>
+    <div class="brief-chat" id="contactChat"></div>
+    <form class="brief-input-row" id="contactForm">
+      <input type="text" id="contactInput" class="brief-input" placeholder="Type your answer…" autocomplete="off" disabled />
+      <button type="submit" class="btn btn-primary">Send</button>
+    </form>
+  </div>
+</div>
+
+<div class="info-overlay" id="pricingInfoOverlay">
+  <div class="info-modal" role="dialog" aria-modal="true" aria-labelledby="pricingInfoTitle">
+    <button class="info-modal-close" id="pricingInfoClose" aria-label="Close">✕</button>
+    <h3 id="pricingInfoTitle">What counts as a project?</h3>
+    <p>A <strong>project</strong> is a single deliverable — one logo, one set of brand guidelines, one packaging concept, one landing page, and so on. Multi-part work like a full identity system is scoped and quoted separately.</p>
+    <p>Subscriptions cover <strong>design</strong>. Anything requiring functionality — ecommerce integration, custom development, backend logic — sits outside subscription scope and is quoted separately.</p>
+  </div>
+</div>
+
+<div class="info-overlay" id="vettingInfoOverlay">
+  <div class="info-modal" role="dialog" aria-modal="true" aria-labelledby="vettingInfoTitle">
+    <button class="info-modal-close" id="vettingInfoClose" aria-label="Close">✕</button>
+    <h3 id="vettingInfoTitle">How we vet every designer</h3>
+    <ol class="info-modal-steps">
+      <li><strong>Portfolio &amp; category screen.</strong> Real client work in a specific discipline — brand, motion, web, packaging — not a general portfolio.</li>
+      <li><strong>Live trial project.</strong> A real, timed brief evaluated blind by a senior art director, testing performance under real client constraints.</li>
+      <li><strong>Revision &amp; direction test.</strong> A separate exercise testing how someone takes feedback and revises — not just raw talent, but whether they're good to work with.</li>
+      <li><strong>Reference check.</strong> Verified history with past clients or agencies.</li>
+      <li><strong>An ongoing standard, not a one-time gate.</strong> Every delivery is re-checked by an art director and AI, regardless of tenure — inclusion in the network is maintained by consistent output, not granted once and forgotten.</li>
+    </ol>
+    <a class="article-back" href="journal/how-we-vet-every-designer.html" style="margin-top:18px;">Read the full breakdown →</a>
+  </div>
+</div>
+
+<div class="info-overlay" id="profileOverlay">
+  <div class="info-modal profile-modal" role="dialog" aria-modal="true" aria-labelledby="profileModalName">
+    <button class="info-modal-close" id="profileClose" aria-label="Close">✕</button>
+    <img class="profile-modal-photo" id="profilePhoto" src="" alt="">
+    <div class="profile-modal-name" id="profileModalName"></div>
+    <div class="profile-modal-title" id="profileTitle"></div>
+    <div class="profile-modal-meta" id="profileMeta"></div>
+    <div class="profile-modal-match" id="profileMatch"></div>
+    <div class="profile-modal-reason" id="profileReason"></div>
+    <div class="profile-modal-skills-label">Skills</div>
+    <div class="profile-modal-skills" id="profileSkills"></div>
+  </div>
+</div>
+
+<div class="info-overlay" id="taskReviewOverlay">
+  <div class="info-modal task-review-modal" role="dialog" aria-modal="true" aria-labelledby="taskReviewTitle">
+    <button class="info-modal-close" id="taskReviewClose" aria-label="Close">✕</button>
+    <h3 id="taskReviewTitle">Task</h3>
+
+    <div class="task-preview-placeholder">
+      <span class="task-preview-icon">🖼</span>
+      <span class="task-preview-text">Your designer's draft will appear here once uploaded</span>
+    </div>
+
+    <div class="task-revision-count" id="taskRevisionCount">0 of 2 revision rounds used</div>
+
+    <div class="task-feedback-log" id="taskFeedbackLog"></div>
+
+    <label class="task-feedback-label" for="taskFeedbackInput">Your feedback</label>
+    <textarea class="task-feedback-input" id="taskFeedbackInput" rows="4" placeholder="Love this! Can we increase the logo a little bit."></textarea>
+    <button class="btn btn-primary task-feedback-send" id="taskFeedbackSend" type="button">Send to designer →</button>
+  </div>
+</div>
+
+<script>
+  // Production feed — randomized per page load from expanded pools, so a
+  // returning visitor doesn't see the exact same 13 rows every time.
+  // Placeholder/fictional data for now (see conversation notes: intended
+  // to be swapped for a real client/city list later).
+  const JOB_TYPES = [
+    "Spring Lookbook", "Packaging Refresh", "Motion Bumper Set", "Product Shots — SS26",
+    "Brand System v2", "Social Template Kit", "Investor Deck", "App Icon Set",
+    "Homepage Redesign", "Retail Signage", "Conference Deck", "Launch Trailer",
+    "Pitch Deck Refresh", "Logo Refresh", "Packaging Concepts", "Event Poster Series",
+    "Email Template Set", "Product Catalogue", "Brand Guidelines", "Trade Show Booth",
+    "Merch Collection", "Onboarding Illustrations", "Annual Report", "Landing Page Redesign",
+  ];
+  const CLIENTS = [
+    "NORDKIND", "FENNEL & CO", "VANTAGE", "HALCYON", "THIRD WAVE", "LOFT",
+    "MERIDIAN", "ORSON", "BRAVEN & CO", "NOVA STUDIO", "ECHELON", "PALOMA",
+    "DRIFTWOOD", "KESTREL", "ARBOR", "SILT & SALT",
+  ];
+  const CITIES = [
+    "Berlin", "Warsaw", "Zurich", "Belfast", "Manchester", "San Francisco",
+    "Bucharest", "Melbourne", "Paris", "Copenhagen", "Dublin", "Milan",
+    "Barcelona", "Seville", "Malmö", "Sydney", "Naples", "Bursa", "Kraków",
+  ];
+  // Kept to exactly these four combinations — each maps to real CSS classes
+  // (.stagepill.ship/.draft/.review/.brief, .tagpill.ai/.human) so the
+  // generator can't produce a stage/who pairing the styling doesn't handle.
+  const STAGE_CONFIGS = [
+    { stage:"ship",   stageLabel:"Ship",     who:"HUMAN",       who2:true,  hasNode:true  },
+    { stage:"draft",  stageLabel:"AI Draft", who:"AI",          who2:false, hasNode:false },
+    { stage:"review", stageLabel:"Review",   who:"AI + HUMAN",  who2:true,  hasNode:true  },
+    { stage:"brief",  stageLabel:"Queued",   who:"—",           who2:false, hasNode:false },
+  ];
+
+  function pick(arr){ return arr[Math.floor(Math.random() * arr.length)]; }
+
+  function shuffle(arr){
+    const a = arr.slice();
+    for (let i = a.length - 1; i > 0; i--){
+      const j = Math.floor(Math.random() * (i + 1));
+      [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+  }
+
+  function formatTimeAgo(minutesAgo){
+    if (minutesAgo < 60) return `${minutesAgo}m ago`;
+    const hours = Math.round(minutesAgo / 60);
+    if (hours < 24) return `${hours} hour${hours === 1 ? '' : 's'} ago`;
+    const days = Math.round(hours / 24);
+    return `${days} day${days === 1 ? '' : 's'} ago`;
+  }
+
+  function generateJobs(count){
+    const jobPool = shuffle(JOB_TYPES).slice(0, count);
+    const rows = [];
+    let prevClient = null;
+    let minutesAgo = Math.floor(Math.random() * 3) + 1;
+    for (let i = 0; i < count; i++){
+      const cfg = pick(STAGE_CONFIGS);
+      let client = pick(CLIENTS);
+      while (client === prevClient) client = pick(CLIENTS); // avoid back-to-back repeats
+      prevClient = client;
+      rows.push({
+        job: jobPool[i],
+        client,
+        stage: cfg.stage,
+        stageLabel: cfg.stageLabel,
+        who: cfg.who,
+        who2: cfg.who2,
+        node: cfg.hasNode ? pick(CITIES) : "—",
+        time: formatTimeAgo(minutesAgo),
+      });
+      // Realistic pacing: tight gaps early (still "recent"), wider gaps as
+      // entries get older — mirrors the mixed minutes/hours/days spread
+      // used elsewhere on the site rather than a flat linear climb.
+      const growth = minutesAgo < 15 ? (Math.floor(Math.random()*3) + 2)
+        : minutesAgo < 120 ? (Math.floor(Math.random()*30) + 15)
+        : (Math.floor(Math.random()*600) + 120);
+      minutesAgo += growth;
+    }
+    return rows;
+  }
+
+  const jobs = generateJobs(13);
+
+  function rowHTML(j){
+    const whoClass = j.who === "AI" ? "ai" : j.who === "HUMAN" ? "human" : "";
+    return `
+      <div class="feed-row">
+        <div class="job">${j.job}<span class="client">${j.client}</span></div>
+        <div class="stagepill ${j.stage}">${j.stageLabel}</div>
+        <div class="tagpill ${whoClass}">${j.who}</div>
+        <div class="node">${j.node}</div>
+        <div class="node">${j.time}</div>
+      </div>`;
+  }
+
+  const track = document.getElementById('feedTrack');
+  // duplicate list for seamless vertical loop
+  track.innerHTML = jobs.map(rowHTML).join('') + jobs.map(rowHTML).join('');
+
+  // ambient ticking stat
+  const statEl = document.getElementById('statAssets');
+  let base = 4812;
+  setInterval(() => {
+    base += Math.floor(Math.random()*3);
+    statEl.textContent = base.toLocaleString();
+  }, 4000);
+
+  // reveal on scroll
+  const io = new IntersectionObserver((entries)=>{
+    entries.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target);} });
+  }, { threshold:0.15 });
+  document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+
+  // ---------- Brief chat modal ----------
+  (function(){
+    const overlay = document.getElementById('briefOverlay');
+    const chat = document.getElementById('briefChat');
+    const review = document.getElementById('briefReview');
+    const reviewGrid = document.getElementById('reviewGrid');
+    const reviewDesigner = document.getElementById('reviewDesigner');
+    const dropzone = document.getElementById('dropzone');
+    const fileInput = document.getElementById('fileInput');
+    const fileList = document.getElementById('fileList');
+    const uploadCount = document.getElementById('uploadCount');
+    const studioDropzone = document.getElementById('studioDropzone');
+    const studioFileInput = document.getElementById('studioFileInput');
+    const studioFileList = document.getElementById('studioFileList');
+    const studioUploadCount = document.getElementById('studioUploadCount');
+    const form = document.getElementById('briefForm');
+    const input = document.getElementById('briefInput');
+    const actions = document.getElementById('briefActions');
+    const emailBtn = document.getElementById('briefEmail');
+    const approveBtn = document.getElementById('briefApprove');
+    const statusEl = document.getElementById('briefStatus');
+    const restartBtn = document.getElementById('briefRestart');
+    const closeBtn = document.getElementById('briefClose');
+
+    // Mirrors the roster in api/match-designer.js. Used as a client-side
+    // fallback when that endpoint can't be reached at all — e.g. this file
+    // is being opened directly with no server behind it — so a designer
+    // match still shows up instead of silently disappearing.
+    // Matches the same 6 real, photographed designers shown on the Studio
+    // gallery (#gallery) — kept identical to api/match-designer.js's
+    // ROSTER on purpose, so a real photo is never shown under a
+    // different, fictional identity.
+    const LOCAL_ROSTER = [
+      { id: "eve-berlin",       name: "Eve",    title: "Brand Identity Designer",                 experience: "9 years",  location: "Berlin, DE",         img: "assets/designers/eve_berlin.jpeg",       tags: ["branding","identity","logo","startup","rebrand","naming"] },
+      { id: "zac-sf",           name: "Zac",    title: "Product & UX Designer",                    experience: "7 years",  location: "San Francisco, US",  img: "assets/designers/zac_melbourne.jpg",     tags: ["ux","ui","product","app","saas","web app","dashboard"] },
+      { id: "nicole-paris",     name: "Nicole", title: "Web & Editorial Designer",                 experience: "10 years", location: "Paris, FR",          img: "assets/designers/nicole_paris.jpeg",     tags: ["website","web design","landing page","editorial","marketing site","layout"] },
+      { id: "gemma-melbourne",  name: "Gemma",  title: "Motion & Video Designer",                  experience: "6 years",  location: "Melbourne, AU",      img: "assets/designers/gemma_melbourne.jpeg",  tags: ["motion","video","animation","reel","social video","trailer"] },
+      { id: "marc-belfast",     name: "Marc",   title: "Packaging & Print Designer",                experience: "11 years", location: "Belfast, UK",        img: "assets/designers/marc_belfast.jpeg",     tags: ["packaging","print","label","product design","retail"] },
+      { id: "naomi-copenhagen", name: "Naomi",  title: "Illustration & Social Content Designer",   experience: "5 years",  location: "Copenhagen, DK",     img: "assets/designers/naomi_copenhagen.jpeg", tags: ["illustration","social media","content","campaign","instagram","character"] },
+    ];
+
+    function localFallbackMatch(answersObj){
+      const text = Object.values(answersObj || {}).filter(Boolean).join(' ').toLowerCase();
+      let best = LOCAL_ROSTER[0], bestScore = -1;
+      LOCAL_ROSTER.forEach(d => {
+        const score = d.tags.reduce((acc, tag) => acc + (text.includes(tag) ? 1 : 0), 0);
+        if (score > bestScore){ bestScore = score; best = d; }
+      });
+      // Heuristic confidence, mirrors the fallback in api/match-designer.js:
+      // a base rate plus a bump per matched tag, capped just under 100.
+      const confidence = Math.min(97, 55 + bestScore * 14);
+      return {
+        designer: { id: best.id, name: best.name, title: best.title, experience: best.experience, location: best.location, img: best.img, tags: best.tags },
+        reason: `${best.name} works well across ${best.title.toLowerCase()} projects like this one.`,
+        confidence,
+      };
+    }
+
+    // Asked first, always — before any of the phrased questions. Kept
+    // hardcoded (not run through /api/phrase-questions) because the
+    // downstream branch logic depends on this exact framing, and because a
+    // job number needs to reach the user asking it, not an AI-reworded one.
+    const triageQuestion = "Is this your first enquiry, or do you have a job number for a progress report?";
+
+    const questions = [
+      { key:'project',  label:'Project',        text:"What type of project are you interested in?" },
+      { key:'budget',   label:'Budget',          text:"Great — what's the budget range for this project?" },
+      { key:'deadline', label:'Timeline',        text:"And what's your timeline — when would you need this delivered?" },
+      { key:'assets',   label:'Assets',          text:"Last one — will you be supplying assets like a logo, brand guides, or videos, or will we be creating everything as new?" },
+    ];
+    let questionsLoaded = false;
+
+    async function loadPhrasedQuestions(){
+      if (questionsLoaded) return; // only fetch once per page load — same phrasing for repeat opens
+      try {
+        const controller = new AbortController();
+        const t = setTimeout(() => controller.abort(), 6000);
+        const r = await fetch('/api/phrase-questions', { method:'POST', signal: controller.signal });
+        clearTimeout(t);
+        if (!r.ok) throw new Error('bad response');
+        const data = await r.json();
+        if (Array.isArray(data.questions) && data.questions.length === questions.length){
+          data.questions.forEach((q, i) => {
+            if (q && q.key === questions[i].key && typeof q.text === 'string' && q.text.trim()){
+              questions[i].text = q.text.trim();
+            }
+          });
+        }
+      } catch (err) {
+        // Silent fallback — static copy above is already in place.
+      }
+      questionsLoaded = true;
+    }
+
+    let step = -1;
+    let answers = {};
+    let stage = 'name'; // 'name' | 'email' | 'triage' | 'questions' | 'jobLookup' | 'belowBudget' | 'done'
+    let contact = { name: '', email: '' };
+    let matchedDesigner = null;
+    let projectDeadlineDate = null;
+    let taskState = {}; // { [taskId]: { revisions: number, feedback: string[] } }
+    const REVISION_CAP = 2; // illustrative — matches the Starter plan's stated cap;
+                             // a real build would look this up per the client's actual plan
+
+    // ---------- Full designer profile modal ----------
+    const profileOverlay = document.getElementById('profileOverlay');
+
+    function openDesignerProfile(){
+      if (!matchedDesigner) return;
+      const p = matchedDesigner;
+      document.getElementById('profilePhoto').src = p.img || '';
+      document.getElementById('profilePhoto').alt = p.name;
+      document.getElementById('profilePhoto').style.display = p.img ? '' : 'none';
+      document.getElementById('profileModalName').textContent = p.name;
+      document.getElementById('profileTitle').textContent = p.title;
+      document.getElementById('profileMeta').textContent = `${p.experience} · ${p.location}`;
+      document.getElementById('profileMatch').textContent = `${p.confidence}% match to this brief`;
+      document.getElementById('profileReason').textContent = p.reason || '';
+      document.getElementById('profileSkills').innerHTML = (p.tags || [])
+        .map(t => `<span class="profile-modal-skill-chip">${t.replace(/</g,'&lt;')}</span>`).join('');
+      profileOverlay.classList.add('open');
+    }
+    function closeDesignerProfile(){ profileOverlay.classList.remove('open'); }
+
+    reviewDesigner.addEventListener('click', (e) => {
+      if (e.target.closest('#designerProfileBtn')) openDesignerProfile();
+    });
+    document.getElementById('profileClose').addEventListener('click', closeDesignerProfile);
+    profileOverlay.addEventListener('click', (e) => { if (e.target === profileOverlay) closeDesignerProfile(); });
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && profileOverlay.classList.contains('open')) closeDesignerProfile(); });
+
+    function scrollToBottom(){ chat.scrollTop = chat.scrollHeight; }
+
+    function addMessage(text, cls){
+      const div = document.createElement('div');
+      div.className = 'msg ' + cls;
+      div.textContent = text;
+      chat.appendChild(div);
+      scrollToBottom();
+      return div;
+    }
+
+    function addAI(text, cb){
+      const typing = document.createElement('div');
+      typing.className = 'typing';
+      typing.innerHTML = '<span></span><span></span><span></span>';
+      chat.appendChild(typing);
+      scrollToBottom();
+      setTimeout(() => {
+        typing.remove();
+        addMessage(text, 'ai');
+        if (cb) cb();
+      }, 550 + Math.random()*350);
+    }
+
+    // Pulls a numeric budget out of free text: "$300", "300", "1.5k",
+    // "around 2k-3k" (takes the first number found). Returns null if no
+    // number is present, so vague answers ("flexible", "not sure") just
+    // pass through without triggering the below-minimum check.
+    function parseBudgetAmount(text){
+      const match = text.match(/(\d[\d,]*(?:\.\d+)?)\s*(k|K)?/);
+      if (!match) return null;
+      let amount = parseFloat(match[1].replace(/,/g, ''));
+      if (match[2]) amount *= 1000;
+      return Number.isNaN(amount) ? null : amount;
+    }
+
+    // Budget-too-low branch: acknowledge and hand off, same shape as the
+    // job-lookup branch — no further questions, no designer match.
+    function showBudgetTooLow(){
+      form.classList.add('hidden');
+      approveBtn.style.display = 'none';
+      emailBtn.style.display = 'none';
+      actions.classList.remove('hidden');
+      statusEl.classList.remove('hidden');
+      statusEl.innerHTML = `<strong>Thanks for letting us know.</strong> If your budget changes, we'd love to hear from you again.`;
+    }
+
+    function askName(){
+      addAI("Hi, I'm Aoibh, your AI project manager. First, what's your name?", () => { input.disabled = false; input.focus(); });
+    }
+
+    function askEmail(){
+      const firstName = contact.name.split(' ')[0] || 'there';
+      addAI(`Nice to meet you, ${firstName}. What's the best email to reach you at?`, () => { input.disabled = false; input.focus(); });
+    }
+
+    function askTriage(){
+      addAI(triageQuestion, () => { input.disabled = false; input.focus(); });
+    }
+
+    function askNext(){
+      step++;
+      if (step < questions.length){
+        addAI(questions[step].text, () => { input.disabled = false; input.focus(); });
+      } else {
+        finish();
+      }
+    }
+
+    // Job-number branch: acknowledge and hand off, no review/designer match.
+    function showJobStatus(jobNum){
+      form.classList.add('hidden');
+      approveBtn.style.display = 'none';
+      emailBtn.style.display = 'none';
+      actions.classList.remove('hidden');
+      statusEl.classList.remove('hidden');
+      statusEl.innerHTML = `<strong>Thanks for checking in.</strong> We're pulling the full status for job #${jobNum} now and a producer will follow up with you shortly.`;
+    }
+
+    function finish(){
+      input.disabled = true;
+      form.classList.add('hidden');
+      addAI("That's everything I need — let me put your brief summary together.", () => {
+        showReview();
+      });
+    }
+
+    function showReview(){
+      chat.classList.add('hidden');
+      review.classList.remove('hidden');
+
+      const contactRows = `
+        <div class="review-row">
+          <span class="review-label">Name</span>
+          <span class="review-value">${(contact.name || '—').replace(/</g,'&lt;')}</span>
+        </div>
+        <div class="review-row">
+          <span class="review-label">Email</span>
+          <span class="review-value">${(contact.email || '—').replace(/</g,'&lt;')}</span>
+        </div>`;
+
+      reviewGrid.innerHTML = contactRows + questions.map(q => `
+        <div class="review-row">
+          <span class="review-label">${q.label}</span>
+          <span class="review-value">${(answers[q.key] || '—').replace(/</g,'&lt;')}</span>
+        </div>`).join('');
+
+      actions.classList.remove('hidden');
+      statusEl.classList.add('hidden');
+      statusEl.textContent = '';
+
+      updateEmailHref();
+      matchDesigner();
+    }
+
+    function updateEmailHref(){
+      const contactLines = `Name: ${contact.name || '—'}%0D%0AEmail: ${contact.email || '—'}%0D%0A%0D%0A`;
+      const body = contactLines + questions.map(q => `${q.label}: ${answers[q.key] || '—'}`).join('%0D%0A')
+        + (attachedFiles.length ? `%0D%0A%0D%0AAttached files (${attachedFiles.length}): ${attachedFiles.map(f => f.name).join(', ')}` : '');
+      emailBtn.href = `mailto:hello@aoibh.ai?subject=${encodeURIComponent('New brief')}&body=${body}`;
+    }
+
+    function initials(name){
+      return name.split(' ').map(p => p[0]).join('').slice(0, 2).toUpperCase();
+    }
+
+    // File attachments — client-side only for now. There's no backend yet
+    // (see Research/backend-architecture-proposal.md), so these files stay
+    // in the browser's memory and are never actually uploaded anywhere;
+    // this exists so the interaction is real and ready to wire up once an
+    // /api/assets endpoint exists.
+    let attachedFiles = [];
+
+    function formatFileSize(bytes){
+      if (bytes < 1024) return bytes + ' B';
+      if (bytes < 1024*1024) return Math.round(bytes/1024) + ' KB';
+      return (bytes/(1024*1024)).toFixed(1) + ' MB';
+    }
+
+    function renderFileList(){
+      const countText = attachedFiles.length ? `${attachedFiles.length} file${attachedFiles.length === 1 ? '' : 's'}` : '';
+      const itemsHTML = attachedFiles.map((f, i) => `
+        <div class="review-file-item">
+          <span class="review-file-name">${f.name.replace(/</g,'&lt;')}</span>
+          <span class="review-file-size">${formatFileSize(f.size)}</span>
+          <button type="button" class="review-file-remove" data-i="${i}" aria-label="Remove ${f.name.replace(/</g,'&lt;')}">✕</button>
+        </div>`).join('');
+
+      uploadCount.textContent = countText;
+      fileList.innerHTML = itemsHTML;
+      if (studioUploadCount) studioUploadCount.textContent = countText;
+      if (studioFileList) studioFileList.innerHTML = itemsHTML;
+
+      if (!review.classList.contains('hidden')) updateEmailHref();
+    }
+
+    function addFiles(fileListArg){
+      attachedFiles = attachedFiles.concat(Array.from(fileListArg));
+      renderFileList();
+    }
+
+    function handleFileRemoveClick(e){
+      const btn = e.target.closest('.review-file-remove');
+      if (!btn) return;
+      attachedFiles.splice(Number(btn.dataset.i), 1);
+      renderFileList();
+    }
+    fileList.addEventListener('click', handleFileRemoveClick);
+    if (studioFileList) studioFileList.addEventListener('click', handleFileRemoveClick);
+
+    fileList.addEventListener('click', handleFileRemoveClick);
+    if (studioFileList) studioFileList.addEventListener('click', handleFileRemoveClick);
+
+    function wireDropzone(zoneEl, inputEl){
+      if (!zoneEl || !inputEl) return;
+      zoneEl.addEventListener('click', () => inputEl.click());
+      zoneEl.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' '){ e.preventDefault(); inputEl.click(); }
+      });
+      inputEl.addEventListener('change', () => {
+        if (inputEl.files.length) addFiles(inputEl.files);
+        inputEl.value = '';
+      });
+      ['dragenter','dragover'].forEach(evt => zoneEl.addEventListener(evt, (e) => {
+        e.preventDefault(); zoneEl.classList.add('dragover');
+      }));
+      ['dragleave','drop'].forEach(evt => zoneEl.addEventListener(evt, (e) => {
+        e.preventDefault(); zoneEl.classList.remove('dragover');
+      }));
+      zoneEl.addEventListener('drop', (e) => {
+        if (e.dataTransfer.files.length) addFiles(e.dataTransfer.files);
+      });
+    }
+    wireDropzone(dropzone, fileInput);
+    wireDropzone(studioDropzone, studioFileInput);
+
+    // Parses free-text deadline answers ("3 weeks", "48 hours", "ASAP",
+    // "next Friday") into an approximate hour count. This is deliberately
+    // loose — there's no real date picker in the brief flow, just an open
+    // text question — so anything it can't confidently parse falls back to
+    // the 48-hour turnaround already promised elsewhere on the site, rather
+    // than guessing wildly or showing a broken countdown.
+    function parseDeadlineToHours(text){
+      const t = (text || '').toLowerCase();
+      const match = t.match(/(\d+(?:\.\d+)?)\s*(hour|hr|day|week|wk|month)/);
+      if (match){
+        const n = parseFloat(match[1]);
+        const unit = match[2];
+        if (unit.startsWith('hour') || unit === 'hr') return n;
+        if (unit.startsWith('day')) return n * 24;
+        if (unit.startsWith('week') || unit === 'wk') return n * 24 * 7;
+        if (unit.startsWith('month')) return n * 24 * 30;
+      }
+      if (/\basap\b|\burgent\b|\btoday\b|\btomorrow\b/.test(t)) return 24;
+      return 48; // matches the "2-day" turnaround promised elsewhere on the site
+    }
+
+    function pad(n){ return String(n).padStart(2, '0'); }
+
+    function formatCountdown(ms){
+      if (ms <= 0) return { text: '00:00:00', sub: 'Deadline reached', state: 'overdue' };
+      const totalSeconds = Math.floor(ms / 1000);
+      const days = Math.floor(totalSeconds / 86400);
+      const hours = Math.floor((totalSeconds % 86400) / 3600);
+      const minutes = Math.floor((totalSeconds % 3600) / 60);
+      const seconds = totalSeconds % 60;
+      const text = days > 0
+        ? `${days}d ${pad(hours)}:${pad(minutes)}:${pad(seconds)}`
+        : `${pad(hours)}:${pad(minutes)}:${pad(seconds)}`;
+      const state = (days === 0 && hours < 3) ? 'urgent' : '';
+      const sub = days > 0
+        ? `${days} day${days === 1 ? '' : 's'}, ${hours} hour${hours === 1 ? '' : 's'} until deadline`
+        : `${hours} hour${hours === 1 ? '' : 's'}, ${minutes} minute${minutes === 1 ? '' : 's'} until deadline`;
+      return { text, sub, state };
+    }
+
+    let clockInterval = null;
+    const clockFace = document.getElementById('studioClockFace');
+    const clockSub = document.getElementById('studioClockSub');
+
+    function tickClock(){
+      if (!projectDeadlineDate) return;
+      const { text, sub, state } = formatCountdown(projectDeadlineDate - new Date());
+      clockFace.textContent = text;
+      clockSub.textContent = sub;
+      clockFace.classList.toggle('urgent', state === 'urgent');
+      clockFace.classList.toggle('overdue', state === 'overdue');
+    }
+
+    function startDeadlineClock(){
+      if (!projectDeadlineDate){
+        const hours = parseDeadlineToHours(answers.deadline);
+        projectDeadlineDate = new Date(Date.now() + hours * 3600 * 1000);
+      }
+      tickClock();
+      if (!clockInterval) clockInterval = setInterval(tickClock, 1000);
+    }
+
+    function stopDeadlineClock(){
+      if (clockInterval){ clearInterval(clockInterval); clockInterval = null; }
+    }
+
+
+    // Simple heuristic: only staff a backend developer onto the team view
+    // if the brief's project/style text suggests build work beyond static
+    // design (an app, a site, a platform, etc.) rather than pure creative.
+    function needsBackendDev(){
+      const text = (answers.project || '').toLowerCase();
+      return /\b(app|platform|website|web ?app|software|saas|backend|back-end|api|dashboard|web ?site|portal|system)\b/.test(text);
+    }
+
+    function studioTasksForBrief(){
+      // Generic production stages, seeded with the brief's project type so
+      // the board doesn't read as pure placeholder copy.
+      const projectLabel = answers.project ? answers.project.split(/[,.]/)[0].trim() : 'the project';
+      return {
+        todo: [
+          { id:'todo-0', title:`Kickoff notes & moodboard for ${projectLabel}` },
+          { id:'todo-1', title:'First concept direction' },
+        ],
+        inProgress: [
+          { id:'inprogress-0', title:'Refine chosen concept' },
+        ],
+        done: [
+          { id:'done-0', title:'Brief approved' },
+        ],
+      };
+    }
+
+    function renderTaskColumn(elId, tasks){
+      const el = document.getElementById(elId);
+      el.innerHTML = tasks.map(t => {
+        const state = taskState[t.id];
+        const badge = state && state.revisions > 0
+          ? `<span class="studio-task-badge">${state.revisions === REVISION_CAP ? 'Revisions used up' : 'Feedback sent'}</span>`
+          : '';
+        return `<div class="studio-task" data-task-id="${t.id}" data-task-title="${t.title.replace(/"/g,'&quot;')}">${t.title.replace(/</g,'&lt;')}${badge}</div>`;
+      }).join('');
+    }
+
+    function studioTeamForBrief(){
+      const team = [
+        { name:'Aoibh', role:'AI Project Manager', img:'assets/aoibh-avatar.jpg' },
+        { name: contact.name || 'Client', role:'Client', initialsText: initials(contact.name || 'Client') },
+      ];
+      if (matchedDesigner){
+        team.push({ name: matchedDesigner.name, role: matchedDesigner.title, img: matchedDesigner.img, initialsText: initials(matchedDesigner.name) });
+      } else {
+        team.push({ name:'Designer', role:'Matching in progress — a producer is on it', initialsText:'?' });
+      }
+      if (needsBackendDev()){
+        team.push({ name:'Backend Developer', role:'Assigned once dev scope is confirmed', initialsText:'BE' });
+      }
+      return team;
+    }
+
+    function openStudio(){
+      document.getElementById('studioProject').textContent = answers.project || '—';
+      document.getElementById('studioAssets').textContent = answers.assets || '—';
+      document.getElementById('studioBudget').textContent = answers.budget || '—';
+      document.getElementById('studioDeadline').textContent = answers.deadline || '—';
+      renderFileList();
+
+      taskState = {};
+      const tasks = studioTasksForBrief();
+      renderTaskColumn('studioTodo', tasks.todo);
+      renderTaskColumn('studioInProgress', tasks.inProgress);
+      renderTaskColumn('studioDone', tasks.done);
+
+      document.getElementById('studioTeamGrid').innerHTML = studioTeamForBrief().map(p => `
+        <div class="studio-person">
+          ${p.img
+            ? `<img class="studio-person-avatar studio-person-avatar-lg" src="${p.img}" alt="${p.name}">`
+            : `<div class="studio-person-avatar">${p.initialsText}</div>`}
+          <div>
+            <div class="studio-person-name">${p.name.replace(/</g,'&lt;')}</div>
+            <div class="studio-person-role">${p.role.replace(/</g,'&lt;')}</div>
+          </div>
+        </div>`).join('');
+
+      overlay.classList.remove('open');
+      document.body.style.overflow = 'hidden';
+      studioOverlay.classList.remove('hidden');
+      startDeadlineClock();
+    }
+
+    function closeStudio(){
+      studioOverlay.classList.add('hidden');
+      document.body.style.overflow = '';
+      stopDeadlineClock();
+    }
+
+    // Animated "how your project moves" tracker — cycles through the 8
+    // pipeline stages on a loop. Reusable: one instance lives in the Studio
+    // dashboard, another in the how-it-works modal's final slide, each
+    // running its own independent loop rather than sharing one index.
+    function createJourneyTracker(trackEl){
+      const steps = Array.from(trackEl.querySelectorAll('.journey-step'));
+      const fill = trackEl.querySelector('.journey-line-fill');
+      let index = 0;
+      let interval = null;
+
+      function render(){
+        steps.forEach((el, i) => {
+          el.classList.remove('done', 'active', 'upcoming');
+          if (i < index) el.classList.add('done');
+          else if (i === index) el.classList.add('active');
+          else el.classList.add('upcoming');
+        });
+        if (fill){
+          const pct = steps.length > 1 ? (index / (steps.length - 1)) * 100 : 0;
+          fill.style.width = pct + '%';
+        }
+      }
+
+      function start(){
+        if (!steps.length || interval) return;
+        index = 0;
+        render();
+        interval = setInterval(() => {
+          index = (index + 1) % steps.length;
+          render();
+        }, 2200);
+      }
+
+      function stop(){
+        if (interval){ clearInterval(interval); interval = null; }
+      }
+
+      return { start, stop };
+    }
+    // The how-it-works carousel runs in its own separate IIFE below and
+    // can't see this closure's local bindings — expose the factory itself
+    // so that block can create its own independent tracker instance.
+    window.createJourneyTracker = createJourneyTracker;
+
+    const studioOverlay = document.getElementById('studioOverlay');
+    document.getElementById('studioExit').addEventListener('click', closeStudio);
+
+    // ---------- Task feedback / revision review ----------
+    const taskReviewOverlay = document.getElementById('taskReviewOverlay');
+    const taskReviewTitle = document.getElementById('taskReviewTitle');
+    const taskRevisionCountEl = document.getElementById('taskRevisionCount');
+    const taskFeedbackLogEl = document.getElementById('taskFeedbackLog');
+    const taskFeedbackInput = document.getElementById('taskFeedbackInput');
+    const taskFeedbackSend = document.getElementById('taskFeedbackSend');
+    let activeTaskId = null;
+
+    function renderTaskReviewPanel(){
+      const state = taskState[activeTaskId] || { revisions: 0, feedback: [] };
+      const capped = state.revisions >= REVISION_CAP;
+
+      taskRevisionCountEl.textContent = `${state.revisions} of ${REVISION_CAP} revision rounds used`;
+      taskRevisionCountEl.classList.toggle('capped', capped);
+
+      taskFeedbackLogEl.innerHTML = state.feedback.map((f, i) => `
+        <div class="task-feedback-entry">
+          <span class="task-feedback-entry-num">Round ${i + 1}</span>
+          ${f.replace(/</g,'&lt;')}
+        </div>`).join('');
+
+      taskFeedbackInput.value = '';
+      taskFeedbackInput.disabled = capped;
+      taskFeedbackSend.disabled = capped;
+      taskFeedbackSend.textContent = capped
+        ? 'Revision rounds used — ask your producer for more'
+        : 'Send to designer →';
+    }
+
+    function openTaskReview(taskId, taskTitle){
+      activeTaskId = taskId;
+      taskReviewTitle.textContent = taskTitle;
+      renderTaskReviewPanel();
+      taskReviewOverlay.classList.add('open');
+    }
+
+    function closeTaskReview(){
+      taskReviewOverlay.classList.remove('open');
+      activeTaskId = null;
+    }
+
+    document.querySelector('.studio-kanban-grid').addEventListener('click', (e) => {
+      const card = e.target.closest('.studio-task');
+      if (!card) return;
+      openTaskReview(card.dataset.taskId, card.dataset.taskTitle);
+    });
+
+    document.getElementById('taskReviewClose').addEventListener('click', closeTaskReview);
+    taskReviewOverlay.addEventListener('click', (e) => { if (e.target === taskReviewOverlay) closeTaskReview(); });
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && taskReviewOverlay.classList.contains('open')) closeTaskReview(); });
+
+    taskFeedbackSend.addEventListener('click', () => {
+      const text = taskFeedbackInput.value.trim();
+      if (!text || !activeTaskId) return;
+      if (!taskState[activeTaskId]) taskState[activeTaskId] = { revisions: 0, feedback: [] };
+      const state = taskState[activeTaskId];
+      if (state.revisions >= REVISION_CAP) return;
+      state.revisions++;
+      state.feedback.push(text);
+
+      renderTaskReviewPanel();
+      // Refresh whichever column this task lives in so its badge updates.
+      ['studioTodo', 'studioInProgress', 'studioDone'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el && el.querySelector(`[data-task-id="${activeTaskId}"]`)){
+          const tasks = studioTasksForBrief();
+          const map = { studioTodo:'todo', studioInProgress:'inProgress', studioDone:'done' };
+          renderTaskColumn(id, tasks[map[id]]);
+        }
+      });
+    });
+
+    async function matchDesigner(){
+      reviewDesigner.className = 'review-designer loading';
+      reviewDesigner.textContent = 'Matching you with a designer from the marketplace…';
+
+      let data;
+      try {
+        const controller = new AbortController();
+        const t = setTimeout(() => controller.abort(), 8000);
+        const r = await fetch('/api/match-designer', {
+          method: 'POST',
+          headers: { 'content-type': 'application/json' },
+          body: JSON.stringify({ answers }),
+          signal: controller.signal,
+        });
+        clearTimeout(t);
+        if (!r.ok) throw new Error('bad response');
+        data = await r.json();
+        if (!data || !data.designer || !data.designer.name) throw new Error('malformed response');
+        if (typeof data.confidence !== 'number') throw new Error('missing confidence');
+      } catch (err) {
+        // No server reachable (e.g. this file opened directly), the
+        // endpoint errored, or the response was malformed/missing a
+        // confidence score — match locally instead of leaving the card
+        // out entirely.
+        data = localFallbackMatch(answers);
+      }
+
+      const d = data.designer;
+      const confidence = Math.round(data.confidence);
+
+      if (confidence < 80){
+        matchedDesigner = null;
+        reviewDesigner.className = 'review-designer';
+        reviewDesigner.innerHTML = `
+          <div>
+            <span class="designer-tag">No confident match yet</span>
+            <div class="designer-reason">Your brief has some specifics we'd rather match by hand — one of our producers will personally pair you with the right designer and follow up shortly.</div>
+          </div>`;
+        return;
+      }
+
+      matchedDesigner = { name: d.name, title: d.title, location: d.location, experience: d.experience, img: d.img, tags: d.tags, confidence, reason: data.reason };
+      reviewDesigner.className = 'review-designer';
+      reviewDesigner.innerHTML = `
+        ${d.img ? `<img class="designer-avatar designer-avatar-photo" src="${d.img}" alt="${d.name}">` : `<div class="designer-avatar">${initials(d.name)}</div>`}
+        <div>
+          <span class="designer-tag">Matched from the marketplace · ${confidence}% fit</span>
+          <div class="designer-name">${d.name}</div>
+          <div class="designer-meta">${d.title} · ${d.experience} · ${d.location}</div>
+          <div class="designer-reason">${(data.reason || '').replace(/</g,'&lt;')}</div>
+          <button class="designer-profile-link" id="designerProfileBtn" type="button">View full profile →</button>
+        </div>`;
+    }
+
+    function openBrief(){
+      overlay.classList.add('open');
+      document.body.style.overflow = 'hidden';
+      resetChat();
+    }
+
+    async function resetChat(){
+      chat.innerHTML = '';
+      chat.classList.remove('hidden');
+      review.classList.add('hidden');
+      reviewGrid.innerHTML = '';
+      reviewDesigner.innerHTML = '';
+      attachedFiles = [];
+      renderFileList();
+      actions.classList.add('hidden');
+      approveBtn.style.display = '';
+      emailBtn.style.display = '';
+      statusEl.classList.add('hidden');
+      statusEl.textContent = '';
+      form.classList.remove('hidden');
+      input.value = '';
+      input.disabled = true;
+      answers = {};
+      contact = { name: '', email: '' };
+      matchedDesigner = null;
+      projectDeadlineDate = null;
+      stopDeadlineClock();
+      step = -1;
+      stage = 'name';
+
+      if (!questionsLoaded){
+        const typing = document.createElement('div');
+        typing.className = 'typing';
+        typing.innerHTML = '<span></span><span></span><span></span>';
+        chat.appendChild(typing);
+        await loadPhrasedQuestions();
+        typing.remove();
+      }
+      askName();
+    }
+
+    function closeBrief(){
+      overlay.classList.remove('open');
+      document.body.style.overflow = '';
+    }
+
+    document.querySelectorAll('.js-start-brief').forEach(btn => {
+      btn.addEventListener('click', (e) => { e.preventDefault(); openBrief(); });
+    });
+
+    closeBtn.addEventListener('click', closeBrief);
+    restartBtn.addEventListener('click', resetChat);
+    approveBtn.addEventListener('click', () => {
+      openStudio();
+    });
+    overlay.addEventListener('click', (e) => { if (e.target === overlay) closeBrief(); });
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && overlay.classList.contains('open')) closeBrief(); });
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const val = input.value.trim();
+      if (!val || input.disabled) return;
+      addMessage(val, 'user');
+      input.value = '';
+      input.disabled = true;
+
+      if (stage === 'name'){
+        contact.name = val;
+        stage = 'email';
+        askEmail();
+        return;
+      }
+
+      if (stage === 'email'){
+        if (!/^\S+@\S+\.\S+$/.test(val)){
+          addAI("That doesn't look quite like an email — mind double-checking it?", () => { input.disabled = false; input.focus(); });
+          return;
+        }
+        contact.email = val;
+        stage = 'triage';
+        askTriage();
+        return;
+      }
+
+      if (stage === 'triage'){
+        const jobMatch = val.match(/\d{3,}/);
+        if (jobMatch){
+          stage = 'jobLookup';
+          addAI(`One sec, let me look at the full status report for job #${jobMatch[0]} and get back to you ASAP.`, () => {
+            showJobStatus(jobMatch[0]);
+          });
+        } else {
+          stage = 'questions';
+          askNext();
+        }
+        return;
+      }
+
+      answers[questions[step].key] = val;
+
+      if (questions[step].key === 'budget'){
+        const amount = parseBudgetAmount(val);
+        if (amount !== null && amount < 1000){
+          stage = 'belowBudget';
+          addAI(`Just a heads up — that's below what any of the designers in our global network typically work with, so I won't be able to make a confident match at this budget.`, () => {
+            showBudgetTooLow();
+          });
+          return;
+        }
+      }
+
+      askNext();
+    });
+  })();
+
+  // ---------- How it works carousel ----------
+  (function(){
+    const howBtn = document.getElementById('howBtn');
+    const howOverlay = document.getElementById('howOverlay');
+    const howClose = document.getElementById('howClose');
+    const slides = Array.from(document.querySelectorAll('.how-slide'));
+    const dotsWrap = document.getElementById('howDots');
+    const prevBtn = document.getElementById('howPrev');
+    const nextBtn = document.getElementById('howNext');
+    const howJourneyEl = document.querySelector('.how-journey-track');
+    const howJourney = howJourneyEl && window.createJourneyTracker ? window.createJourneyTracker(howJourneyEl) : null;
+    let idx = 0;
+
+    slides.forEach((_, i) => {
+      const dot = document.createElement('button');
+      dot.className = 'how-dot';
+      dot.setAttribute('aria-label', `Go to step ${i + 1}`);
+      dot.addEventListener('click', () => goTo(i));
+      dotsWrap.appendChild(dot);
+    });
+    const dots = Array.from(dotsWrap.children);
+    if (slides.length <= 1){
+      const nav = document.querySelector('.how-nav');
+      if (nav) nav.style.display = 'none';
+    }
+
+    function goTo(i){
+      idx = (i + slides.length) % slides.length;
+      slides.forEach((s, n) => s.classList.toggle('active', n === idx));
+      dots.forEach((d, n) => d.classList.toggle('active', n === idx));
+    }
+
+    function openHow(){
+      howOverlay.classList.add('open');
+      goTo(0);
+      if (howJourney) howJourney.start();
+    }
+    function closeHow(){
+      howOverlay.classList.remove('open');
+      if (howJourney) howJourney.stop();
+    }
+
+    howBtn.addEventListener('click', openHow);
+    howClose.addEventListener('click', closeHow);
+    prevBtn.addEventListener('click', () => goTo(idx - 1));
+    nextBtn.addEventListener('click', () => goTo(idx + 1));
+    howOverlay.addEventListener('click', (e) => { if (e.target === howOverlay) closeHow(); });
+    document.addEventListener('keydown', (e) => {
+      if (!howOverlay.classList.contains('open')) return;
+      if (e.key === 'Escape') closeHow();
+      if (e.key === 'ArrowRight') goTo(idx + 1);
+      if (e.key === 'ArrowLeft') goTo(idx - 1);
+    });
+  })();
+
+  // ---------- Contact the studio modal ----------
+  (function(){
+    const contactLink = document.getElementById('contactLink');
+    const overlay = document.getElementById('contactOverlay');
+    const closeBtn = document.getElementById('contactClose');
+    const chat = document.getElementById('contactChat');
+    const form = document.getElementById('contactForm');
+    const input = document.getElementById('contactInput');
+
+    let stage = 'query'; // 'query' | 'email' | 'done'
+    let submission = { query: '', email: '' };
+
+    function scrollToBottom(){ chat.scrollTop = chat.scrollHeight; }
+
+    function addMessage(text, cls){
+      const div = document.createElement('div');
+      div.className = 'msg ' + cls;
+      div.textContent = text;
+      chat.appendChild(div);
+      scrollToBottom();
+      return div;
+    }
+
+    function addAI(text, cb){
+      const typing = document.createElement('div');
+      typing.className = 'typing';
+      typing.innerHTML = '<span></span><span></span><span></span>';
+      chat.appendChild(typing);
+      scrollToBottom();
+      setTimeout(() => {
+        typing.remove();
+        addMessage(text, 'ai');
+        if (cb) cb();
+      }, 550 + Math.random()*350);
+    }
+
+    function askQuery(){
+      addAI("Hi, I'm Aoibh. What can I help you with?", () => { input.disabled = false; input.focus(); });
+    }
+
+    function askEmail(){
+      addAI("Got it — what's the best email to reach you at?", () => { input.disabled = false; input.focus(); });
+    }
+
+    function showConfirmation(){
+      form.classList.add('hidden');
+      addAI("Thanks — a producer will get in touch with you shortly.");
+    }
+
+    function resetContact(){
+      chat.innerHTML = '';
+      form.classList.remove('hidden');
+      input.value = '';
+      input.disabled = true;
+      stage = 'query';
+      submission = { query: '', email: '' };
+      askQuery();
+    }
+
+    function openContact(){
+      const briefOverlay = document.getElementById('briefOverlay');
+      const howOverlay = document.getElementById('howOverlay');
+      if (briefOverlay) briefOverlay.classList.remove('open');
+      if (howOverlay) howOverlay.classList.remove('open');
+      overlay.classList.add('open');
+      resetContact();
+    }
+
+    function closeContact(){
+      overlay.classList.remove('open');
+    }
+
+    if (contactLink) contactLink.addEventListener('click', (e) => { e.preventDefault(); openContact(); });
+    closeBtn.addEventListener('click', closeContact);
+    overlay.addEventListener('click', (e) => { if (e.target === overlay) closeContact(); });
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && overlay.classList.contains('open')) closeContact(); });
+
+    form.addEventListener('submit', (e) => {
+      e.preventDefault();
+      const val = input.value.trim();
+      if (!val || input.disabled) return;
+      addMessage(val, 'user');
+      input.value = '';
+      input.disabled = true;
+
+      if (stage === 'query'){
+        submission.query = val;
+        stage = 'email';
+        askEmail();
+        return;
+      }
+
+      if (stage === 'email'){
+        if (!/^\S+@\S+\.\S+$/.test(val)){
+          addAI("That doesn't look quite like an email — mind double-checking it?", () => { input.disabled = false; input.focus(); });
+          return;
+        }
+        submission.email = val;
+        stage = 'done';
+        // No backend yet — see UI/README or the Research/ backend proposal
+        // doc for how this would actually get stored once one exists.
+        console.log('Contact form submission (not persisted anywhere yet):', submission);
+        showConfirmation();
+        return;
+      }
+    });
+  })();
+
+  // ---------- Info modals (pricing, vetting) ----------
+  (function(){
+    function wireInfoModal(btnId, overlayId, closeId){
+      const btn = document.getElementById(btnId);
+      const overlay = document.getElementById(overlayId);
+      const closeBtn = document.getElementById(closeId);
+      if (!btn || !overlay) return;
+
+      function open(){ overlay.classList.add('open'); }
+      function close(){ overlay.classList.remove('open'); }
+
+      btn.addEventListener('click', open);
+      closeBtn.addEventListener('click', close);
+      overlay.addEventListener('click', (e) => { if (e.target === overlay) close(); });
+      document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && overlay.classList.contains('open')) close(); });
+    }
+
+    wireInfoModal('pricingInfoBtn', 'pricingInfoOverlay', 'pricingInfoClose');
+    wireInfoModal('vettingInfoBtn', 'vettingInfoOverlay', 'vettingInfoClose');
+  })();
+</script>
+
+</body>
+</html>
