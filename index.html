@@ -514,7 +514,7 @@
     <h2 class="reveal">Send the first brief.<br>See a draft by tomorrow.</h2>
     <div class="cta-actions reveal">
       <a class="btn btn-primary js-start-brief" href="#">Start a brief →</a>
-      <a class="btn btn-ghost js-start-brief" href="#">Talk to the studio</a>
+      <a class="btn btn-ghost" href="#" id="talkToStudioBtn">Talk to the studio</a>
     </div>
   </div>
 </section>
@@ -1135,11 +1135,13 @@
     }
 
     function finish(){
-      input.disabled = true;
-      form.classList.add('hidden');
-      addAI("That's everything I need — let me put your brief summary together.", () => {
-        showReview();
-      });
+      if (!form.classList.contains('hidden')) {
+        input.disabled = true;
+        form.classList.add('hidden');
+        addAI("That's everything I need — let me put your brief summary together.", () => {
+          showReview();
+        });
+      }
     }
 
     function showReview(){
@@ -1527,7 +1529,11 @@
       });
     });
 
+    let matchInProgress = false;
     async function matchDesigner(){
+      if (matchInProgress) return; // already matching — never let two overlap
+      matchInProgress = true;
+
       reviewDesigner.className = 'review-designer loading';
       reviewDesigner.textContent = 'Matching you with a designer from the marketplace…';
 
@@ -1553,6 +1559,8 @@
         // out entirely.
         data = localFallbackMatch(answers);
       }
+
+      matchInProgress = false;
 
       const d = data.designer;
       const confidence = Math.round(data.confidence);
@@ -1824,6 +1832,8 @@
     }
 
     if (contactLink) contactLink.addEventListener('click', (e) => { e.preventDefault(); openContact(); });
+    const talkToStudioBtn = document.getElementById('talkToStudioBtn');
+    if (talkToStudioBtn) talkToStudioBtn.addEventListener('click', (e) => { e.preventDefault(); openContact(); });
     closeBtn.addEventListener('click', closeContact);
     overlay.addEventListener('click', (e) => { if (e.target === overlay) closeContact(); });
     document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && overlay.classList.contains('open')) closeContact(); });
