@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Back shortly — Aoibh</title>
+<meta name="description" content="Aoibh is offline for a short while — back soon.">
+<meta name="robots" content="noindex, follow">
+<link rel="icon" href="assets/favicon/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="assets/favicon/favicon.ico" sizes="any">
+<link rel="apple-touch-icon" href="assets/favicon/apple-touch-icon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,450;0,9..144,600;1,9..144,450;1,9..144,600&family=JetBrains+Mono:wght@400;500;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<header>
+  <nav class="wrap">
+    <!-- Deliberately no nav links or CTA here — if the whole site is
+         gated, links pointing back into it would just be dead ends. -->
+    <div class="logo logo-header">Aoibh <span>CREATIVE OS</span></div>
+  </nav>
+</header>
+
+<section class="not-found">
+  <div class="wrap">
+    <div class="eyebrow"><span class="dot"></span>BACK SHORTLY</div>
+    <h1>We're doing a little upkeep.</h1>
+    <p id="maintenanceMessage">Aoibh is offline for a short while — check back shortly.</p>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap foot-grid">
+    <div>
+      <div class="logo">Aoibh <span>CREATIVE OS</span></div>
+      <div class="foot-copy">© 2026 Aoibh Studio. Brief in, brand out.</div>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // The default message above is a safe fallback that always renders,
+  // even if this fetch fails or Supabase isn't reachable — this page
+  // must never depend on a working backend to say something sensible.
+  fetch('/api/site-mode')
+    .then(r => r.json())
+    .then(data => {
+      if (data.maintenance_message) {
+        document.getElementById('maintenanceMessage').textContent = data.maintenance_message;
+      }
+    })
+    .catch(() => { /* fallback text already showing — nothing to do */ });
+</script>
+
+</body>
+</html>
