@@ -9,16 +9,16 @@
 // confidence score. The frontend only shows a designer card when
 // confidence is 80+; below that it hands off to a human producer instead.
 // If the API call fails, times out, or returns something malformed, we
-// fall back to a simple keyword-matching heuristic over the same roster —
+// fall back to a simple keyword-matching heuristic over the same roster --
 // so a designer card (or a clean human hand-off) always renders, brief or
 // no brief AI.
 //
 // Every completed brief (AI-matched or fallback-matched) is saved to
-// Supabase's `briefs` table via saveBrief(), and a notification email is
+// Supabase's briefs table via saveBrief(), and a notification email is
 // sent via Resend if RESEND_API_KEY is configured.
 
 // Roster deliberately matches the 6 real, photographed designers shown on
-// the main site's Studio gallery (index.html #gallery) — not a separate
+// the main site's Studio gallery (index.html #gallery) -- not a separate
 // fictional list. Putting a real person's photo under a made-up identity
 // would be worse than no photo at all, so this roster and the gallery are
 // kept as the same 6 people, on purpose.
@@ -74,4 +74,21 @@ const ROSTER = [
     title: "Illustration & Social Content Designer",
     experience: "5 years",
     location: "Copenhagen, DK",
-    img: "assets/designers/naomi_copenha
+    img: "assets/designers/naomi_copenhagen.jpeg",
+    tags: ["illustration", "social media", "content", "campaign", "instagram", "character"],
+  },
+];
+
+function briefText(answers) {
+  return Object.values(answers || {}).filter(Boolean).join(" ").toLowerCase();
+}
+
+async function saveBrief(opts) {
+  var email = opts.email;
+  var name = opts.name;
+  var answers = opts.answers;
+  var result = opts.result;
+
+  if (process.env.SUPABASE_URL && process.env.SUPABASE_SERVICE_ROLE_KEY) {
+    try {
+      await
