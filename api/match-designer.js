@@ -105,8 +105,55 @@ function fallbackMatch(answers) {async function saveBrief({ email, name, answers
         source: result.source,
       }),
     });
+  } async function saveBrief({ email, name, answers, result }) {
+  if (!process.env.SUPABASE_URL || !process.env.SUPABASE_SERVICE_ROLE_KEY) return;
+  try {
+    await fetch(`${process.env.SUPABASE_URL}/rest/v1/briefs`, {
+      method: 'POST',
+      headers: {
+        apikey: process.env.SUPABASE_SERVICE_ROLE_KEY,
+        Authorization: `Bearer ${process.env.SUPABASE_SERVICE_ROLE_KEY}`,
+        'Content-Type': 'application/json',
+        Prefer: 'return=minimal',
+      },
+      body: JSON.stringify({
+        email: email || null,
+        name: name || null,
+        answers,
+        matched_designer_id: result.designer.id,
+        match_reason: result.reason,
+        confidence: result.confidence,
+        source: result.source,
+      }),
+    });
   } catch (err) {
     console.error('saveBrief failed:', err.message);
+  }
+
+  if (process.env.RESEND_API_KEY) {
+    try {
+      const answersList = Object.entries(answers || {})
+        .map(([k, v]) => `${k}: ${v || '—'}`)
+        .join('\n');
+
+      await fetch('https://api.resend.com/emails', {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${process.env.RESEND_API_KEY}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          from: 'Aoibh Leads <leads@aoibh.ai>',
+          to: ['hello@aoibh.ai'],
+          subject: `New brief: ${name || email || 'anonymous'} matched to ${result.designer.name}`,
+          text: `New brief submitted.\n\nName: ${name || '—'}\nEmail: ${email || '—'}\n\nAnswers:\n${answersList}\n\nMatched designer: ${result.designer.name} (${result.confidence}% confidence, source: ${result.source})\nReason: ${result.reason}`,
+        }),
+      });
+    } catch (err) {
+      console.error('sendLeadEmail failed:', err.message);
+    }
+  }
+}
   }
 }
 
