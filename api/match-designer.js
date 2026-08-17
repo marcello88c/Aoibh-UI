@@ -89,23 +89,27 @@ function briefText(answers) {
 async function saveBrief({ email, name, answers, result }) {
   if (process.env.SUPABASE_URL && process.env.SUPABASE_SERVICE_ROLE_KEY) {
     try {
-      await fetch(`${process.env.SUPABASE_URL}/rest/v1/briefs`, {
+const supaRes = await fetch(process.env.SUPABASE_URL + "/rest/v1/briefs", {
         method: "POST",
         headers: {
           apikey: process.env.SUPABASE_SERVICE_ROLE_KEY,
-          Authorization: `Bearer ${process.env.SUPABASE_SERVICE_ROLE_KEY}`,
+          Authorization: "Bearer " + process.env.SUPABASE_SERVICE_ROLE_KEY,
           "Content-Type": "application/json",
           Prefer: "return=minimal",
         },
         body: JSON.stringify({
           email: email || null,
           name: name || null,
-          answers,
+          answers: answers,
           matched_designer_id: result.designer.id,
           match_reason: result.reason,
           confidence: result.confidence,
           source: result.source,
         }),
+      });
+      if (!supaRes.ok) {
+        console.error("saveBrief supabase error:", supaRes.status, await supaRes.text());
+      }
       });
     } catch (err) {
       console.error("saveBrief failed:", err.message);
