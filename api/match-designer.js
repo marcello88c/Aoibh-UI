@@ -84,7 +84,36 @@ function briefText(answers) {
 // first roster entry (Eve) if nothing scores. Confidence is a base rate
 // plus a bump per matched tag, capped just under 100 — mirrors the
 // equivalent heuristic in index.html's client-side fallback.
-function fallbackMatch(answers) {
+function fallbackMatch(answers) {async function saveBrief({ email, name, answers, result }) {
+  if (!process.env.SUPABASE_URL || !process.env.SUPABASE_SERVICE_ROLE_KEY) return;
+  try {
+    await fetch(`${process.env.SUPABASE_URL}/rest/v1/briefs`, {
+      method: 'POST',
+      headers: {
+        apikey: process.env.SUPABASE_SERVICE_ROLE_KEY,
+        Authorization: `Bearer ${process.env.SUPABASE_SERVICE_ROLE_KEY}`,
+        'Content-Type': 'application/json',
+        Prefer: 'return=minimal',
+      },
+      body: JSON.stringify({
+        email: email || null,
+        name: name || null,
+        answers,
+        matched_designer_id: result.designer.id,
+        match_reason: result.reason,
+        confidence: result.confidence,
+        source: result.source,
+      }),
+    });
+  } catch (err) {
+    console.error('saveBrief failed:', err.message);
+  }
+}
+
+Type or paste that in as its own standalone block (not nested inside another function). Once it's in, let me know and we'll do the final piece — step 8, calling this function before the two response points.
+
+
+
   const text = briefText(answers);
   let best = ROSTER[0];
   let bestScore = -1;
@@ -115,7 +144,10 @@ const name = (req.body && req.body.name || '').trim();
 const emailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
   const apiKey = process.env.ANTHROPIC_API_KEY;
   if (!apiKey) {
-    return res.status(200).json(fallbackMatch(answers));
+  const fallbackResult = fallbackMatch(answers);
+  await saveBrief({ email, name, answers, result: fallbackResult });
+  return res.status(200).json(fallbackResult);
+}
   }
 
   const rosterForPrompt = ROSTER.map(
@@ -177,7 +209,7 @@ Pick the designer now.`;
       throw new Error("Missing or malformed confidence from model");
     }
     const confidence = Math.max(0, Math.min(100, Math.round(parsed.confidence)));
-
+    await saveBrief({ email, name, answers, result: { designer: match, reason: parsed.reason.trim(), confidence, source: "ai" } });
     return res.status(200).json({
       designer: {
         id: match.id,
@@ -197,6 +229,8 @@ Pick the designer now.`;
     // fail soft to the deterministic match rather than leaving the client
     // with no designer at all.
     console.error("match-designer failed:", err.message);
-    return res.status(200).json(fallbackMatch(answers));
+    const fallbackResult = fallbackMatch(answers);
+await saveBrief({ email, name, answers, result: fallbackResult });
+return res.status(200).json(fallbackResult);
   }
 }
