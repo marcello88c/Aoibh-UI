@@ -154,8 +154,7 @@ function fallbackMatch(answers) {async function saveBrief({ email, name, answers
     }
   }
 }
-  }
-}
+
 
 Type or paste that in as its own standalone block (not nested inside another function). Once it's in, let me know and we'll do the final piece — step 8, calling this function before the two response points.
 
