@@ -1544,7 +1544,7 @@
         const r = await fetch('/api/match-designer', {
           method: 'POST',
           headers: { 'content-type': 'application/json' },
-          body: JSON.stringify({ answers }),
+          body: JSON.stringify({ answers, email: contact.email, name: contact.name  }),
           signal: controller.signal,
         });
         clearTimeout(t);
