@@ -110,7 +110,9 @@ export default async function handler(req, res) {
     return res.status(405).json({ error: "Method not allowed" });
   }
 
-  const answers = (req.body && req.body.answers) || {};
+  const answers = (req.body && req.body.answers) || {};const email = (req.body && req.body.email || '').trim();
+const name = (req.body && req.body.name || '').trim();
+const emailValid = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
   const apiKey = process.env.ANTHROPIC_API_KEY;
   if (!apiKey) {
     return res.status(200).json(fallbackMatch(answers));
