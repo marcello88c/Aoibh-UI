@@ -89,7 +89,7 @@ function briefText(answers) {
 async function saveBrief({ email, name, answers, result }) {
   if (process.env.SUPABASE_URL && process.env.SUPABASE_SERVICE_ROLE_KEY) {
     try {
-const supaRes = await fetch(process.env.SUPABASE_URL + "/rest/v1/briefs", {
+      const supaRes = await fetch(process.env.SUPABASE_URL + "/rest/v1/briefs", {
         method: "POST",
         headers: {
           apikey: process.env.SUPABASE_SERVICE_ROLE_KEY,
@@ -110,7 +110,6 @@ const supaRes = await fetch(process.env.SUPABASE_URL + "/rest/v1/briefs", {
       if (!supaRes.ok) {
         console.error("saveBrief supabase error:", supaRes.status, await supaRes.text());
       }
-      });
     } catch (err) {
       console.error("saveBrief failed:", err.message);
     }
