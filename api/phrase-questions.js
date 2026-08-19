@@ -20,7 +20,7 @@ const FALLBACK_QUESTIONS = [
   { key: "project", text: "What type of project are you interested in?" },
   { key: "budget", text: "Great — what's the budget range for this project?" },
   { key: "deadline", text: "And what's your timeline — when would you need this delivered?" },
-  { key: "assets", text: "Last one — will you be supplying assets like a logo, brand guides, or videos, or will we be creating everything as new?" },
+  { key: "assets", text: "Last one — do you already have a logo or brand materials, or is this a new brand with nothing yet?" },
 ];
 
 export default async function handler(req, res) {
@@ -39,7 +39,9 @@ export default async function handler(req, res) {
 studio's intake chat widget (Aoibh — an AI + human creative production
 studio). The visitor has already confirmed this is a first enquiry (a prior,
 separate question handled that). Rephrase these four fixed questions in a
-warm, concise, professional voice. Keep each under 20 words. Do not add a
+warm, concise, professional voice. Keep each under 20 words. Avoid idioms
+and figures of speech (e.g. "from scratch") since many visitors are not
+native English speakers — use plain, literal wording instead. Do not add a
 greeting, do not add extra questions, do not merge questions, do not change
 their order or meaning.
 
@@ -47,7 +49,7 @@ Questions to rephrase, in order:
 1. project — what type of project are they interested in
 2. budget — what is the budget range for this project
 3. deadline — what is their timeline / when do they need it delivered
-4. assets — will they be supplying existing assets (logo, brand guides, videos) or does everything need creating from scratch
+4. assets — do they already have a logo or brand materials, or is this a new brand with nothing yet
 
 Respond ONLY with JSON, no prose, no markdown fences, in this exact shape:
 {"questions":[{"key":"project","text":"..."},{"key":"budget","text":"..."},{"key":"deadline","text":"..."},{"key":"assets","text":"..."}]}`;
