@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Aoibh — Dashboard</title>
+<style>
+  :root {
+    --accent-blue: #2a6df5;
+    --accent-blue-dark: #1d4fd1;
+    --gradient-status: linear-gradient(135deg, #7b2ff7 0%, #17d1c4 100%);
+    --surface: #f5f5f4;
+    --border: #e5e4e0;
+    --text: #16161a;
+    --text-muted: #6b6a66;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    color: var(--text);
+    background: #ffffff;
+    padding: 2.5rem;
+  }
+  .wrap { max-width: 1100px; margin: 0 auto; }
+
+  header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 2.5rem;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+  .header-left { display: flex; align-items: center; gap: 1rem; }
+  .logo { font-size: 1.6rem; font-weight: 600; letter-spacing: -0.02em; }
+  .dash-pill {
+    background: var(--accent-blue);
+    color: #fff;
+    padding: 0.4rem 1rem;
+    border-radius: 999px;
+    font-size: 0.85rem;
+  }
+  .project-title { font-size: 2rem; font-weight: 600; margin: 0; letter-spacing: -0.01em; }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+    margin-bottom: 1rem;
+  }
+  .grid-2 {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1rem;
+  }
+
+  .card {
+    background: var(--surface);
+    border-radius: 16px;
+    padding: 1.5rem;
+    min-height: 180px;
+  }
+
+  .card-brand {
+    background: linear-gradient(160deg, var(--accent-blue) 0%, var(--accent-blue-dark) 100%);
+    color: #fff;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+  }
+  .card-brand-top { display: flex; align-items: center; justify-content: space-between; }
+  .card-brand-top .logo { color: #fff; font-size: 1.4rem; }
+  .avatar-round {
+    width: 44px; height: 44px; border-radius: 50%;
+    object-fit: cover; background: #dcdcdc;
+  }
+  .card-brand-body { font-size: 0.95rem; line-height: 1.5; margin-top: 1.5rem; }
+  .card-brand-body strong { display: block; margin-bottom: 4px; }
+
+  .person-card { display: flex; flex-direction: column; }
+  .person-top { display: flex; align-items: flex-start; justify-content: space-between; }
+  .person-name { font-size: 0.9rem; color: var(--text-muted); margin: 0 0 4px; }
+  .person-role { font-size: 1.4rem; font-weight: 600; margin: 0; }
+  .person-note {
+    margin-top: auto;
+    padding-top: 0.75rem;
+    font-size: 0.75rem;
+    color: var(--text-muted);
+    font-style: italic;
+  }
+
+  .upload-card {
+    display: flex; align-items: center; gap: 1.5rem;
+  }
+  .upload-drop {
+    flex: 1;
+    border: 1.5px dashed #d9d3ff;
+    background: #faf6ff;
+    border-radius: 12px;
+    padding: 1.5rem;
+    text-align: center;
+  }
+  .upload-drop p { margin: 0.5rem 0 0; font-size: 0.85rem; color: var(--text-muted); }
+  .upload-btn {
+    margin-top: 0.75rem;
+    background: #16161a;
+    color: #fff;
+    border: none;
+    border-radius: 999px;
+    padding: 0.5rem 1.25rem;
+    font-size: 0.85rem;
+    cursor: pointer;
+  }
+  .upload-caption { flex: 1; font-size: 1.05rem; font-weight: 500; line-height: 1.4; }
+
+  .status-card {
+    background: var(--gradient-status);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    font-size: 1.6rem;
+    font-weight: 600;
+    line-height: 1.3;
+  }
+  .status-card .status-tag {
+    display: block;
+    font-size: 0.7rem;
+    font-weight: 400;
+    opacity: 0.75;
+    margin-top: 0.5rem;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+  }
+
+  .loading, .error-state {
+    text-align: center;
+    padding: 4rem 1rem;
+    color: var(--text-muted);
+  }
+  .placeholder-flag {
+    font-size: 0.7rem;
+    color: #b08d00;
+    background: #fff6da;
+    padding: 2px 8px;
+    border-radius: 6px;
+    display: inline-block;
+    margin-top: 6px;
+  }
+
+  @media (max-width: 800px) {
+    .grid, .grid-2 { grid-template-columns: 1fr; }
+    .upload-card { flex-direction: column; align-items: stretch; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <div class="header-left">
+      <span class="logo">Aoibh</span>
+      <span class="dash-pill">Dashboard</span>
+    </div>
+    <h1 class="project-title" id="projectTitle">Loading project…</h1>
+  </header>
+
+  <div id="loadingState" class="loading">Loading your project…</div>
+  <div id="errorState" class="error-state" style="display:none;"></div>
+
+  <div id="dashboardContent" style="display:none;">
+    <div class="grid">
+      <div class="card card-brand">
+        <div class="card-brand-top">
+          <span class="logo">Aoibh</span>
+          <img class="avatar-round" id="clientAvatar" src="" alt="">
+        </div>
+        <div class="card-brand-body" id="brandStatusText"></div>
+      </div>
+
+      <div class="card person-card">
+        <div class="person-top">
+          <div>
+            <p class="person-name" id="designerName">—</p>
+            <p class="person-role">Designer</p>
+          </div>
+          <img class="avatar-round" id="designerAvatar" src="" alt="">
+        </div>
+      </div>
+
+      <div class="card person-card">
+        <div class="person-top">
+          <div>
+            <p class="person-name">Hannah</p>
+            <p class="person-role">Art Director</p>
+          </div>
+        </div>
+        <p class="person-note">Placeholder — art director assignment isn't wired to real data yet.</p>
+      </div>
+    </div>
+
+    <div class="grid-2">
+      <div class="card upload-card">
+        <div class="upload-drop">
+          <div>⬆</div>
+          <strong>Drag and drop here</strong>
+          <p>or click to browse</p>
+          <button class="upload-btn">Choose Files</button>
+        </div>
+        <p class="upload-caption">Click here to preview current job — in progress</p>
+      </div>
+
+      <div class="card status-card">
+        <div>
+          <span id="statusLabel">Final Review</span>
+          <span class="status-tag">Placeholder — no live stage tracking yet</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  async function loadDashboard() {
+    const params = new URLSearchParams(window.location.search);
+    const briefId = params.get("id");
+
+    const loadingEl = document.getElementById("loadingState");
+    const errorEl = document.getElementById("errorState");
+    const contentEl = document.getElementById("dashboardContent");
+    const titleEl = document.getElementById("projectTitle");
+
+    if (!briefId) {
+      loadingEl.style.display = "none";
+      errorEl.style.display = "block";
+      errorEl.textContent = "No project id provided. Add ?id=<brief-id> to the URL.";
+      return;
+    }
+
+    try {
+      const res = await fetch(`/api/dashboard-data?id=${encodeURIComponent(briefId)}`);
+      if (!res.ok) throw new Error("Failed to load project");
+      const data = await res.json();
+
+      titleEl.textContent = (data.answers && data.answers.project) || "Your project";
+
+      document.getElementById("brandStatusText").innerHTML =
+        `<strong>Hi ${data.name || "there"}!</strong>${data.matchReason || "Your project is underway."}`;
+
+      if (data.designer) {
+        document.getElementById("designerName").textContent = data.designer.name;
+        document.getElementById("designerAvatar").src = data.designer.img;
+        document.getElementById("designerAvatar").alt = data.designer.name;
+      }
+
+      loadingEl.style.display = "none";
+      contentEl.style.display = "block";
+    } catch (err) {
+      loadingEl.style.display = "none";
+      errorEl.style.display = "block";
+      errorEl.textContent = "Couldn't load this project. Please check the link or try again.";
+      console.error(err);
+    }
+  }
+
+  loadDashboard();
+</script>
+</body>
+</html>
