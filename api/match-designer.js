@@ -149,31 +149,6 @@ async function saveBrief({ email, name, answers, result }) {
   }
 }
 
-  if (process.env.RESEND_API_KEY) {
-    try {
-      const answersList = Object.entries(answers || {})
-        .map(([k, v]) => `${k}: ${v || "—"}`)
-        .join("\n");
-
-      await fetch("https://api.resend.com/emails", {
-        method: "POST",
-        headers: {
-          Authorization: `Bearer ${process.env.RESEND_API_KEY}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          from: "Aoibh Leads <leads@aoibh.ai>",
-          to: ["hello@aoibh.ai"],
-          subject: `New brief: ${name || email || "anonymous"} matched to ${result.designer.name}`,
-          text: `New brief submitted.\n\nName: ${name || "—"}\nEmail: ${email || "—"}\n\nAnswers:\n${answersList}\n\nMatched designer: ${result.designer.name} (${result.confidence}% confidence, source: ${result.source})\nReason: ${result.reason}`,
-        }),
-      });
-    } catch (err) {
-      console.error("sendLeadEmail failed:", err.message);
-    }
-  }
-}
-
 // Deterministic fallback used when the API is unavailable or misbehaves —
 // simple keyword overlap against each designer's tags, defaulting to the
 // first roster entry (Eve) if nothing scores. Confidence is a base rate
