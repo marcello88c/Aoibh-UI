@@ -87,6 +87,8 @@ function briefText(answers) {
 // via Resend. Both steps fail soft — if Supabase or Resend has a problem,
 // we log it and move on rather than breaking the response the user sees.
 async function saveBrief({ email, name, answers, result }) {
+  let briefId = null;
+
   if (process.env.SUPABASE_URL && process.env.SUPABASE_SERVICE_ROLE_KEY) {
     try {
       const supaRes = await fetch(process.env.SUPABASE_URL + "/rest/v1/briefs", {
@@ -95,7 +97,7 @@ async function saveBrief({ email, name, answers, result }) {
           apikey: process.env.SUPABASE_SERVICE_ROLE_KEY,
           Authorization: "Bearer " + process.env.SUPABASE_SERVICE_ROLE_KEY,
           "Content-Type": "application/json",
-          Prefer: "return=minimal",
+          Prefer: "return=representation",
         },
         body: JSON.stringify({
           email: email || null,
@@ -109,11 +111,43 @@ async function saveBrief({ email, name, answers, result }) {
       });
       if (!supaRes.ok) {
         console.error("saveBrief supabase error:", supaRes.status, await supaRes.text());
+      } else {
+        const rows = await supaRes.json();
+        briefId = rows && rows[0] && rows[0].id ? rows[0].id : null;
       }
     } catch (err) {
       console.error("saveBrief failed:", err.message);
     }
   }
+
+  if (process.env.RESEND_API_KEY) {
+    try {
+      const answersList = Object.entries(answers || {})
+        .map(([k, v]) => `${k}: ${v || "—"}`)
+        .join("\n");
+
+      const dashboardLine = briefId
+        ? `\n\nView dashboard: https://aoibh.ai/dashboard.html?id=${briefId}`
+        : "";
+
+      await fetch("https://api.resend.com/emails", {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${process.env.RESEND_API_KEY}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          from: "Aoibh Leads <leads@aoibh.ai>",
+          to: ["hello@aoibh.ai"],
+          subject: `New brief: ${name || email || "anonymous"} matched to ${result.designer.name}`,
+          text: `New brief submitted.\n\nName: ${name || "—"}\nEmail: ${email || "—"}\n\nAnswers:\n${answersList}\n\nMatched designer: ${result.designer.name} (${result.confidence}% confidence, source: ${result.source})\nReason: ${result.reason}${dashboardLine}`,
+        }),
+      });
+    } catch (err) {
+      console.error("sendLeadEmail failed:", err.message);
+    }
+  }
+}
 
   if (process.env.RESEND_API_KEY) {
     try {
