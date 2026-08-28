@@ -1587,9 +1587,20 @@
           <span class="designer-tag">Matched from the marketplace · ${confidence}% fit</span>
           <div class="designer-name">${d.name}</div>
           <div class="designer-meta">${d.title} · ${d.experience} · ${d.location}</div>
-          <div class="designer-reason">${(data.reason || '').replace(/</g,'&lt;')}</div>
+                    <div class="designer-reason">${(data.reason || '').replace(/</g,'&lt;')}</div>
           <button class="designer-profile-link" id="designerProfileBtn" type="button">View full profile →</button>
+          ${data.briefId ? `<button class="designer-profile-link" id="goToDashboardBtn" type="button" style="margin-left:12px;">Go to my dashboard →</button>` : ''}
         </div>`;
+
+      if (data.briefId) {
+        const dashBtn = document.getElementById('goToDashboardBtn');
+        if (dashBtn) {
+          dashBtn.addEventListener('click', () => {
+            window.location.href = `/dashboard.html?id=${encodeURIComponent(data.briefId)}`;
+          });
+        }
+      }
+    }
     }
 
     function openBrief(){
