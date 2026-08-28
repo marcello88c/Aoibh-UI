@@ -72,7 +72,7 @@
   .card-brand-top { display: flex; align-items: center; justify-content: space-between; }
   .card-brand-top .logo { color: #fff; font-size: 1.4rem; }
   .avatar-round {
-    width: 90px; height: 90px; border-radius: 50%;
+    width: 44px; height: 44px; border-radius: 50%;
     object-fit: cover; background: #dcdcdc;
   }
   .card-brand-body { font-size: 0.95rem; line-height: 1.5; margin-top: 1.5rem; }
@@ -82,6 +82,17 @@
   .person-top { display: flex; align-items: flex-start; justify-content: space-between; }
   .person-name { font-size: 0.9rem; color: var(--text-muted); margin: 0 0 4px; }
   .person-role { font-size: 1.4rem; font-weight: 600; margin: 0; }
+  .match-badge {
+    display: inline-block;
+    margin-top: 8px;
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    color: #0a7d4f;
+    background: #e3f7ec;
+    padding: 3px 10px;
+    border-radius: 999px;
+  }
   .person-note {
     margin-top: auto;
     padding-top: 0.75rem;
@@ -175,7 +186,7 @@
       <div class="card card-brand">
         <div class="card-brand-top">
           <span class="logo">Aoibh</span>
-         <img class="avatar-round" id="clientAvatar" src="assets/aoibh-avatar.jpg" alt="Aoibh">
+          <img class="avatar-round" id="clientAvatar" src="assets/aoibh-avatar.jpg" alt="Aoibh">
         </div>
         <div class="card-brand-body" id="brandStatusText"></div>
       </div>
@@ -185,6 +196,7 @@
           <div>
             <p class="person-name" id="designerName">—</p>
             <p class="person-role">Designer</p>
+            <span class="match-badge" id="matchBadge" style="display:none;">Strong match</span>
           </div>
           <img class="avatar-round" id="designerAvatar" src="" alt="">
         </div>
@@ -254,6 +266,10 @@
         document.getElementById("designerName").textContent = data.designer.name;
         document.getElementById("designerAvatar").src = data.designer.img;
         document.getElementById("designerAvatar").alt = data.designer.name;
+      }
+
+      if (typeof data.confidence === "number" && data.confidence >= 80) {
+        document.getElementById("matchBadge").style.display = "inline-block";
       }
 
       loadingEl.style.display = "none";
