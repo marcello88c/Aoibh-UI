@@ -147,6 +147,8 @@ async function saveBrief({ email, name, answers, result }) {
       console.error("sendLeadEmail failed:", err.message);
     }
   }
+
+  return briefId;
 }
 
 // Deterministic fallback used when the API is unavailable or misbehaves —
@@ -187,8 +189,8 @@ export default async function handler(req, res) {
   const apiKey = process.env.ANTHROPIC_API_KEY;
   if (!apiKey) {
     const fallbackResult = fallbackMatch(answers);
-    await saveBrief({ email, name, answers, result: fallbackResult });
-    return res.status(200).json(fallbackResult);
+    const briefId = await saveBrief({ email, name, answers, result: fallbackResult });
+    return res.status(200).json({ ...fallbackResult, briefId });
   }
 
   const rosterForPrompt = ROSTER.map(
@@ -265,15 +267,15 @@ Pick the designer now.`;
       confidence,
       source: "ai",
     };
-    await saveBrief({ email, name, answers, result });
-    return res.status(200).json(result);
+    const briefId = await saveBrief({ email, name, answers, result });
+    return res.status(200).json({ ...result, briefId });
   } catch (err) {
     // Network error, timeout, bad JSON, or an id not in the roster — always
     // fail soft to the deterministic match rather than leaving the client
     // with no designer at all.
     console.error("match-designer failed:", err.message);
     const fallbackResult = fallbackMatch(answers);
-    await saveBrief({ email, name, answers, result: fallbackResult });
-    return res.status(200).json(fallbackResult);
+    const briefId = await saveBrief({ email, name, answers, result: fallbackResult });
+    return res.status(200).json({ ...fallbackResult, briefId });
   }
 }
