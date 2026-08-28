@@ -1656,7 +1656,7 @@
     closeBtn.addEventListener('click', closeBrief);
     restartBtn.addEventListener('click', resetChat);
    approveBtn.addEventListener('click', () => { if (matchedDesigner && matchedDesigner.briefId) { window.location.href = `/dashboard.html?id=${encodeURIComponent(matchedDesigner.briefId)}`; } else { openStudio(); } });
-  }
+  
 
     overlay.addEventListener('click', (e) => { if (e.target === overlay) closeBrief(); });
     document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && overlay.classList.contains('open')) closeBrief(); });
