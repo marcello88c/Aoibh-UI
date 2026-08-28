@@ -1579,7 +1579,7 @@
         return;
       }
 
-      matchedDesigner = { name: d.name, title: d.title, location: d.location, experience: d.experience, img: d.img, tags: d.tags, confidence, reason: data.reason };
+      matchedDesigner = { name: d.name, title: d.title, location: d.location, experience: d.experience, img: d.img, tags: d.tags, confidence, reason: data.reason, briefId: data.briefId };
       reviewDesigner.className = 'review-designer';
       reviewDesigner.innerHTML = `
         ${d.img ? `<img class="designer-avatar designer-avatar-photo" src="${d.img}" alt="${d.name}">` : `<div class="designer-avatar">${initials(d.name)}</div>`}
