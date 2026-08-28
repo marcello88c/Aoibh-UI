@@ -1655,9 +1655,13 @@
 
     closeBtn.addEventListener('click', closeBrief);
     restartBtn.addEventListener('click', resetChat);
-    approveBtn.addEventListener('click', () => {
-      openStudio();
-    });
+   approveBtn.addEventListener('click', () => {
+  if (data.briefId) {
+    window.location.href = `/dashboard.html?id=${encodeURIComponent(data.briefId)}`;
+  } else {
+    openStudio();
+  }
+});
     overlay.addEventListener('click', (e) => { if (e.target === overlay) closeBrief(); });
     document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && overlay.classList.contains('open')) closeBrief(); });
 
