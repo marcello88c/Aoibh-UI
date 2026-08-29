@@ -1660,6 +1660,7 @@
     closeBtn.addEventListener('click', closeBrief);
     restartBtn.addEventListener('click', resetChat);
    approveBtn.addEventListener('click', () => { if (lastBriefId) { window.location.href = `/dashboard.html?id=${encodeURIComponent(lastBriefId)}`; } else { openStudio(); } });
+    emailBtn.addEventListener('click', (e) => { e.preventDefault(); reviewDesigner.insertAdjacentHTML('afterend', '<div class="review-email-confirm">Got it — we\'ve already received your brief and will follow up by email shortly.</div>'); emailBtn.style.display = 'none'; });
   
 
     overlay.addEventListener('click', (e) => { if (e.target === overlay) closeBrief(); });
