@@ -220,11 +220,11 @@
       <div class="card person-card">
         <div class="person-top">
           <div>
-            <p class="person-name">Hannah</p>
+            <p class="person-name" id="artDirectorName">—</p>
             <p class="person-role">Art Director</p>
           </div>
+          <img class="avatar-round" id="artDirectorAvatar" src="" alt="">
         </div>
-        <p class="person-note">Placeholder — art director assignment isn't wired to real data yet.</p>
       </div>
     </div>
 
@@ -286,36 +286,37 @@
 
       if (isDelivered) {
         const designerName = data.designer ? data.designer.name : "the studio";
+        const artDirectorName = data.artDirector ? data.artDirector.name : "our team";
         document.getElementById("deliveredIntro").textContent =
-          `Project completed by ${designerName} & re-checked by Hannah.`;
+          `Project completed by ${designerName} & re-checked by ${artDirectorName}.`;
 
-const filesEl = document.getElementById("deliveredFiles");
-filesEl.innerHTML = "";
-data.deliverables.forEach((file) => {
-  const a = document.createElement("a");
-  a.href = "#";
-  a.className = "delivered-file-btn";
-  a.innerHTML = `↓ ${file.name}`;
-  a.addEventListener("click", async (e) => {
-    e.preventDefault();
-    try {
-      const fileRes = await fetch(file.url);
-      const blob = await fileRes.blob();
-      const blobUrl = URL.createObjectURL(blob);
-      const tempLink = document.createElement("a");
-      tempLink.href = blobUrl;
-      tempLink.download = file.name;
-      document.body.appendChild(tempLink);
-      tempLink.click();
-      tempLink.remove();
-      URL.revokeObjectURL(blobUrl);
-    } catch (err) {
-      console.error("Download failed:", err);
-      window.open(file.url, "_blank");
-    }
-  });
-  filesEl.appendChild(a);
-});
+        const filesEl = document.getElementById("deliveredFiles");
+        filesEl.innerHTML = "";
+        data.deliverables.forEach((file) => {
+          const a = document.createElement("a");
+          a.href = "#";
+          a.className = "delivered-file-btn";
+          a.innerHTML = `↓ ${file.name}`;
+          a.addEventListener("click", async (e) => {
+            e.preventDefault();
+            try {
+              const fileRes = await fetch(file.url);
+              const blob = await fileRes.blob();
+              const blobUrl = URL.createObjectURL(blob);
+              const tempLink = document.createElement("a");
+              tempLink.href = blobUrl;
+              tempLink.download = file.name;
+              document.body.appendChild(tempLink);
+              tempLink.click();
+              tempLink.remove();
+              URL.revokeObjectURL(blobUrl);
+            } catch (err) {
+              console.error("Download failed:", err);
+              window.open(file.url, "_blank");
+            }
+          });
+          filesEl.appendChild(a);
+        });
 
         loadingEl.style.display = "none";
         deliveredEl.style.display = "block";
@@ -327,6 +328,12 @@ data.deliverables.forEach((file) => {
           document.getElementById("designerName").textContent = data.designer.name;
           document.getElementById("designerAvatar").src = data.designer.img;
           document.getElementById("designerAvatar").alt = data.designer.name;
+        }
+
+        if (data.artDirector) {
+          document.getElementById("artDirectorName").textContent = data.artDirector.name;
+          document.getElementById("artDirectorAvatar").src = data.artDirector.img;
+          document.getElementById("artDirectorAvatar").alt = data.artDirector.name;
         }
 
         if (typeof data.confidence === "number" && data.confidence >= 80) {
