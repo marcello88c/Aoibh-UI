@@ -289,16 +289,31 @@
         document.getElementById("deliveredIntro").textContent =
           `Project completed by ${designerName} & re-checked by Hannah.`;
 
-        const filesEl = document.getElementById("deliveredFiles");
-        filesEl.innerHTML = "";
-        data.deliverables.forEach((file) => {
+const filesEl = document.getElementById("deliveredFiles");
+filesEl.innerHTML = "";
+data.deliverables.forEach((file) => {
   const a = document.createElement("a");
-  a.href = file.url;
+  a.href = "#";
   a.className = "delivered-file-btn";
   a.innerHTML = `↓ ${file.name}`;
-  a.download = file.name;
-  a.target = "_blank";
-  a.rel = "noopener";
+  a.addEventListener("click", async (e) => {
+    e.preventDefault();
+    try {
+      const fileRes = await fetch(file.url);
+      const blob = await fileRes.blob();
+      const blobUrl = URL.createObjectURL(blob);
+      const tempLink = document.createElement("a");
+      tempLink.href = blobUrl;
+      tempLink.download = file.name;
+      document.body.appendChild(tempLink);
+      tempLink.click();
+      tempLink.remove();
+      URL.revokeObjectURL(blobUrl);
+    } catch (err) {
+      console.error("Download failed:", err);
+      window.open(file.url, "_blank");
+    }
+  });
   filesEl.appendChild(a);
 });
 
