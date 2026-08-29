@@ -83,11 +83,10 @@ const ROSTER = [
 // matched to a brief's specifics the way designers are, so assignment is
 // just a random pick among the current team rather than skill-based.
 const ART_DIRECTOR_ROSTER = [
-  { id: "hannah-london", name: "Hannah", location: "London, UK", img: "assets/hannah_london.jpeg" },
-  { id: "michael-manchester", name: "Michael", location: "Manchester, UK", img: "assets/michael_manchester.jpeg" },
-  { id: "tina-amsterdam", name: "Tina", location: "Amsterdam, NL", img: "assets/tina_amsterdam.jpeg" },
+  { id: "hannah-london", name: "Hannah", location: "London, UK", img: "assets/designers/hanna_london.jpeg" },
+  { id: "michael-manchester", name: "Michael", location: "Manchester, UK", img: "assets/designers/michael_manchester.jpeg" },
+  { id: "tina-amsterdam", name: "Tina", location: "Amsterdam, NL", img: "assets/designers/Tina_amsterdam.jpeg" },
 ];
-
 function briefText(answers) {
   return Object.values(answers || {}).filter(Boolean).join(" ").toLowerCase();
 }
