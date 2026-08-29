@@ -292,14 +292,15 @@
         const filesEl = document.getElementById("deliveredFiles");
         filesEl.innerHTML = "";
         data.deliverables.forEach((file) => {
-          const a = document.createElement("a");
-          a.href = file.url;
-          a.className = "delivered-file-btn";
-          a.textContent = file.name;
-          a.target = "_blank";
-          a.rel = "noopener";
-          filesEl.appendChild(a);
-        });
+  const a = document.createElement("a");
+  a.href = file.url;
+  a.className = "delivered-file-btn";
+  a.innerHTML = `↓ ${file.name}`;
+  a.download = file.name;
+  a.target = "_blank";
+  a.rel = "noopener";
+  filesEl.appendChild(a);
+});
 
         loadingEl.style.display = "none";
         deliveredEl.style.display = "block";
