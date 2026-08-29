@@ -62,6 +62,26 @@ export default async function handler(req, res) {
 
     const designer = ROSTER.find((d) => d.id === brief.matched_designer_id) || null;
 
+    let deliverables = [];
+    try {
+      const delivRes = await fetch(
+        `${process.env.SUPABASE_URL}/rest/v1/deliverables?brief_id=eq.${encodeURIComponent(id)}&select=*`,
+        {
+          headers: {
+            apikey: process.env.SUPABASE_SERVICE_ROLE_KEY,
+            Authorization: "Bearer " + process.env.SUPABASE_SERVICE_ROLE_KEY,
+          },
+        }
+      );
+      if (delivRes.ok) {
+        deliverables = await delivRes.json();
+      } else {
+        console.error("dashboard-data deliverables fetch error:", delivRes.status, await delivRes.text());
+      }
+    } catch (err) {
+      console.error("dashboard-data deliverables fetch failed:", err.message);
+    }
+
     return res.status(200).json({
       id: brief.id,
       name: brief.name,
@@ -72,6 +92,8 @@ export default async function handler(req, res) {
       confidence: brief.confidence,
       source: brief.source,
       createdAt: brief.created_at,
+      status: brief.status || "in_progress",
+      deliverables: deliverables.map((d) => ({ name: d.file_name, url: d.file_url })),
     });
   } catch (err) {
     console.error("dashboard-data failed:", err.message);
