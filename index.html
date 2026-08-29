@@ -1876,11 +1876,13 @@
           addAI("That doesn't look quite like an email — mind double-checking it?", () => { input.disabled = false; input.focus(); });
           return;
         }
-        submission.email = val;
+     submission.email = val;
         stage = 'done';
-        // No backend yet — see UI/README or the Research/ backend proposal
-        // doc for how this would actually get stored once one exists.
-        console.log('Contact form submission (not persisted anywhere yet):', submission);
+        fetch('/api/contact', {
+          method: 'POST',
+          headers: { 'content-type': 'application/json' },
+          body: JSON.stringify(submission),
+        }).catch(err => console.error('Contact submission failed:', err));
         showConfirmation();
         return;
       }
