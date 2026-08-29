@@ -1026,6 +1026,7 @@
     let stage = 'name'; // 'name' | 'email' | 'triage' | 'questions' | 'jobLookup' | 'belowBudget' | 'done'
     let contact = { name: '', email: '' };
     let matchedDesigner = null;
+    let lastBriefId = null;
     let projectDeadlineDate = null;
     let taskState = {}; // { [taskId]: { revisions: number, feedback: string[] } }
     const REVISION_CAP = 2; // illustrative — matches the Starter plan's stated cap;
