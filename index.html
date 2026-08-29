@@ -1567,7 +1567,7 @@
       matchInProgress = false;
 
       const d = data.designer;
-      const confidence = Math.round(data.confidence);
+      const confidence = Math.round(data.confidence);lastBriefId = data.briefId || null;
 
       if (confidence < 80){
         matchedDesigner = null;
