@@ -49,4 +49,100 @@
   #statusMsg { margin-top: 1rem; font-size: 0.9rem; text-align: center; }
   #statusMsg.success { color: #0a7d4f; }
   #statusMsg.error { color: #c0392b; }
-  a.file-link { color:
+  a.file-link { color: #2a6df5; word-break: break-all; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Upload Deliverable</h1>
+  <p class="subtitle">Internal tool — attaches a file to a project's dashboard.</p>
+
+  <label for="briefIdInput">Project (brief) ID</label>
+  <input type="text" id="briefIdInput" placeholder="Paste the brief's id from Supabase">
+
+  <label>File</label>
+  <div class="dropzone" id="dropzone">
+    <div>⬆</div>
+    <strong>Drag a file here, or click to browse</strong>
+    <p id="fileName">No file selected</p>
+    <input type="file" id="fileInput" hidden>
+  </div>
+
+  <button id="uploadBtn">Upload</button>
+  <div id="statusMsg"></div>
+</div>
+
+<script>
+  const briefIdInput = document.getElementById('briefIdInput');
+  const dropzone = document.getElementById('dropzone');
+  const fileInput = document.getElementById('fileInput');
+  const fileNameEl = document.getElementById('fileName');
+  const uploadBtn = document.getElementById('uploadBtn');
+  const statusMsg = document.getElementById('statusMsg');
+
+  let selectedFile = null;
+
+  dropzone.addEventListener('click', () => fileInput.click());
+  dropzone.addEventListener('dragover', (e) => { e.preventDefault(); });
+  dropzone.addEventListener('drop', (e) => {
+    e.preventDefault();
+    if (e.dataTransfer.files.length) {
+      selectedFile = e.dataTransfer.files[0];
+      fileNameEl.textContent = selectedFile.name;
+    }
+  });
+  fileInput.addEventListener('change', () => {
+    if (fileInput.files.length) {
+      selectedFile = fileInput.files[0];
+      fileNameEl.textContent = selectedFile.name;
+    }
+  });
+
+  uploadBtn.addEventListener('click', async () => {
+    const briefId = briefIdInput.value.trim();
+    statusMsg.textContent = '';
+    statusMsg.className = '';
+
+    if (!briefId) {
+      statusMsg.textContent = 'Please paste a project (brief) ID.';
+      statusMsg.className = 'error';
+      return;
+    }
+    if (!selectedFile) {
+      statusMsg.textContent = 'Please choose a file first.';
+      statusMsg.className = 'error';
+      return;
+    }
+
+    uploadBtn.disabled = true;
+    uploadBtn.textContent = 'Uploading…';
+
+    try {
+      const formData = new FormData();
+      formData.append('briefId', briefId);
+      formData.append('file', selectedFile);
+
+      const res = await fetch('/api/upload-deliverable', {
+        method: 'POST',
+        body: formData,
+      });
+      const data = await res.json();
+
+      if (!res.ok) throw new Error(data.error || 'Upload failed');
+
+      statusMsg.innerHTML = `Uploaded successfully. <a class="file-link" href="${data.fileUrl}" target="_blank">View file</a><br><br>Remember: also set that project's status to "delivered" in Supabase for it to show on the client dashboard.`;
+      statusMsg.className = 'success';
+      selectedFile = null;
+      fileNameEl.textContent = 'No file selected';
+      fileInput.value = '';
+    } catch (err) {
+      statusMsg.textContent = 'Upload failed: ' + err.message;
+      statusMsg.className = 'error';
+    } finally {
+      uploadBtn.disabled = false;
+      uploadBtn.textContent = 'Upload';
+    }
+  });
+</script>
+</body>
+</html>
