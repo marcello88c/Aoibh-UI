@@ -21,6 +21,14 @@ const ROSTER = [
   { id: "naomi-copenhagen", name: "Naomi", title: "Illustration & Social Content Designer", location: "Copenhagen, DK", img: "assets/designers/naomi_copenhagen.jpeg" },
 ];
 
+// Same art director roster as match-designer.js — duplicated for the same
+// reason as ROSTER above.
+const ART_DIRECTOR_ROSTER = [
+  { id: "hannah-london", name: "Hannah", location: "London, UK", img: "assets/hannah_london.jpeg" },
+  { id: "michael-manchester", name: "Michael", location: "Manchester, UK", img: "assets/michael_manchester.jpeg" },
+  { id: "tina-amsterdam", name: "Tina", location: "Amsterdam, NL", img: "assets/tina_amsterdam.jpeg" },
+];
+
 export default async function handler(req, res) {
   if (req.method !== "GET") {
     res.setHeader("Allow", "GET");
@@ -61,6 +69,7 @@ export default async function handler(req, res) {
     }
 
     const designer = ROSTER.find((d) => d.id === brief.matched_designer_id) || null;
+    const artDirector = ART_DIRECTOR_ROSTER.find((a) => a.id === brief.art_director_id) || null;
 
     let deliverables = [];
     try {
@@ -88,6 +97,7 @@ export default async function handler(req, res) {
       email: brief.email,
       answers: brief.answers,
       designer,
+      artDirector,
       matchReason: brief.match_reason,
       confidence: brief.confidence,
       source: brief.source,
