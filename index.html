@@ -1577,7 +1577,8 @@
             <span class="designer-tag">No confident match yet</span>
             <div class="designer-reason">Your brief has some specifics we'd rather match by hand — one of our producers will personally pair you with the right designer and follow up shortly.</div>
           </div>`;
-        return;
+        
+        approveBtn.textContent = 'Continue →';return;
       }
 
       matchedDesigner = { name: d.name, title: d.title, location: d.location, experience: d.experience, img: d.img, tags: d.tags, confidence, reason: data.reason, briefId: data.briefId };
