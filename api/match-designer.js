@@ -79,6 +79,15 @@ const ROSTER = [
   },
 ];
 
+// Art directors handle quality review/oversight on completed work — not
+// matched to a brief's specifics the way designers are, so assignment is
+// just a random pick among the current team rather than skill-based.
+const ART_DIRECTOR_ROSTER = [
+  { id: "hannah-london", name: "Hannah", location: "London, UK", img: "assets/hannah_london.jpeg" },
+  { id: "michael-manchester", name: "Michael", location: "Manchester, UK", img: "assets/michael_manchester.jpeg" },
+  { id: "tina-amsterdam", name: "Tina", location: "Amsterdam, NL", img: "assets/tina_amsterdam.jpeg" },
+];
+
 function briefText(answers) {
   return Object.values(answers || {}).filter(Boolean).join(" ").toLowerCase();
 }
@@ -88,6 +97,7 @@ function briefText(answers) {
 // we log it and move on rather than breaking the response the user sees.
 async function saveBrief({ email, name, answers, result }) {
   let briefId = null;
+  const artDirector = ART_DIRECTOR_ROSTER[Math.floor(Math.random() * ART_DIRECTOR_ROSTER.length)];
 
   if (process.env.SUPABASE_URL && process.env.SUPABASE_SERVICE_ROLE_KEY) {
     try {
@@ -107,6 +117,7 @@ async function saveBrief({ email, name, answers, result }) {
           match_reason: result.reason,
           confidence: result.confidence,
           source: result.source,
+          art_director_id: artDirector.id,
         }),
       });
       if (!supaRes.ok) {
