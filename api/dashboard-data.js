@@ -23,12 +23,7 @@ const ROSTER = [
 
 // Same art director roster as match-designer.js — duplicated for the same
 // reason as ROSTER above.
-const ART_DIRECTOR_ROSTER = [
-  { id: "hannah-london", name: "Hannah", location: "London, UK", img: "assets/hannah_london.jpeg" },
-  { id: "michael-manchester", name: "Michael", location: "Manchester, UK", img: "assets/michael_manchester.jpeg" },
-  { id: "tina-amsterdam", name: "Tina", location: "Amsterdam, NL", img: "assets/tina_amsterdam.jpeg" },
-];
-
+ [ { id: "hannah-london", name: "Hannah", location: "London, UK", img: "assets/designers/hanna_london.jpeg" }, { id: "michael-manchester", name: "Michael", location: "Manchester, UK", img: "assets/designers/michael_manchester.jpeg" }, { id: "tina-amsterdam", name: "Tina", location: "Amsterdam, NL", img: "assets/designers/Tina_amsterdam.jpeg" }, ];
 export default async function handler(req, res) {
   if (req.method !== "GET") {
     res.setHeader("Allow", "GET");
