@@ -1,4 +1,6 @@
 {
-  "type": "module"
+  "type": "module",
+  "dependencies": {
+    "stripe": "^22.6.0"
+  }
 }
-
