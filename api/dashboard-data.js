@@ -3,6 +3,10 @@
 // cross-referenced with the matched designer's full profile (name, title,
 // photo) from the same roster used in match-designer.js.
 //
+// UPDATED: now also returns the trial payment state (payment_status,
+// deposit/balance amounts, preview_urls) so dashboard.html can render the
+// deposit / in-progress-preview / delivered states correctly.
+//
 // NOTE — temporary/no-auth: this endpoint currently trusts whatever brief
 // id is passed in the URL, with no login or ownership check. It exists so
 // dashboard.html can show one real project's real data today. Before this
@@ -104,6 +108,13 @@ export default async function handler(req, res) {
       createdAt: brief.created_at,
       status: brief.status || "in_progress",
       deliverables: deliverables.map((d) => ({ name: d.file_name, url: d.file_url })),
+
+      // Trial payment state — drives which screen dashboard.html shows.
+      // payment_status: 'pending' | 'deposit_paid' | 'paid_in_full'
+      paymentStatus: brief.payment_status || "pending",
+      depositAmount: brief.deposit_amount,   // in cents
+      balanceAmount: brief.balance_amount,   // in cents
+      previewUrls: brief.preview_urls || null, // { plain, laptop, mobile, social }
     });
   } catch (err) {
     console.error("dashboard-data failed:", err.message);

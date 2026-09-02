@@ -135,6 +135,8 @@
     font-size: 1.6rem;
     font-weight: 600;
     line-height: 1.3;
+    flex-direction: column;
+    gap: 0.75rem;
   }
   .status-card .status-tag {
     display: block;
@@ -145,6 +147,23 @@
     letter-spacing: 0.03em;
     text-transform: uppercase;
   }
+  .status-card img.preview-thumb {
+    width: 100%;
+    max-height: 110px;
+    object-fit: cover;
+    border-radius: 10px;
+  }
+  .unlock-btn {
+    background: #fff;
+    color: var(--text);
+    border: none;
+    border-radius: 999px;
+    padding: 0.6rem 1.4rem;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  .unlock-btn:disabled { opacity: 0.6; cursor: default; }
 
   .loading, .error-state {
     text-align: center;
@@ -176,6 +195,32 @@
   }
   .delivered-empty { color: var(--text-muted); font-size: 0.95rem; }
 
+  /* Deposit / "let's get started" screen */
+  .deposit-wrap { text-align: center; padding: 3rem 1rem; }
+  .deposit-card {
+    background: var(--surface);
+    border-radius: 16px;
+    max-width: 520px;
+    margin: 0 auto;
+    padding: 2.5rem 2rem;
+  }
+  .deposit-card h2 { margin: 0 0 0.75rem; font-size: 1.4rem; }
+  .deposit-card p { color: var(--text-muted); font-size: 0.95rem; line-height: 1.6; margin: 0 0 1.5rem; }
+  .deposit-amount { font-size: 2.2rem; font-weight: 700; margin-bottom: 0.25rem; }
+  .deposit-amount-note { font-size: 0.8rem; color: var(--text-muted); margin-bottom: 1.5rem; }
+  .pay-btn {
+    background: var(--accent-blue);
+    color: #fff;
+    border: none;
+    border-radius: 999px;
+    padding: 0.8rem 2rem;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+  }
+  .pay-btn:disabled { opacity: 0.6; cursor: default; }
+  .pay-error { color: #c0392b; font-size: 0.85rem; margin-top: 1rem; display: none; }
+
   @media (max-width: 800px) {
     .grid, .grid-2 { grid-template-columns: 1fr; }
     .upload-card { flex-direction: column; align-items: stretch; }
@@ -196,6 +241,21 @@
   <div id="loadingState" class="loading">Loading your project…</div>
   <div id="errorState" class="error-state" style="display:none;"></div>
 
+  <!-- STATE: pending deposit -->
+  <div id="depositState" style="display:none;">
+    <div class="deposit-wrap">
+      <div class="deposit-card">
+        <h2>Let's get started</h2>
+        <p id="depositIntro">A 30% deposit kicks off your trial project. Work begins as soon as it clears — the remaining balance is only due once you've reviewed the preview.</p>
+        <div class="deposit-amount" id="depositAmount">—</div>
+        <div class="deposit-amount-note">Deposit · 30% of €695</div>
+        <button class="pay-btn" id="payDepositBtn">Pay deposit</button>
+        <div class="pay-error" id="depositError"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- STATE: in progress (deposit paid) -->
   <div id="dashboardContent" style="display:none;">
     <div class="grid">
       <div class="card card-brand">
@@ -229,7 +289,7 @@
     </div>
 
     <div class="grid-2">
-      <div class="card upload-card">
+      <div class="card upload-card" id="uploadCard">
         <div class="upload-drop">
           <div>⬆</div>
           <strong>Drag and drop here</strong>
@@ -239,7 +299,9 @@
         <p class="upload-caption">Click here to preview current job — in progress</p>
       </div>
 
-      <div class="card status-card">
+      <!-- Filled in by JS: placeholder status card, or the real preview
+           image + "pay balance" unlock button once a preview exists. -->
+      <div class="card status-card" id="statusCard">
         <div>
           <span id="statusLabel">Final Review</span>
           <span class="status-tag">Placeholder — no live stage tracking yet</span>
@@ -258,12 +320,51 @@
 </div>
 
 <script>
+  let currentBriefId = null;
+
+  function formatEuros(cents) {
+    if (typeof cents !== "number") return "—";
+    return "€" + (cents / 100).toFixed(2);
+  }
+
+  async function startCheckout(stage, buttonEl, errorEl) {
+    if (!currentBriefId) return;
+    buttonEl.disabled = true;
+    const originalText = buttonEl.textContent;
+    buttonEl.textContent = "Redirecting…";
+    if (errorEl) errorEl.style.display = "none";
+
+    try {
+      const res = await fetch("/api/create-checkout", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ briefId: currentBriefId, stage }),
+      });
+      const data = await res.json();
+
+      if (!res.ok || !data.checkoutUrl) {
+        throw new Error(data.error || "Could not start checkout");
+      }
+
+      window.location.href = data.checkoutUrl;
+    } catch (err) {
+      console.error("startCheckout failed:", err);
+      buttonEl.disabled = false;
+      buttonEl.textContent = originalText;
+      if (errorEl) {
+        errorEl.textContent = "Something went wrong starting payment. Please try again.";
+        errorEl.style.display = "block";
+      }
+    }
+  }
+
   async function loadDashboard() {
     const params = new URLSearchParams(window.location.search);
     const briefId = params.get("id");
 
     const loadingEl = document.getElementById("loadingState");
     const errorEl = document.getElementById("errorState");
+    const depositEl = document.getElementById("depositState");
     const contentEl = document.getElementById("dashboardContent");
     const deliveredEl = document.getElementById("deliveredContent");
     const titleEl = document.getElementById("projectTitle");
@@ -275,6 +376,8 @@
       return;
     }
 
+    currentBriefId = briefId;
+
     try {
       const res = await fetch(`/api/dashboard-data?id=${encodeURIComponent(briefId)}`);
       if (!res.ok) throw new Error("Failed to load project");
@@ -283,8 +386,22 @@
       titleEl.textContent = (data.answers && data.answers.project) || "Your project";
 
       const isDelivered = data.status === "delivered" && Array.isArray(data.deliverables) && data.deliverables.length > 0;
+      const paymentStatus = data.paymentStatus || "pending";
+
+      if (paymentStatus === "pending" && !isDelivered) {
+        // STATE 1: nothing paid yet — show the deposit CTA.
+        document.getElementById("depositAmount").textContent = formatEuros(data.depositAmount);
+        const payBtn = document.getElementById("payDepositBtn");
+        const depErrorEl = document.getElementById("depositError");
+        payBtn.addEventListener("click", () => startCheckout("deposit", payBtn, depErrorEl));
+
+        loadingEl.style.display = "none";
+        depositEl.style.display = "block";
+        return;
+      }
 
       if (isDelivered) {
+        // STATE 3: fully paid, files unlocked.
         const designerName = data.designer ? data.designer.name : "the studio";
         const artDirectorName = data.artDirector ? data.artDirector.name : "our team";
         document.getElementById("deliveredIntro").textContent =
@@ -320,29 +437,55 @@
 
         loadingEl.style.display = "none";
         deliveredEl.style.display = "block";
-      } else {
-        document.getElementById("brandStatusText").innerHTML =
-          `<strong>Hi ${data.name || "there"}!</strong>${data.matchReason || "Your project is underway."}`;
-
-        if (data.designer) {
-          document.getElementById("designerName").textContent = data.designer.name;
-          document.getElementById("designerAvatar").src = data.designer.img;
-          document.getElementById("designerAvatar").alt = data.designer.name;
-        }
-
-        if (data.artDirector) {
-          document.getElementById("artDirectorName").textContent = data.artDirector.name;
-          document.getElementById("artDirectorAvatar").src = data.artDirector.img;
-          document.getElementById("artDirectorAvatar").alt = data.artDirector.name;
-        }
-
-        if (typeof data.confidence === "number" && data.confidence >= 80) {
-          document.getElementById("matchBadge").style.display = "inline-block";
-        }
-
-        loadingEl.style.display = "none";
-        contentEl.style.display = "block";
+        return;
       }
+
+      // STATE 2: deposit paid, work in progress — existing dashboard view,
+      // with the status card swapped to show the preview + balance unlock
+      // once a preview exists.
+      document.getElementById("brandStatusText").innerHTML =
+        `<strong>Hi ${data.name || "there"}!</strong>${data.matchReason || "Your project is underway."}`;
+
+      if (data.designer) {
+        document.getElementById("designerName").textContent = data.designer.name;
+        document.getElementById("designerAvatar").src = data.designer.img;
+        document.getElementById("designerAvatar").alt = data.designer.name;
+      }
+
+      if (data.artDirector) {
+        document.getElementById("artDirectorName").textContent = data.artDirector.name;
+        document.getElementById("artDirectorAvatar").src = data.artDirector.img;
+        document.getElementById("artDirectorAvatar").alt = data.artDirector.name;
+      }
+
+      if (typeof data.confidence === "number" && data.confidence >= 80) {
+        document.getElementById("matchBadge").style.display = "inline-block";
+      }
+
+      const statusCard = document.getElementById("statusCard");
+      if (data.previewUrls && data.previewUrls.plain) {
+        // A preview exists — show it plus the balance-unlock button.
+        statusCard.innerHTML = `
+          <img class="preview-thumb" src="${data.previewUrls.plain}" alt="Preview">
+          <span style="font-size:1rem;">Preview ready — ${formatEuros(data.balanceAmount)} to unlock</span>
+          <button class="unlock-btn" id="payBalanceBtn">Pay balance</button>
+          <div class="pay-error" id="balanceError"></div>
+        `;
+        const balBtn = document.getElementById("payBalanceBtn");
+        const balErrorEl = document.getElementById("balanceError");
+        balBtn.addEventListener("click", () => startCheckout("balance", balBtn, balErrorEl));
+      } else {
+        // No preview yet — keep the existing placeholder messaging.
+        statusCard.innerHTML = `
+          <div>
+            <span>Final Review</span>
+            <span class="status-tag">Waiting on your designer's first upload</span>
+          </div>
+        `;
+      }
+
+      loadingEl.style.display = "none";
+      contentEl.style.display = "block";
     } catch (err) {
       loadingEl.style.display = "none";
       errorEl.style.display = "block";
