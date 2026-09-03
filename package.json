@@ -2,6 +2,7 @@
   "type": "module",
   "dependencies": {
     "@supabase/supabase-js": "^2.113.0",
+    "micro": "^10.0.1",
     "stripe": "^22.6.0"
   }
 }
