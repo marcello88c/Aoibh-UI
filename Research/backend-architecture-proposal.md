@@ -75,13 +75,9 @@ tables, built directly rather than through the migration path below:
    writes real state right now — every request is quietly falling back to
    the default. Fix: `GRANT SELECT, UPDATE ON public.site_settings TO
    service_role;` in the Supabase SQL editor.
-2. **Dead duplicate files at the repo root.** `create-checkout.js` and
-   `stripe-webhook.js` exist both at the repo root and under `api/`. Only
-   the `api/` copies are actually deployed as Vercel functions — the root
-   copies are inert. The root `create-checkout.js` also still has the bug
-   the latest commit (`99fad28`) fixed in the `api/` version (wrong
-   success/cancel redirect URL) — harmless since it's dead code, but worth
-   deleting so it doesn't get mistaken for the live version later.
+2. ~~Dead duplicate files at the repo root.~~ **Fixed 2026-09-04** — the
+   root-level `create-checkout.js`/`stripe-webhook.js` (inert; only the
+   `api/` copies were ever deployed) have been deleted.
 3. **No auth on `dashboard-data.js` or `upload-deliverable.js`** — both
    explicitly commented as temporary/no-login. Anyone who has (or guesses)
    a `briefs` UUID can read that client's full brief and upload files

@@ -52,10 +52,6 @@ what's actually here.
   proposal (now annotated with what's actually built vs. still planned).
 - `Moodboards/` — visual inspiration (currently empty).
 
-**Known clutter, not yet cleaned up:** `create-checkout.js` and
-`stripe-webhook.js` also exist as dead duplicates at the repo root — only
-the `api/` copies are actually deployed. Don't edit the root copies.
-
 ## Environment variables
 
 Required (all set in Vercel already): `ANTHROPIC_API_KEY`,
