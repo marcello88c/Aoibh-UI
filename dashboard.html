@@ -309,7 +309,9 @@
 
   function renderPeopleRow(data) {
     document.getElementById("heroGreet").textContent = `Hi ${data.name || "there"}!`;
-    document.getElementById("heroMsg").textContent = data.matchReason || "Your project is underway.";
+    // heroMsg is set per-state in loadDashboard(), not here — matchReason
+    // (why this designer was picked) belongs on the pre-payment match
+    // screen, not repeated unchanged across every later dashboard state.
 
     if (data.designer) {
       document.getElementById("designerName").textContent = data.designer.name;
@@ -508,6 +510,8 @@
 
       if (paymentStatus === "pending" && !isDelivered) {
         setStatusChip("amber", "Awaiting deposit to begin work");
+        const depositDesignerName = data.designer ? data.designer.name : "your designer";
+        document.getElementById("heroMsg").textContent = `You're matched with ${depositDesignerName}. Pay your deposit and they'll get started right away.`;
         document.getElementById("depositAmount").textContent = formatEuros(data.depositAmount);
         const payBtn = document.getElementById("payDepositBtn");
         const depErrorEl = document.getElementById("depositError");
@@ -520,6 +524,7 @@
 
       if (isDelivered) {
         setStatusChip("green", "Paid in full — files unlocked");
+        document.getElementById("heroMsg").textContent = "Your project is complete. All files are unlocked below — thanks for trying Aoibh.";
         renderDeliveredState(data);
         loadingEl.style.display = "none";
         deliveredEl.style.display = "block";
@@ -528,6 +533,10 @@
 
       const hasPreview = Array.isArray(data.previewUrls) && data.previewUrls.length > 0;
       setStatusChip("blue", hasPreview ? "In progress — preview ready for review" : "In progress — your designer is working on it");
+      const projectName = (data.answers && data.answers.project) || "project";
+      document.getElementById("heroMsg").textContent = hasPreview
+        ? `Your ${projectName} preview is ready. Take a look below — the balance unlocks the full files.`
+        : "Your designer is on it — we'll let you know the moment a preview is ready to review.";
       renderProgressRow(data);
 
       loadingEl.style.display = "none";
