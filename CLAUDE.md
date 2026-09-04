@@ -15,12 +15,15 @@ what's actually here.
   on match it now redirects to `dashboard.html?id=<briefId>` rather than
   opening an in-page Studio section.
 - `dashboard.html` — the real, persisted client dashboard. Reads a brief by
-  `?id=<uuid>` via `api/dashboard-data.js`, no login. Renders
-  deposit/in-progress/delivered states off `payment_status`. The pipeline
-  status card is a placeholder — no live 8-stage tracking wired yet.
+  `?id=<uuid>&email=<email>` via `api/dashboard-data.js` (email must match
+  the brief's stored email — no login, but no longer just a bare uuid
+  either). Renders deposit/in-progress/delivered states off
+  `payment_status`. The pipeline status card is a placeholder — no live
+  8-stage tracking wired yet.
 - `upload.html` — internal-only page for uploading deliverables against a
-  brief (`api/upload-deliverable.js`). Not linked from the public site;
-  don't share the link outside the studio.
+  brief (`api/upload-deliverable.js`). Requires the admin secret (same one
+  used for site-mode changes) in a field on the page, remembered via
+  `localStorage`. Not linked from the public site.
 - `maintenance.html` — static page served by `middleware.js` when
   `site_settings.mode = 'maintenance'`.
 - `styles.css` — shared site CSS.
@@ -37,12 +40,15 @@ what's actually here.
   - `match-designer.js` — `POST /api/match-designer` — also saves every
     completed brief to Supabase's `briefs` table and emails a lead
     notification via Resend
-  - `dashboard-data.js` — `GET /api/dashboard-data?id=<briefId>` — no auth
+  - `dashboard-data.js` — `GET /api/dashboard-data?id=<briefId>&email=<email>`
+    — requires `email` to match the brief's stored email (interim check,
+    not real auth)
   - `create-checkout.js` — `POST /api/create-checkout` — Stripe Checkout
     session for the deposit or balance stage
   - `stripe-webhook.js` — `POST /api/stripe-webhook` — reconciles
     `checkout.session.completed` against `briefs.payment_status`
-  - `upload-deliverable.js` — `POST /api/upload-deliverable` — no auth
+  - `upload-deliverable.js` — `POST /api/upload-deliverable` — requires
+    `x-admin-secret` matching `SITE_MODE_ADMIN_SECRET`
   - `contact.js` — `POST /api/contact` — writes to `contacts`, emails via
     Resend
   - `site-mode.js` — `GET/POST /api/site-mode` — reads/writes
@@ -75,11 +81,9 @@ proposed — see section 0 there for the full comparison:
   `query`, `email` only.
 - `deliverables` — file pointers (`brief_id`, `file_name`, `file_url`),
   written by `upload-deliverable.js`. No review/QA step.
-- `site_settings` — single-row site mode config. **Currently has no
-  Postgres `GRANT` for `service_role`** — every read from
-  `api/site-mode.js` fails and silently falls back to `mode: "live"`. Fix
-  before relying on mode-switching: `GRANT SELECT, UPDATE ON
-  public.site_settings TO service_role;`
+- `site_settings` — single-row site mode config. Fixed 2026-09-04 (was
+  missing a `GRANT` for `service_role`, which made every mode-switch read
+  silently fail open to `"live"`).
 
 The designer roster is still a hardcoded `ROSTER` array — duplicated in
 both `api/match-designer.js` and `api/dashboard-data.js`. Update both if a

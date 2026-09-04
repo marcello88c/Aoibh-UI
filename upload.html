@@ -57,6 +57,9 @@
   <h1>Upload Deliverable</h1>
   <p class="subtitle">Internal tool — attaches a file to a project's dashboard.</p>
 
+  <label for="adminSecretInput">Admin secret</label>
+  <input type="text" id="adminSecretInput" placeholder="Same secret used to change site mode">
+
   <label for="briefIdInput">Project (brief) ID</label>
   <input type="text" id="briefIdInput" placeholder="Paste the brief's id from Supabase">
 
@@ -73,6 +76,7 @@
 </div>
 
 <script>
+  const adminSecretInput = document.getElementById('adminSecretInput');
   const briefIdInput = document.getElementById('briefIdInput');
   const dropzone = document.getElementById('dropzone');
   const fileInput = document.getElementById('fileInput');
@@ -81,6 +85,14 @@
   const statusMsg = document.getElementById('statusMsg');
 
   let selectedFile = null;
+
+  // Remember the admin secret in this browser only, so it doesn't need
+  // retyping on every upload. Never sent anywhere except the
+  // x-admin-secret header on our own /api/upload-deliverable calls.
+  try {
+    const saved = localStorage.getItem('aoibh_admin_secret');
+    if (saved) adminSecretInput.value = saved;
+  } catch (err) {}
 
   dropzone.addEventListener('click', () => fileInput.click());
   dropzone.addEventListener('dragover', (e) => { e.preventDefault(); });
@@ -99,10 +111,16 @@
   });
 
   uploadBtn.addEventListener('click', async () => {
+    const adminSecret = adminSecretInput.value.trim();
     const briefId = briefIdInput.value.trim();
     statusMsg.textContent = '';
     statusMsg.className = '';
 
+    if (!adminSecret) {
+      statusMsg.textContent = 'Please enter the admin secret.';
+      statusMsg.className = 'error';
+      return;
+    }
     if (!briefId) {
       statusMsg.textContent = 'Please paste a project (brief) ID.';
       statusMsg.className = 'error';
@@ -114,6 +132,10 @@
       return;
     }
 
+    try {
+      localStorage.setItem('aoibh_admin_secret', adminSecret);
+    } catch (err) {}
+
     uploadBtn.disabled = true;
     uploadBtn.textContent = 'Uploading…';
 
@@ -124,6 +146,7 @@
 
       const res = await fetch('/api/upload-deliverable', {
         method: 'POST',
+        headers: { 'x-admin-secret': adminSecret },
         body: formData,
       });
       const data = await res.json();

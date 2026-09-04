@@ -3,9 +3,13 @@
 // Uploads the file to Supabase Storage's "deliverables" bucket, then
 // creates a matching row in the `deliverables` table pointing to it.
 //
-// NOTE — no auth: this endpoint has no login check. It's meant for
-// internal use only (you, the producer) — not exposed as a public-facing
-// feature yet. Don't share the upload.html link outside the studio.
+// Requires an `x-admin-secret` header matching SITE_MODE_ADMIN_SECRET —
+// the same interim admin gate api/site-mode.js already uses (see its
+// header comment, and Research/backend-architecture-proposal.md section
+// 8's open questions for why this is deliberately a stopgap rather than
+// real staff auth). Reused here rather than adding a second secret, since
+// both are "you, the one operator" gates until migration phase 7 (staff
+// auth) exists.
 
 export const config = {
   api: {
@@ -54,6 +58,12 @@ export default async function handler(req, res) {
   if (req.method !== "POST") {
     res.setHeader("Allow", "POST");
     return res.status(405).json({ error: "Method not allowed" });
+  }
+
+  const providedSecret = req.headers["x-admin-secret"];
+  const ADMIN_SECRET = process.env.SITE_MODE_ADMIN_SECRET;
+  if (!ADMIN_SECRET || providedSecret !== ADMIN_SECRET) {
+    return res.status(401).json({ error: "unauthorized" });
   }
 
   if (!process.env.SUPABASE_URL || !process.env.SUPABASE_SERVICE_ROLE_KEY) {

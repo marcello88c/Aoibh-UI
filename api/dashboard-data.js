@@ -1,4 +1,4 @@
-// GET /api/dashboard-data?id=<brief_id>
+// GET /api/dashboard-data?id=<brief_id>&email=<client_email>
 // Returns the real, saved brief record from Supabase's `briefs` table,
 // cross-referenced with the matched designer's full profile (name, title,
 // photo) from the same roster used in match-designer.js.
@@ -7,11 +7,13 @@
 // deposit/balance amounts, preview_urls) so dashboard.html can render the
 // deposit / in-progress-preview / delivered states correctly.
 //
-// NOTE — temporary/no-auth: this endpoint currently trusts whatever brief
-// id is passed in the URL, with no login or ownership check. It exists so
-// dashboard.html can show one real project's real data today. Before this
-// is used for real clients, it needs a proper auth layer so a client can
-// only ever fetch their own brief id, not any id in the table.
+// NOTE — interim, not full auth: this endpoint requires `email` to match
+// the brief's stored email, so a brief id alone (however unguessable the
+// uuid is) is no longer enough on its own. This is a stopgap, not real
+// client auth (migration phase 11, deliberately deferred) — it stops
+// casual/opportunistic access to a stray id, not a targeted attacker who
+// already knows the client's email too. Good enough for today's real
+// gap (an id with no check at all); revisit once real client auth exists.
 
 // Same roster as match-designer.js — duplicated here because serverless
 // functions can't share module state across files without a shared
@@ -40,8 +42,12 @@ export default async function handler(req, res) {
   }
 
   const id = (req.query && req.query.id || "").trim();
+  const email = (req.query && req.query.email || "").trim().toLowerCase();
   if (!id) {
     return res.status(400).json({ error: "Missing required query param: id" });
+  }
+  if (!email) {
+    return res.status(400).json({ error: "Missing required query param: email" });
   }
 
   if (!process.env.SUPABASE_URL || !process.env.SUPABASE_SERVICE_ROLE_KEY) {
@@ -69,6 +75,12 @@ export default async function handler(req, res) {
     const brief = rows[0];
 
     if (!brief) {
+      return res.status(404).json({ error: "Brief not found" });
+    }
+
+    if ((brief.email || "").trim().toLowerCase() !== email) {
+      // Same response as "not found" — don't reveal whether the id
+      // exists to a caller who doesn't already know the right email.
       return res.status(404).json({ error: "Brief not found" });
     }
 

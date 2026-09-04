@@ -76,8 +76,8 @@ export default async function handler(req, res) {
         },
       ],
       metadata: { briefId, stage },
-      success_url: `${process.env.SITE_URL}/dashboard.html?id=${briefId}&payment=success&stage=${stage}`,
-      cancel_url: `${process.env.SITE_URL}/dashboard.html?id=${briefId}&payment=cancelled`,
+      success_url: `${process.env.SITE_URL}/dashboard.html?id=${briefId}&email=${encodeURIComponent(brief.email || "")}&payment=success&stage=${stage}`,
+      cancel_url: `${process.env.SITE_URL}/dashboard.html?id=${briefId}&email=${encodeURIComponent(brief.email || "")}&payment=cancelled`,
     });
 
     // Store the session id and amount so the webhook can reconcile it,

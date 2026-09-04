@@ -65,24 +65,30 @@ tables, built directly rather than through the migration path below:
 | `site_settings` | exists, matches the proposed shape | Table exists but has no `GRANT` for any API-facing role — see Known issues. |
 | `tasks`, `project_team`, `status_events`, `brand_specs`, `qa_checks`, `chat_messages` | none exist | Nothing built here — `dashboard.html`'s status card literally reads `"Placeholder — no live stage tracking yet."` The 8-stage pipeline from section 4 is still just a design, even though payments (section 4 didn't even cover) are live. |
 
-### Known issues (found 2026-09-04, not yet fixed)
+### Known issues (found 2026-09-04)
 
-1. **`site_settings` has no Postgres grant for `service_role`.** Confirmed
-   via direct query — even the service-role key gets `permission denied for
-   table site_settings`. Since `api/site-mode.js` fails open to `"live"` on
-   any error (by design, to avoid an outage locking out the whole site),
-   this means the site-mode feature silently never actually reads or
-   writes real state right now — every request is quietly falling back to
-   the default. Fix: `GRANT SELECT, UPDATE ON public.site_settings TO
-   service_role;` in the Supabase SQL editor.
+1. ~~`site_settings` has no Postgres grant for `service_role`.~~ **Fixed
+   2026-09-04** — ran `GRANT SELECT, UPDATE ON public.site_settings TO
+   service_role;` in the Supabase SQL editor, confirmed working (the API
+   key can now read the row). The site-mode feature actually reads/writes
+   real state now instead of silently falling back to `"live"`.
 2. ~~Dead duplicate files at the repo root.~~ **Fixed 2026-09-04** — the
    root-level `create-checkout.js`/`stripe-webhook.js` (inert; only the
    `api/` copies were ever deployed) have been deleted.
-3. **No auth on `dashboard-data.js` or `upload-deliverable.js`** — both
-   explicitly commented as temporary/no-login. Anyone who has (or guesses)
-   a `briefs` UUID can read that client's full brief and upload files
-   against it. Low real-world risk while UUIDs aren't shared publicly, but
-   a real gap before this is used for actual paying clients at scale.
+3. ~~No auth on `dashboard-data.js` or `upload-deliverable.js`.~~
+   **Interim fix shipped 2026-09-04** — not full auth (still migration
+   phase 11 for real client login), but a real gap closed either way:
+   - `dashboard-data.js` now also requires `email`, checked against
+     `briefs.email` — a UUID alone is no longer enough. `dashboard.html`,
+     `index.html`'s post-brief redirects, and `create-checkout.js`'s
+     Stripe success/cancel URLs were all updated to carry `&email=`
+     through the whole flow so nothing breaks for real clients.
+   - `upload-deliverable.js` now requires the `x-admin-secret` header,
+     reusing `SITE_MODE_ADMIN_SECRET` (the same interim gate
+     `api/site-mode.js` already used) rather than adding a second secret.
+     `upload.html` gained an admin-secret field (remembered via
+     `localStorage` on that browser only) to supply it.
+   - Both remain stopgaps, not real auth — see migration phases 7 and 11.
 4. **A couple of `deliverables.file_url` rows have a stray leading `\n\n`**
    in the stored URL, breaking the link. Looks like leftover data from an
    earlier version of the upload path — the current `upload-deliverable.js`

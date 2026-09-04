@@ -361,6 +361,7 @@
   async function loadDashboard() {
     const params = new URLSearchParams(window.location.search);
     const briefId = params.get("id");
+    const email = params.get("email");
 
     const loadingEl = document.getElementById("loadingState");
     const errorEl = document.getElementById("errorState");
@@ -369,17 +370,17 @@
     const deliveredEl = document.getElementById("deliveredContent");
     const titleEl = document.getElementById("projectTitle");
 
-    if (!briefId) {
+    if (!briefId || !email) {
       loadingEl.style.display = "none";
       errorEl.style.display = "block";
-      errorEl.textContent = "No project id provided. Add ?id=<brief-id> to the URL.";
+      errorEl.textContent = "This link is missing its project id or email — please use the link from your original brief confirmation.";
       return;
     }
 
     currentBriefId = briefId;
 
     try {
-      const res = await fetch(`/api/dashboard-data?id=${encodeURIComponent(briefId)}`);
+      const res = await fetch(`/api/dashboard-data?id=${encodeURIComponent(briefId)}&email=${encodeURIComponent(email)}`);
       if (!res.ok) throw new Error("Failed to load project");
       const data = await res.json();
 
