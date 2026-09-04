@@ -28,6 +28,21 @@ export const config = {
   },
 };
 
+// Supabase Storage rejects some characters in object keys outright (e.g.
+// the "…" macOS uses to truncate long filenames), and publicUrl below
+// interpolates the filename raw rather than URL-encoding it — so a stray
+// character there doesn't just look ugly, it 400s the whole upload.
+// Strip to a safe, boring charset instead of trying to allow-list every
+// character both Supabase and a raw URL are happy with.
+function sanitizeFilename(name) {
+  const dot = name.lastIndexOf(".");
+  const base = dot > 0 ? name.slice(0, dot) : name;
+  const ext = dot > 0 ? name.slice(dot) : "";
+  const cleanBase = base.replace(/[^a-zA-Z0-9._-]+/g, "-").replace(/-+/g, "-").replace(/^-|-$/g, "");
+  const cleanExt = ext.replace(/[^a-zA-Z0-9.]+/g, "");
+  return (cleanBase || "file") + cleanExt;
+}
+
 async function readMultipart(req) {
   const chunks = [];
   for await (const chunk of req) chunks.push(chunk);
@@ -98,7 +113,7 @@ export default async function handler(req, res) {
     }
 
     const storagePrefix = kind === "preview" ? `previews/${briefId}` : briefId;
-    const storagePath = `${storagePrefix}/${Date.now()}-${file.filename}`;
+    const storagePath = `${storagePrefix}/${Date.now()}-${sanitizeFilename(file.filename)}`;
 
     const uploadRes = await fetch(
       `${process.env.SUPABASE_URL}/storage/v1/object/deliverables/${encodeURIComponent(storagePath)}`,
