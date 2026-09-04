@@ -16,7 +16,7 @@
   h1 { font-size: 1.5rem; margin: 0 0 0.5rem; }
   p.subtitle { color: #6b6a66; font-size: 0.9rem; margin: 0 0 2rem; }
   label { display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 6px; }
-  input[type="text"] {
+  input[type="text"], select {
     width: 100%;
     padding: 0.7rem 0.9rem;
     border: 1px solid #e5e4e0;
@@ -24,7 +24,9 @@
     font-size: 0.95rem;
     margin-bottom: 1.5rem;
     box-sizing: border-box;
+    background: #fff;
   }
+  .field-hint { font-size: 0.8rem; color: #6b6a66; margin: -1.2rem 0 1.5rem; }
   .dropzone {
     border: 1.5px dashed #d9d3ff;
     background: #faf6ff;
@@ -63,6 +65,18 @@
   <label for="briefIdInput">Project (brief) ID</label>
   <input type="text" id="briefIdInput" placeholder="Paste the brief's id from Supabase">
 
+  <label for="kindSelect">Type</label>
+  <select id="kindSelect">
+    <option value="deliverable">Final deliverable (unlocked when paid in full)</option>
+    <option value="preview">Preview image (shown before balance is paid)</option>
+  </select>
+
+  <div id="labelField" style="display:none;">
+    <label for="labelInput">Preview label</label>
+    <input type="text" id="labelInput" placeholder="e.g. Homepage">
+    <p class="field-hint" style="margin-top:-1.4rem;">Shown as the tab/caption above this preview on the client's dashboard.</p>
+  </div>
+
   <label>File</label>
   <div class="dropzone" id="dropzone">
     <div>⬆</div>
@@ -78,6 +92,9 @@
 <script>
   const adminSecretInput = document.getElementById('adminSecretInput');
   const briefIdInput = document.getElementById('briefIdInput');
+  const kindSelect = document.getElementById('kindSelect');
+  const labelField = document.getElementById('labelField');
+  const labelInput = document.getElementById('labelInput');
   const dropzone = document.getElementById('dropzone');
   const fileInput = document.getElementById('fileInput');
   const fileNameEl = document.getElementById('fileName');
@@ -93,6 +110,10 @@
     const saved = localStorage.getItem('aoibh_admin_secret');
     if (saved) adminSecretInput.value = saved;
   } catch (err) {}
+
+  kindSelect.addEventListener('change', () => {
+    labelField.style.display = kindSelect.value === 'preview' ? 'block' : 'none';
+  });
 
   dropzone.addEventListener('click', () => fileInput.click());
   dropzone.addEventListener('dragover', (e) => { e.preventDefault(); });
@@ -126,6 +147,13 @@
       statusMsg.className = 'error';
       return;
     }
+    const kind = kindSelect.value;
+    const label = labelInput.value.trim();
+    if (kind === 'preview' && !label) {
+      statusMsg.textContent = 'Please give this preview a label (e.g. "Homepage").';
+      statusMsg.className = 'error';
+      return;
+    }
     if (!selectedFile) {
       statusMsg.textContent = 'Please choose a file first.';
       statusMsg.className = 'error';
@@ -142,6 +170,8 @@
     try {
       const formData = new FormData();
       formData.append('briefId', briefId);
+      formData.append('kind', kind);
+      if (kind === 'preview') formData.append('label', label);
       formData.append('file', selectedFile);
 
       const res = await fetch('/api/upload-deliverable', {
@@ -153,11 +183,16 @@
 
       if (!res.ok) throw new Error(data.error || 'Upload failed');
 
-      statusMsg.innerHTML = `Uploaded successfully. <a class="file-link" href="${data.fileUrl}" target="_blank">View file</a><br><br>Remember: also set that project's status to "delivered" in Supabase for it to show on the client dashboard.`;
+      if (kind === 'preview') {
+        statusMsg.innerHTML = `Preview "${label}" added. <a class="file-link" href="${data.fileUrl}" target="_blank">View file</a><br><br>It'll show up on the client dashboard automatically once their deposit is paid — no other step needed.`;
+      } else {
+        statusMsg.innerHTML = `Uploaded successfully. <a class="file-link" href="${data.fileUrl}" target="_blank">View file</a><br><br>Remember: also set that project's status to "delivered" in Supabase for it to show on the client dashboard.`;
+      }
       statusMsg.className = 'success';
       selectedFile = null;
       fileNameEl.textContent = 'No file selected';
       fileInput.value = '';
+      labelInput.value = '';
     } catch (err) {
       statusMsg.textContent = 'Upload failed: ' + err.message;
       statusMsg.className = 'error';

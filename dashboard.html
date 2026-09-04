@@ -6,210 +6,120 @@
 <title>Aoibh — Dashboard</title>
 <style>
   :root {
-    --accent-blue: #2a6df5;
-    --accent-blue-dark: #1d4fd1;
-    --gradient-status: linear-gradient(135deg, #7b2ff7 0%, #17d1c4 100%);
-    --surface: #f5f5f4;
-    --border: #e5e4e0;
-    --text: #16161a;
-    --text-muted: #6b6a66;
+    --blue: #2f5be0;
+    --blue-dark: #1e3fb0;
+    --ink: #16161a;
+    --muted: #6b7078;
+    --card-grey: #f4f4f6;
+    --page-bg: #ffffff;
+    --border: #ececf0;
+    --green: #1a8a4a;
+    --green-bg: #e3f6ea;
+    --amber: #b08d00;
+    --amber-bg: #fff6da;
   }
   * { box-sizing: border-box; }
   body {
     margin: 0;
     font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-    color: var(--text);
-    background: #ffffff;
+    color: var(--ink);
+    background: var(--page-bg);
     padding: 2.5rem;
   }
   .wrap { max-width: 1100px; margin: 0 auto; }
 
-  header {
+  .topbar {
     display: flex;
-    align-items: center;
     justify-content: space-between;
-    margin-bottom: 2.5rem;
+    align-items: center;
     flex-wrap: wrap;
     gap: 1rem;
+    margin-bottom: 1.25rem;
   }
-  .header-left { display: flex; align-items: center; gap: 1rem; }
-  .logo { font-size: 1.6rem; font-weight: 600; letter-spacing: -0.02em; }
-  .dash-pill {
-    background: var(--accent-blue);
+  .brand { display: flex; align-items: center; gap: 14px; }
+  .brand .logo { font-size: 1.6rem; font-weight: 700; letter-spacing: -0.02em; }
+  .pill {
+    background: var(--blue);
     color: #fff;
+    font-size: 0.85rem;
+    font-weight: 500;
     padding: 0.4rem 1rem;
     border-radius: 999px;
-    font-size: 0.85rem;
   }
-  .project-title { font-size: 2rem; font-weight: 600; margin: 0; letter-spacing: -0.01em; }
+  .project-title { font-size: 1.7rem; font-weight: 700; margin: 0; letter-spacing: -0.01em; }
 
-  .grid {
+  .status-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.85rem;
+    color: var(--muted);
+    margin-bottom: 1.75rem;
+  }
+  .status-dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; }
+  .status-dot.amber { background: #e0a800; }
+  .status-dot.blue { background: var(--blue); }
+  .status-dot.green { background: var(--green); }
+
+  .row {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 1rem;
     margin-bottom: 1rem;
   }
-  .grid-2 {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 1rem;
-  }
+  .row.bottom { grid-template-columns: 2fr 1fr; }
 
   .card {
-    background: var(--surface);
+    background: var(--card-grey);
+    border: 1px solid var(--border);
     border-radius: 16px;
     padding: 1.5rem;
-    min-height: 180px;
+    min-height: 170px;
   }
 
-  .card-brand {
-    background: linear-gradient(160deg, var(--accent-blue) 0%, var(--accent-blue-dark) 100%);
+  .card.hero {
+    background: linear-gradient(160deg, var(--blue) 0%, var(--blue-dark) 100%);
     color: #fff;
+    border: none;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
   }
-  .card-brand-top { display: flex; align-items: center; justify-content: space-between; }
-  .card-brand-top .logo { color: #fff; font-size: 1.4rem; }
+  .hero-top { display: flex; align-items: center; justify-content: space-between; }
+  .hero-top .name { font-size: 1.3rem; font-weight: 700; }
+  .avatar { width: 40px; height: 40px; border-radius: 50%; background: rgba(255,255,255,0.25); }
   .avatar-round {
-    width: 44px; height: 44px; border-radius: 50%;
+    width: 40px; height: 40px; border-radius: 50%;
     object-fit: cover; background: #dcdcdc;
   }
-  .card-brand-body { font-size: 0.95rem; line-height: 1.5; margin-top: 1.5rem; }
-  .card-brand-body strong { display: block; margin-bottom: 4px; }
+  .greet { font-size: 1.05rem; font-weight: 600; margin-top: 1.5rem; }
+  .msg { font-size: 0.92rem; line-height: 1.5; margin-top: 0.4rem; opacity: 0.95; }
 
-  .person-card { display: flex; flex-direction: column; }
-  .person-top { display: flex; align-items: flex-start; justify-content: space-between; }
-  .person-name { font-size: 0.9rem; color: var(--text-muted); margin: 0 0 4px; }
-  .person-role { font-size: 1.4rem; font-weight: 600; margin: 0; }
-  .match-badge {
+  .card.info { display: flex; flex-direction: column; }
+  .info .top { display: flex; align-items: flex-start; justify-content: space-between; }
+  .role-label { font-size: 0.85rem; color: var(--muted); margin: 0 0 4px; }
+  .role-name { font-size: 1.35rem; font-weight: 700; margin: 0; }
+  .badge-match {
     display: inline-block;
-    margin-top: 8px;
+    margin-top: 10px;
     font-size: 0.72rem;
     font-weight: 600;
     letter-spacing: 0.02em;
-    color: #0a7d4f;
-    background: #e3f7ec;
+    color: var(--green);
+    background: var(--green-bg);
     padding: 3px 10px;
     border-radius: 999px;
   }
-  .person-note {
-    margin-top: auto;
-    padding-top: 0.75rem;
-    font-size: 0.75rem;
-    color: var(--text-muted);
-    font-style: italic;
-  }
 
-  .upload-card {
-    display: flex; align-items: center; gap: 1.5rem;
-  }
-  .upload-drop {
-    flex: 1;
-    border: 1.5px dashed #d9d3ff;
-    background: #faf6ff;
-    border-radius: 12px;
-    padding: 1.5rem;
-    text-align: center;
-  }
-  .upload-drop p { margin: 0.5rem 0 0; font-size: 0.85rem; color: var(--text-muted); }
-  .upload-btn {
-    margin-top: 0.75rem;
-    background: #16161a;
-    color: #fff;
-    border: none;
-    border-radius: 999px;
-    padding: 0.5rem 1.25rem;
-    font-size: 0.85rem;
-    cursor: pointer;
-  }
-  .upload-caption { flex: 1; font-size: 1.05rem; font-weight: 500; line-height: 1.4; }
+  /* Deposit CTA */
+  .card.deposit-cta { text-align: center; padding: 2.25rem 2rem; }
+  .deposit-cta .title { font-size: 1.25rem; font-weight: 700; margin-bottom: 0.5rem; }
+  .deposit-cta .sub { color: var(--muted); font-size: 0.92rem; line-height: 1.6; max-width: 480px; margin: 0 auto 1.5rem; }
+  .deposit-cta .amount { font-size: 2.1rem; font-weight: 700; }
+  .deposit-cta .amount-sub { font-size: 0.8rem; color: var(--muted); margin-bottom: 1.5rem; }
 
-  .status-card {
-    background: var(--gradient-status);
-    color: #fff;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    text-align: center;
-    font-size: 1.6rem;
-    font-weight: 600;
-    line-height: 1.3;
-    flex-direction: column;
-    gap: 0.75rem;
-  }
-  .status-card .status-tag {
-    display: block;
-    font-size: 0.7rem;
-    font-weight: 400;
-    opacity: 0.75;
-    margin-top: 0.5rem;
-    letter-spacing: 0.03em;
-    text-transform: uppercase;
-  }
-  .status-card img.preview-thumb {
-    width: 100%;
-    max-height: 110px;
-    object-fit: cover;
-    border-radius: 10px;
-  }
-  .unlock-btn {
-    background: #fff;
-    color: var(--text);
-    border: none;
-    border-radius: 999px;
-    padding: 0.6rem 1.4rem;
-    font-size: 0.9rem;
-    font-weight: 600;
-    cursor: pointer;
-  }
-  .unlock-btn:disabled { opacity: 0.6; cursor: default; }
-
-  .loading, .error-state {
-    text-align: center;
-    padding: 4rem 1rem;
-    color: var(--text-muted);
-  }
-  .placeholder-flag {
-    font-size: 0.7rem;
-    color: #b08d00;
-    background: #fff6da;
-    padding: 2px 8px;
-    border-radius: 6px;
-    display: inline-block;
-    margin-top: 6px;
-  }
-
-  .delivered-wrap { text-align: center; padding: 3rem 1rem; }
-  .delivered-intro { font-size: 1.1rem; margin: 0 0 2rem; color: var(--text); }
-  .delivered-files { display: flex; flex-direction: column; gap: 1rem; max-width: 500px; margin: 0 auto; }
-  .delivered-file-btn {
-    display: block;
-    background: linear-gradient(160deg, var(--accent-blue) 0%, var(--accent-blue-dark) 100%);
-    color: #fff;
-    text-decoration: none;
-    padding: 1rem 1.5rem;
-    border-radius: 999px;
-    font-weight: 500;
-    text-align: center;
-  }
-  .delivered-empty { color: var(--text-muted); font-size: 0.95rem; }
-
-  /* Deposit / "let's get started" screen */
-  .deposit-wrap { text-align: center; padding: 3rem 1rem; }
-  .deposit-card {
-    background: var(--surface);
-    border-radius: 16px;
-    max-width: 520px;
-    margin: 0 auto;
-    padding: 2.5rem 2rem;
-  }
-  .deposit-card h2 { margin: 0 0 0.75rem; font-size: 1.4rem; }
-  .deposit-card p { color: var(--text-muted); font-size: 0.95rem; line-height: 1.6; margin: 0 0 1.5rem; }
-  .deposit-amount { font-size: 2.2rem; font-weight: 700; margin-bottom: 0.25rem; }
-  .deposit-amount-note { font-size: 0.8rem; color: var(--text-muted); margin-bottom: 1.5rem; }
-  .pay-btn {
-    background: var(--accent-blue);
+  .pay-btn, .unlock-btn {
+    background: var(--blue);
     color: #fff;
     border: none;
     border-radius: 999px;
@@ -218,102 +128,149 @@
     font-weight: 600;
     cursor: pointer;
   }
-  .pay-btn:disabled { opacity: 0.6; cursor: default; }
+  .pay-btn:disabled, .unlock-btn:disabled { opacity: 0.6; cursor: default; }
   .pay-error { color: #c0392b; font-size: 0.85rem; margin-top: 1rem; display: none; }
 
+  /* Preview carousel + unlock */
+  .card.preview { display: flex; flex-direction: column; }
+  .preview-top { display: flex; align-items: center; justify-content: space-between; margin-bottom: 0.75rem; }
+  .preview-top .label { font-weight: 600; font-size: 0.95rem; }
+  .quality-tag {
+    font-size: 0.7rem; color: var(--muted); background: #fff;
+    border: 1px solid var(--border); padding: 2px 8px; border-radius: 999px;
+  }
+  .image-frame {
+    background: #fff; border: 1px solid var(--border); border-radius: 12px;
+    overflow: hidden; aspect-ratio: 16/10; display: flex; align-items: center; justify-content: center;
+  }
+  .image-frame img { width: 100%; height: 100%; object-fit: cover; transition: opacity 0.15s; }
+  .thumb-row { display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap; }
+  .thumb {
+    width: 64px; height: 42px; border-radius: 6px; overflow: hidden; cursor: pointer;
+    border: 2px solid transparent; opacity: 0.7;
+  }
+  .thumb.active { border-color: var(--blue); opacity: 1; }
+  .thumb img { width: 100%; height: 100%; object-fit: cover; }
+  .preview-caption { font-size: 0.85rem; color: var(--muted); margin-top: 0.6rem; }
+
+  .card.unlock { display: flex; flex-direction: column; justify-content: center; text-align: center; }
+  .unlock .title { font-weight: 700; font-size: 1.05rem; margin-bottom: 0.5rem; }
+  .unlock .price { font-size: 1.5rem; font-weight: 700; }
+  .unlock .price-note { font-size: 0.78rem; color: var(--muted); margin-bottom: 1.25rem; }
+  .unlock-sub { font-size: 0.78rem; color: var(--muted); margin-top: 0.75rem; }
+
+  .card.waiting { display: flex; align-items: center; justify-content: center; text-align: center; color: var(--muted); font-size: 0.95rem; }
+
+  /* Complete state */
+  .complete-banner {
+    display: flex; align-items: center; gap: 1rem;
+    background: var(--green-bg); border: none;
+  }
+  .complete-banner .check {
+    width: 36px; height: 36px; border-radius: 50%; background: var(--green); color: #fff;
+    display: flex; align-items: center; justify-content: center; font-weight: 700; flex-shrink: 0;
+  }
+  .complete-banner .text { font-size: 0.92rem; line-height: 1.5; }
+  .complete-banner .text b { display: block; margin-bottom: 2px; }
+
+  .download-list { display: flex; flex-direction: column; gap: 0.75rem; }
+  .download-item {
+    display: flex; align-items: center; justify-content: space-between;
+    background: var(--card-grey); border: 1px solid var(--border); border-radius: 12px;
+    padding: 1rem 1.25rem;
+  }
+  .fname { font-weight: 600; font-size: 0.95rem; }
+  .fmeta { font-size: 0.8rem; color: var(--muted); margin-top: 2px; }
+  .download-btn {
+    background: var(--ink); color: #fff; border: none; border-radius: 999px;
+    padding: 0.5rem 1.25rem; font-size: 0.85rem; cursor: pointer;
+  }
+
+  .loading, .error-state { text-align: center; padding: 4rem 1rem; color: var(--muted); }
+
   @media (max-width: 800px) {
-    .grid, .grid-2 { grid-template-columns: 1fr; }
-    .upload-card { flex-direction: column; align-items: stretch; }
+    .row, .row.bottom { grid-template-columns: 1fr; }
   }
 </style>
 </head>
 <body>
 <div class="wrap">
 
-  <header>
-    <div class="header-left">
+  <div class="topbar">
+    <div class="brand">
       <span class="logo">Aoibh</span>
-      <span class="dash-pill">Dashboard</span>
+      <span class="pill">Dashboard</span>
     </div>
     <h1 class="project-title" id="projectTitle">Loading project…</h1>
-  </header>
+  </div>
+
+  <div class="status-chip" id="statusChip" style="display:none;">
+    <span class="status-dot" id="statusDot"></span>
+    <span id="statusText"></span>
+  </div>
 
   <div id="loadingState" class="loading">Loading your project…</div>
   <div id="errorState" class="error-state" style="display:none;"></div>
 
-  <!-- STATE: pending deposit -->
+  <div id="peopleRow" style="display:none;">
+    <div class="row top">
+      <div class="card hero">
+        <div class="hero-top">
+          <div class="name">Aoibh</div>
+          <img class="avatar-round" id="clientAvatar" src="assets/aoibh-avatar.jpg" alt="Aoibh">
+        </div>
+        <div class="greet" id="heroGreet">Hi there!</div>
+        <div class="msg" id="heroMsg"></div>
+      </div>
+      <div class="card info">
+        <div class="top">
+          <div>
+            <p class="role-label" id="designerName">—</p>
+            <p class="role-name">Designer</p>
+            <span class="badge-match" id="matchBadge" style="display:none;">Strong match</span>
+          </div>
+          <img class="avatar-round" id="designerAvatar" src="" alt="">
+        </div>
+      </div>
+      <div class="card info">
+        <div class="top">
+          <div>
+            <p class="role-label" id="artDirectorName">—</p>
+            <p class="role-name">Art Director</p>
+          </div>
+          <img class="avatar-round" id="artDirectorAvatar" src="" alt="">
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- STATE 1: pending deposit -->
   <div id="depositState" style="display:none;">
-    <div class="deposit-wrap">
-      <div class="deposit-card">
-        <h2>Let's get started</h2>
-        <p id="depositIntro">A 30% deposit kicks off your trial project. Work begins as soon as it clears — the remaining balance is only due once you've reviewed the preview.</p>
-        <div class="deposit-amount" id="depositAmount">—</div>
-        <div class="deposit-amount-note">Deposit · 30% of €695</div>
+    <div class="row" style="grid-template-columns: 1fr;">
+      <div class="card deposit-cta">
+        <div class="title">Let's get started</div>
+        <div class="sub" id="depositIntro">A 30% deposit kicks off your trial project. Work begins as soon as it clears — the remaining balance is only due once you've reviewed the preview.</div>
+        <div class="amount" id="depositAmount">—</div>
+        <div class="amount-sub">Deposit · 30% of €695</div>
         <button class="pay-btn" id="payDepositBtn">Pay deposit</button>
         <div class="pay-error" id="depositError"></div>
       </div>
     </div>
   </div>
 
-  <!-- STATE: in progress (deposit paid) -->
+  <!-- STATE 2: in progress (deposit paid) -->
   <div id="dashboardContent" style="display:none;">
-    <div class="grid">
-      <div class="card card-brand">
-        <div class="card-brand-top">
-          <span class="logo">Aoibh</span>
-          <img class="avatar-round" id="clientAvatar" src="assets/aoibh-avatar.jpg" alt="Aoibh">
-        </div>
-        <div class="card-brand-body" id="brandStatusText"></div>
-      </div>
-
-      <div class="card person-card">
-        <div class="person-top">
-          <div>
-            <p class="person-name" id="designerName">—</p>
-            <p class="person-role">Designer</p>
-            <span class="match-badge" id="matchBadge" style="display:none;">Strong match</span>
-          </div>
-          <img class="avatar-round" id="designerAvatar" src="" alt="">
-        </div>
-      </div>
-
-      <div class="card person-card">
-        <div class="person-top">
-          <div>
-            <p class="person-name" id="artDirectorName">—</p>
-            <p class="person-role">Art Director</p>
-          </div>
-          <img class="avatar-round" id="artDirectorAvatar" src="" alt="">
-        </div>
-      </div>
-    </div>
-
-    <div class="grid-2">
-      <div class="card upload-card" id="uploadCard">
-        <div class="upload-drop">
-          <div>⬆</div>
-          <strong>Drag and drop here</strong>
-          <p>or click to browse</p>
-          <button class="upload-btn">Choose Files</button>
-        </div>
-        <p class="upload-caption">Click here to preview current job — in progress</p>
-      </div>
-
-      <!-- Filled in by JS: placeholder status card, or the real preview
-           image + "pay balance" unlock button once a preview exists. -->
-      <div class="card status-card" id="statusCard">
-        <div>
-          <span id="statusLabel">Final Review</span>
-          <span class="status-tag">Placeholder — no live stage tracking yet</span>
-        </div>
-      </div>
-    </div>
+    <div class="row bottom" id="progressRow"></div>
   </div>
 
+  <!-- STATE 3: complete -->
   <div id="deliveredContent" style="display:none;">
-    <div class="delivered-wrap">
-      <p class="delivered-intro" id="deliveredIntro"></p>
-      <div class="delivered-files" id="deliveredFiles"></div>
+    <div class="row" style="grid-template-columns: 1fr; row-gap: 10px;">
+      <div class="card complete-banner">
+        <div class="check">✓</div>
+        <div class="text" id="deliveredIntro"></div>
+      </div>
+      <div class="download-list" id="deliveredFiles"></div>
     </div>
   </div>
 
@@ -325,6 +282,50 @@
   function formatEuros(cents) {
     if (typeof cents !== "number") return "—";
     return "€" + (cents / 100).toFixed(2);
+  }
+
+  function formatBytes(bytes) {
+    if (typeof bytes !== "number") return "";
+    if (bytes < 1024) return bytes + " B";
+    if (bytes < 1024 * 1024) return (bytes / 1024).toFixed(1) + " KB";
+    return (bytes / (1024 * 1024)).toFixed(1) + " MB";
+  }
+
+  const FILE_TYPE_LABELS = {
+    fig: "Figma", sketch: "Sketch", psd: "Photoshop", ai: "Illustrator",
+    pdf: "PDF", zip: "ZIP", png: "Image", jpg: "Image", jpeg: "Image",
+    mp4: "Video", mov: "Video",
+  };
+  function fileTypeLabel(filename) {
+    const ext = (filename.split(".").pop() || "").toLowerCase();
+    return FILE_TYPE_LABELS[ext] || (ext ? ext.toUpperCase() : "File");
+  }
+
+  function setStatusChip(dot, text) {
+    document.getElementById("statusChip").style.display = "inline-flex";
+    document.getElementById("statusDot").className = "status-dot " + dot;
+    document.getElementById("statusText").textContent = text;
+  }
+
+  function renderPeopleRow(data) {
+    document.getElementById("heroGreet").textContent = `Hi ${data.name || "there"}!`;
+    document.getElementById("heroMsg").textContent = data.matchReason || "Your project is underway.";
+
+    if (data.designer) {
+      document.getElementById("designerName").textContent = data.designer.name;
+      document.getElementById("designerAvatar").src = data.designer.img;
+      document.getElementById("designerAvatar").alt = data.designer.name;
+    }
+    if (data.artDirector) {
+      document.getElementById("artDirectorName").textContent = data.artDirector.name;
+      document.getElementById("artDirectorAvatar").src = data.artDirector.img;
+      document.getElementById("artDirectorAvatar").alt = data.artDirector.name;
+    }
+    if (typeof data.confidence === "number" && data.confidence >= 80) {
+      document.getElementById("matchBadge").style.display = "inline-block";
+    }
+
+    document.getElementById("peopleRow").style.display = "block";
   }
 
   async function startCheckout(stage, buttonEl, errorEl) {
@@ -358,6 +359,115 @@
     }
   }
 
+  function renderPreviewCard(previews) {
+    let activeIndex = 0;
+    const wrap = document.createElement("div");
+    wrap.className = "card preview";
+    wrap.innerHTML = `
+      <div class="preview-top">
+        <span class="label" id="previewLabel">${previews[0].label}</span>
+        <span class="quality-tag">Preview quality</span>
+      </div>
+      <div class="image-frame"><img id="mainPreviewImg" src="${previews[0].url}" alt="${previews[0].label}"></div>
+      <div class="thumb-row" id="thumbRow"></div>
+      <div class="preview-caption">Finished design at reduced quality — enough to review, not to use.</div>
+    `;
+
+    const thumbRow = wrap.querySelector("#thumbRow");
+    const mainImg = wrap.querySelector("#mainPreviewImg");
+    const labelEl = wrap.querySelector("#previewLabel");
+
+    function showScreen(i) {
+      activeIndex = i;
+      mainImg.style.opacity = 0;
+      setTimeout(() => {
+        mainImg.src = previews[i].url;
+        mainImg.alt = previews[i].label;
+        mainImg.style.opacity = 1;
+      }, 120);
+      labelEl.textContent = previews[i].label;
+      thumbRow.querySelectorAll(".thumb").forEach((t, idx) => t.classList.toggle("active", idx === i));
+    }
+
+    previews.forEach((p, i) => {
+      const thumb = document.createElement("div");
+      thumb.className = "thumb" + (i === 0 ? " active" : "");
+      thumb.innerHTML = `<img src="${p.url}" alt="${p.label}">`;
+      thumb.addEventListener("click", () => showScreen(i));
+      thumbRow.appendChild(thumb);
+    });
+
+    return wrap;
+  }
+
+  function renderProgressRow(data) {
+    const row = document.getElementById("progressRow");
+    row.innerHTML = "";
+
+    if (Array.isArray(data.previewUrls) && data.previewUrls.length > 0) {
+      row.appendChild(renderPreviewCard(data.previewUrls));
+
+      const unlock = document.createElement("div");
+      unlock.className = "card unlock";
+      unlock.innerHTML = `
+        <div class="title">Unlock full files</div>
+        <div class="price">${formatEuros(data.balanceAmount)} due</div>
+        <div class="price-note">Remaining 70% · ${formatEuros(data.depositAmount)} deposit already paid</div>
+        <button class="unlock-btn" id="payBalanceBtn">Pay balance</button>
+        <div class="pay-error" id="balanceError"></div>
+        <div class="unlock-sub">Includes source files, assets & style guide</div>
+      `;
+      row.appendChild(unlock);
+
+      const balBtn = unlock.querySelector("#payBalanceBtn");
+      const balErrorEl = unlock.querySelector("#balanceError");
+      balBtn.addEventListener("click", () => startCheckout("balance", balBtn, balErrorEl));
+    } else {
+      const waiting = document.createElement("div");
+      waiting.className = "card waiting";
+      waiting.style.gridColumn = "1 / -1";
+      waiting.textContent = "Your designer is working on the first preview — check back soon.";
+      row.appendChild(waiting);
+    }
+  }
+
+  function renderDeliveredState(data) {
+    const designerName = data.designer ? data.designer.name : "the studio";
+    const artDirectorName = data.artDirector ? data.artDirector.name : "our team";
+    document.getElementById("deliveredIntro").innerHTML =
+      `<b>Project completed by ${designerName}, re-checked by ${artDirectorName}.</b>Full-resolution files below are yours to keep.`;
+
+    const filesEl = document.getElementById("deliveredFiles");
+    filesEl.innerHTML = "";
+    data.deliverables.forEach((file) => {
+      const item = document.createElement("div");
+      item.className = "download-item";
+      const meta = [fileTypeLabel(file.name), formatBytes(file.size)].filter(Boolean).join(" · ");
+      item.innerHTML = `
+        <div><div class="fname">${file.name}</div><div class="fmeta">${meta}</div></div>
+        <button class="download-btn">Download</button>
+      `;
+      item.querySelector(".download-btn").addEventListener("click", async () => {
+        try {
+          const fileRes = await fetch(file.url);
+          const blob = await fileRes.blob();
+          const blobUrl = URL.createObjectURL(blob);
+          const tempLink = document.createElement("a");
+          tempLink.href = blobUrl;
+          tempLink.download = file.name;
+          document.body.appendChild(tempLink);
+          tempLink.click();
+          tempLink.remove();
+          URL.revokeObjectURL(blobUrl);
+        } catch (err) {
+          console.error("Download failed:", err);
+          window.open(file.url, "_blank");
+        }
+      });
+      filesEl.appendChild(item);
+    });
+  }
+
   async function loadDashboard() {
     const params = new URLSearchParams(window.location.search);
     const briefId = params.get("id");
@@ -385,12 +495,13 @@
       const data = await res.json();
 
       titleEl.textContent = (data.answers && data.answers.project) || "Your project";
+      renderPeopleRow(data);
 
       const isDelivered = data.status === "delivered" && Array.isArray(data.deliverables) && data.deliverables.length > 0;
       const paymentStatus = data.paymentStatus || "pending";
 
       if (paymentStatus === "pending" && !isDelivered) {
-        // STATE 1: nothing paid yet — show the deposit CTA.
+        setStatusChip("amber", "Awaiting deposit to begin work");
         document.getElementById("depositAmount").textContent = formatEuros(data.depositAmount);
         const payBtn = document.getElementById("payDepositBtn");
         const depErrorEl = document.getElementById("depositError");
@@ -402,88 +513,16 @@
       }
 
       if (isDelivered) {
-        // STATE 3: fully paid, files unlocked.
-        const designerName = data.designer ? data.designer.name : "the studio";
-        const artDirectorName = data.artDirector ? data.artDirector.name : "our team";
-        document.getElementById("deliveredIntro").textContent =
-          `Project completed by ${designerName} & re-checked by ${artDirectorName}.`;
-
-        const filesEl = document.getElementById("deliveredFiles");
-        filesEl.innerHTML = "";
-        data.deliverables.forEach((file) => {
-          const a = document.createElement("a");
-          a.href = "#";
-          a.className = "delivered-file-btn";
-          a.innerHTML = `↓ ${file.name}`;
-          a.addEventListener("click", async (e) => {
-            e.preventDefault();
-            try {
-              const fileRes = await fetch(file.url);
-              const blob = await fileRes.blob();
-              const blobUrl = URL.createObjectURL(blob);
-              const tempLink = document.createElement("a");
-              tempLink.href = blobUrl;
-              tempLink.download = file.name;
-              document.body.appendChild(tempLink);
-              tempLink.click();
-              tempLink.remove();
-              URL.revokeObjectURL(blobUrl);
-            } catch (err) {
-              console.error("Download failed:", err);
-              window.open(file.url, "_blank");
-            }
-          });
-          filesEl.appendChild(a);
-        });
-
+        setStatusChip("green", "Paid in full — files unlocked");
+        renderDeliveredState(data);
         loadingEl.style.display = "none";
         deliveredEl.style.display = "block";
         return;
       }
 
-      // STATE 2: deposit paid, work in progress — existing dashboard view,
-      // with the status card swapped to show the preview + balance unlock
-      // once a preview exists.
-      document.getElementById("brandStatusText").innerHTML =
-        `<strong>Hi ${data.name || "there"}!</strong>${data.matchReason || "Your project is underway."}`;
-
-      if (data.designer) {
-        document.getElementById("designerName").textContent = data.designer.name;
-        document.getElementById("designerAvatar").src = data.designer.img;
-        document.getElementById("designerAvatar").alt = data.designer.name;
-      }
-
-      if (data.artDirector) {
-        document.getElementById("artDirectorName").textContent = data.artDirector.name;
-        document.getElementById("artDirectorAvatar").src = data.artDirector.img;
-        document.getElementById("artDirectorAvatar").alt = data.artDirector.name;
-      }
-
-      if (typeof data.confidence === "number" && data.confidence >= 80) {
-        document.getElementById("matchBadge").style.display = "inline-block";
-      }
-
-      const statusCard = document.getElementById("statusCard");
-      if (data.previewUrls && data.previewUrls.plain) {
-        // A preview exists — show it plus the balance-unlock button.
-        statusCard.innerHTML = `
-          <img class="preview-thumb" src="${data.previewUrls.plain}" alt="Preview">
-          <span style="font-size:1rem;">Preview ready — ${formatEuros(data.balanceAmount)} to unlock</span>
-          <button class="unlock-btn" id="payBalanceBtn">Pay balance</button>
-          <div class="pay-error" id="balanceError"></div>
-        `;
-        const balBtn = document.getElementById("payBalanceBtn");
-        const balErrorEl = document.getElementById("balanceError");
-        balBtn.addEventListener("click", () => startCheckout("balance", balBtn, balErrorEl));
-      } else {
-        // No preview yet — keep the existing placeholder messaging.
-        statusCard.innerHTML = `
-          <div>
-            <span>Final Review</span>
-            <span class="status-tag">Waiting on your designer's first upload</span>
-          </div>
-        `;
-      }
+      const hasPreview = Array.isArray(data.previewUrls) && data.previewUrls.length > 0;
+      setStatusChip("blue", hasPreview ? "In progress — preview ready for review" : "In progress — your designer is working on it");
+      renderProgressRow(data);
 
       loadingEl.style.display = "none";
       contentEl.style.display = "block";

@@ -119,14 +119,14 @@ export default async function handler(req, res) {
       source: brief.source,
       createdAt: brief.created_at,
       status: brief.status || "in_progress",
-      deliverables: deliverables.map((d) => ({ name: d.file_name, url: d.file_url })),
+      deliverables: deliverables.map((d) => ({ name: d.file_name, url: d.file_url, size: d.file_size || null })),
 
       // Trial payment state — drives which screen dashboard.html shows.
       // payment_status: 'pending' | 'deposit_paid' | 'paid_in_full'
       paymentStatus: brief.payment_status || "pending",
       depositAmount: brief.deposit_amount,   // in cents
       balanceAmount: brief.balance_amount,   // in cents
-      previewUrls: brief.preview_urls || null, // { plain, laptop, mobile, social }
+      previewUrls: Array.isArray(brief.preview_urls) ? brief.preview_urls : [], // [{ label, url }]
     });
   } catch (err) {
     console.error("dashboard-data failed:", err.message);
