@@ -320,6 +320,12 @@
       document.getElementById("artDirectorName").textContent = data.artDirector.name;
       document.getElementById("artDirectorAvatar").src = data.artDirector.img;
       document.getElementById("artDirectorAvatar").alt = data.artDirector.name;
+    } else {
+      // Older briefs from before art-director assignment existed won't
+      // have one — fall back rather than showing a broken avatar.
+      document.getElementById("artDirectorName").textContent = "Aoibh";
+      document.getElementById("artDirectorAvatar").src = "assets/aoibh-avatar.jpg";
+      document.getElementById("artDirectorAvatar").alt = "Aoibh";
     }
     if (typeof data.confidence === "number" && data.confidence >= 80) {
       document.getElementById("matchBadge").style.display = "inline-block";
