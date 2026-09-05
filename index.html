@@ -575,19 +575,6 @@
       <div class="review-intro">That's everything I need. Here's your brief summary and matched designer — a member of the studio will follow up shortly.</div>
       <div class="review-grid" id="reviewGrid"></div>
       <div class="review-designer" id="reviewDesigner"></div>
-      <div class="review-upload" id="reviewUpload">
-        <div class="review-upload-head">
-          <span>Attach files (optional)</span>
-          <span class="review-upload-count" id="uploadCount"></span>
-        </div>
-        <div class="review-dropzone" id="dropzone" tabindex="0" role="button" aria-label="Upload files">
-          <div class="review-dropzone-icon">↑</div>
-          <div class="review-dropzone-text">Drag files here, or <span class="review-dropzone-browse">browse</span></div>
-          <div class="review-dropzone-hint">Logo files, brand guides, videos — anything that helps your designer get started.</div>
-          <input type="file" id="fileInput" multiple hidden>
-        </div>
-        <div class="review-file-list" id="fileList"></div>
-      </div>
     </div>
     <form class="brief-input-row" id="briefForm">
       <input type="text" id="briefInput" class="brief-input" placeholder="Type your answer…" autocomplete="off" />
@@ -934,10 +921,6 @@
     const review = document.getElementById('briefReview');
     const reviewGrid = document.getElementById('reviewGrid');
     const reviewDesigner = document.getElementById('reviewDesigner');
-    const dropzone = document.getElementById('dropzone');
-    const fileInput = document.getElementById('fileInput');
-    const fileList = document.getElementById('fileList');
-    const uploadCount = document.getElementById('uploadCount');
     const studioDropzone = document.getElementById('studioDropzone');
     const studioFileInput = document.getElementById('studioFileInput');
     const studioFileList = document.getElementById('studioFileList');
@@ -1209,8 +1192,6 @@
           <button type="button" class="review-file-remove" data-i="${i}" aria-label="Remove ${f.name.replace(/</g,'&lt;')}">✕</button>
         </div>`).join('');
 
-      uploadCount.textContent = countText;
-      fileList.innerHTML = itemsHTML;
       if (studioUploadCount) studioUploadCount.textContent = countText;
       if (studioFileList) studioFileList.innerHTML = itemsHTML;
 
@@ -1228,10 +1209,6 @@
       attachedFiles.splice(Number(btn.dataset.i), 1);
       renderFileList();
     }
-    fileList.addEventListener('click', handleFileRemoveClick);
-    if (studioFileList) studioFileList.addEventListener('click', handleFileRemoveClick);
-
-    fileList.addEventListener('click', handleFileRemoveClick);
     if (studioFileList) studioFileList.addEventListener('click', handleFileRemoveClick);
 
     function wireDropzone(zoneEl, inputEl){
@@ -1254,7 +1231,6 @@
         if (e.dataTransfer.files.length) addFiles(e.dataTransfer.files);
       });
     }
-    wireDropzone(dropzone, fileInput);
     wireDropzone(studioDropzone, studioFileInput);
 
     // Parses free-text deadline answers ("3 weeks", "48 hours", "ASAP",
