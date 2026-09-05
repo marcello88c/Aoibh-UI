@@ -137,7 +137,7 @@ async function saveBrief({ email, name, answers, result }) {
         .join("\n");
 
       const dashboardLine = briefId
-        ? `\n\nView dashboard: https://aoibh.ai/dashboard.html?id=${briefId}`
+        ? `\n\nView dashboard: https://aoibh.ai/dashboard.html?id=${briefId}&email=${encodeURIComponent(email || "")}`
         : "";
 
       await fetch("https://api.resend.com/emails", {
