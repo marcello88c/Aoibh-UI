@@ -439,6 +439,29 @@
     }
   }
 
+  function renderFinalizingRow(data) {
+    const row = document.getElementById("progressRow");
+    row.innerHTML = "";
+
+    if (Array.isArray(data.previewUrls) && data.previewUrls.length > 0) {
+      row.appendChild(renderPreviewCard(data.previewUrls));
+
+      const finalizing = document.createElement("div");
+      finalizing.className = "card unlock";
+      finalizing.innerHTML = `
+        <div class="title">Payment received</div>
+        <div class="unlock-sub" style="margin-top:0.75rem;">We're finalizing your full-resolution files now — you'll get an email the moment they're ready to download.</div>
+      `;
+      row.appendChild(finalizing);
+    } else {
+      const waiting = document.createElement("div");
+      waiting.className = "card waiting";
+      waiting.style.gridColumn = "1 / -1";
+      waiting.textContent = "Payment received — we're finalizing your files and will email you when they're ready.";
+      row.appendChild(waiting);
+    }
+  }
+
   function renderDeliveredState(data) {
     const designerName = data.designer ? data.designer.name : "the studio";
     const artDirectorName = data.artDirector ? data.artDirector.name : "our team";
@@ -528,6 +551,18 @@
         renderDeliveredState(data);
         loadingEl.style.display = "none";
         deliveredEl.style.display = "block";
+        return;
+      }
+
+      if (paymentStatus === "paid_in_full") {
+        // Balance is paid but the producer hasn't uploaded final files /
+        // hit "Mark as delivered" yet — a distinct state so the client
+        // isn't shown the same "pay balance" screen right after paying it.
+        setStatusChip("blue", "Payment received — finalizing your files");
+        document.getElementById("heroMsg").textContent = "Thanks for your payment — we're finalizing everything now and will email you the moment your files are ready.";
+        renderFinalizingRow(data);
+        loadingEl.style.display = "none";
+        contentEl.style.display = "block";
         return;
       }
 

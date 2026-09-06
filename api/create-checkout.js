@@ -51,6 +51,9 @@ export default async function handler(req, res) {
     if (stage === 'deposit' && brief.payment_status !== 'pending') {
       return res.status(400).json({ error: 'Deposit already paid for this project' });
     }
+    if (stage === 'balance' && brief.payment_status === 'paid_in_full') {
+      return res.status(400).json({ error: 'Balance already paid for this project' });
+    }
     if (stage === 'balance' && brief.payment_status !== 'deposit_paid') {
       return res.status(400).json({ error: 'Deposit must be paid before the balance is due' });
     }
