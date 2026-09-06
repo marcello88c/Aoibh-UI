@@ -46,9 +46,17 @@ what's actually here.
   - `create-checkout.js` — `POST /api/create-checkout` — Stripe Checkout
     session for the deposit or balance stage
   - `stripe-webhook.js` — `POST /api/stripe-webhook` — reconciles
-    `checkout.session.completed` against `briefs.payment_status`
+    `checkout.session.completed` against `briefs.payment_status`; emails
+    the client when the deposit clears
   - `upload-deliverable.js` — `POST /api/upload-deliverable` — requires
-    `x-admin-secret` matching `SITE_MODE_ADMIN_SECRET`
+    `x-admin-secret` matching `SITE_MODE_ADMIN_SECRET`. Also emails the
+    client on the first preview of a review round (not every preview —
+    one "it's ready" per round, not one per image)
+  - `mark-delivered.js` — `POST /api/mark-delivered` — same
+    `x-admin-secret` gate. Sets `briefs.status = 'delivered'` (requires at
+    least one `deliverables` row to already exist) and emails the client.
+    Replaces hand-editing status in Supabase's table editor — triggered
+    from the "Mark as delivered" button in `upload.html`
   - `contact.js` — `POST /api/contact` — writes to `contacts`, emails via
     Resend
   - `site-mode.js` — `GET/POST /api/site-mode` — reads/writes

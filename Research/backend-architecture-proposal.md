@@ -785,8 +785,13 @@ several phases below assume. Real status:
   describes. Functionally similar outcome (the lead is captured early),
   different mechanism.
 - Phase 4 (persisted tasks) — **not done**.
-- Phase 5 (request queue & status notifications) — **not done**. No
-  `/api/project/new`, no multi-project dashboard, no status-change emails.
+- Phase 5 (request queue & status notifications) — **status notifications
+  partially built** (2026-09-06): the client is emailed on deposit
+  confirmed, first preview of a round, and project delivered. This isn't
+  the full 8-stage pipeline from section 4 — just the 3 moments the
+  current (payment-driven, not stage-driven) dashboard actually tracks.
+  The request-queue half is still **not done**: no `/api/project/new`, no
+  multi-project dashboard.
 - Phase 6 (job-number lookup) — **not done**.
 - Phase 7 (designer/staff dashboards + auth) — **not done**.
 - Phase 8 (AI-assisted QA) — **not done** — no `brand_specs`/`qa_checks`,

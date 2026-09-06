@@ -43,6 +43,22 @@ function sanitizeFilename(name) {
   return (cleanBase || "file") + cleanExt;
 }
 
+async function sendClientEmail({ to, subject, text }) {
+  if (!process.env.RESEND_API_KEY || !to) return;
+  try {
+    await fetch("https://api.resend.com/emails", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${process.env.RESEND_API_KEY}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ from: "Aoibh <hello@aoibh.ai>", to: [to], subject, text }),
+    });
+  } catch (err) {
+    console.error("sendClientEmail failed:", err.message);
+  }
+}
+
 async function readMultipart(req) {
   const chunks = [];
   for await (const chunk of req) chunks.push(chunk);
@@ -141,7 +157,7 @@ export default async function handler(req, res) {
       // deliverables table — previews are proofs shown pre-balance-payment,
       // not the final files.
       const briefRes = await fetch(
-        `${process.env.SUPABASE_URL}/rest/v1/briefs?id=eq.${encodeURIComponent(briefId)}&select=preview_urls`,
+        `${process.env.SUPABASE_URL}/rest/v1/briefs?id=eq.${encodeURIComponent(briefId)}&select=preview_urls,email,name`,
         {
           headers: {
             apikey: process.env.SUPABASE_SERVICE_ROLE_KEY,
@@ -175,6 +191,19 @@ export default async function handler(req, res) {
         const text = await patchRes.text();
         console.error("upload-deliverable preview_urls update error:", patchRes.status, text);
         return res.status(502).json({ error: "File uploaded but failed to save preview" });
+      }
+
+      // Only notify on the first preview of a round — a producer adding
+      // several screens for the same review shouldn't fire one email per
+      // image, just one "it's ready to look at" per round.
+      if (existingPreviews.length === 0) {
+        const brief = briefRows[0];
+        const dashboardUrl = `${process.env.SITE_URL}/dashboard.html?id=${briefId}&email=${encodeURIComponent(brief.email || "")}`;
+        await sendClientEmail({
+          to: brief.email,
+          subject: "Your preview is ready to review",
+          text: `Hi ${brief.name || "there"},\n\nYour project's first preview is up — take a look and let us know what you think.\n\nView it here: ${dashboardUrl}\n\n— Aoibh`,
+        });
       }
 
       return res.status(200).json({ ok: true, fileUrl: publicUrl });

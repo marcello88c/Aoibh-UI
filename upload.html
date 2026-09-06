@@ -87,6 +87,13 @@
 
   <button id="uploadBtn">Upload</button>
   <div id="statusMsg"></div>
+
+  <hr style="margin:2.5rem 0; border:none; border-top:1px solid #e5e4e0;">
+
+  <h1 style="font-size:1.15rem;">Mark project as complete</h1>
+  <p class="subtitle">Uses the Project ID above. Reveals all uploaded deliverables on the client's dashboard and emails them that it's ready — requires at least one final deliverable already uploaded.</p>
+  <button id="markDeliveredBtn" style="background:#1a8a4a;">Mark as delivered &amp; notify client</button>
+  <div id="deliveredStatusMsg"></div>
 </div>
 
 <script>
@@ -186,7 +193,7 @@
       if (kind === 'preview') {
         statusMsg.innerHTML = `Preview "${label}" added. <a class="file-link" href="${data.fileUrl}" target="_blank">View file</a><br><br>It'll show up on the client dashboard automatically once their deposit is paid — no other step needed.`;
       } else {
-        statusMsg.innerHTML = `Uploaded successfully. <a class="file-link" href="${data.fileUrl}" target="_blank">View file</a><br><br>Remember: also set that project's status to "delivered" in Supabase for it to show on the client dashboard.`;
+        statusMsg.innerHTML = `Uploaded successfully. <a class="file-link" href="${data.fileUrl}" target="_blank">View file</a><br><br>Once all final files are up, use "Mark as delivered" below to reveal them on the client's dashboard and email them.`;
       }
       statusMsg.className = 'success';
       selectedFile = null;
@@ -199,6 +206,50 @@
     } finally {
       uploadBtn.disabled = false;
       uploadBtn.textContent = 'Upload';
+    }
+  });
+
+  const markDeliveredBtn = document.getElementById('markDeliveredBtn');
+  const deliveredStatusMsg = document.getElementById('deliveredStatusMsg');
+
+  markDeliveredBtn.addEventListener('click', async () => {
+    const adminSecret = adminSecretInput.value.trim();
+    const briefId = briefIdInput.value.trim();
+    deliveredStatusMsg.textContent = '';
+    deliveredStatusMsg.className = '';
+
+    if (!adminSecret) {
+      deliveredStatusMsg.textContent = 'Please enter the admin secret.';
+      deliveredStatusMsg.className = 'error';
+      return;
+    }
+    if (!briefId) {
+      deliveredStatusMsg.textContent = 'Please paste a project (brief) ID above.';
+      deliveredStatusMsg.className = 'error';
+      return;
+    }
+
+    markDeliveredBtn.disabled = true;
+    markDeliveredBtn.textContent = 'Marking as delivered…';
+
+    try {
+      const res = await fetch('/api/mark-delivered', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'x-admin-secret': adminSecret },
+        body: JSON.stringify({ briefId }),
+      });
+      const data = await res.json();
+
+      if (!res.ok) throw new Error(data.error || 'Failed to mark as delivered');
+
+      deliveredStatusMsg.textContent = 'Done — the client\'s dashboard now shows the completed state, and they\'ve been emailed.';
+      deliveredStatusMsg.className = 'success';
+    } catch (err) {
+      deliveredStatusMsg.textContent = err.message;
+      deliveredStatusMsg.className = 'error';
+    } finally {
+      markDeliveredBtn.disabled = false;
+      markDeliveredBtn.textContent = 'Mark as delivered & notify client';
     }
   });
 </script>

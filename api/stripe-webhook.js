@@ -28,6 +28,30 @@ const supabase = createClient(
   process.env.SUPABASE_SERVICE_ROLE_KEY
 );
 
+// Same roster as match-designer.js/dashboard-data.js — duplicated for the
+// same reason: serverless functions can't share module state without a
+// shared package setup. Only need names here, not full profiles.
+const DESIGNER_NAMES = {
+  "eve-berlin": "Eve", "zac-sf": "Zac", "nicole-paris": "Nicole",
+  "gemma-melbourne": "Gemma", "marc-belfast": "Marc", "naomi-copenhagen": "Naomi",
+};
+
+async function sendClientEmail({ to, subject, text }) {
+  if (!process.env.RESEND_API_KEY || !to) return;
+  try {
+    await fetch("https://api.resend.com/emails", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${process.env.RESEND_API_KEY}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ from: "Aoibh <hello@aoibh.ai>", to: [to], subject, text }),
+    });
+  } catch (err) {
+    console.error("sendClientEmail failed:", err.message);
+  }
+}
+
 export default async function handler(req, res) {
   if (req.method !== 'POST') {
     return res.status(405).json({ error: 'Method not allowed' });
@@ -62,20 +86,28 @@ export default async function handler(req, res) {
     }
 
     if (stage === 'deposit') {
-      const { error } = await supabase
+      const { data: brief, error } = await supabase
         .from('briefs')
         .update({
           payment_status: 'deposit_paid',
           deposit_paid_at: new Date().toISOString(),
         })
         .eq('id', briefId)
-        .eq('stripe_deposit_session_id', session.id); // extra safety check
+        .eq('stripe_deposit_session_id', session.id) // extra safety check
+        .select('email, name, matched_designer_id')
+        .single();
 
       if (error) throw error;
 
-      // TODO: trigger designer assignment / kick off the work here,
-      // e.g. call your existing match-designer logic or send a Resend
-      // notification to the assigned designer that a deposit has cleared.
+      if (brief) {
+        const designerName = DESIGNER_NAMES[brief.matched_designer_id] || "your designer";
+        const dashboardUrl = `${process.env.SITE_URL}/dashboard.html?id=${briefId}&email=${encodeURIComponent(brief.email || "")}`;
+        await sendClientEmail({
+          to: brief.email,
+          subject: "Your deposit is confirmed — work is starting",
+          text: `Hi ${brief.name || "there"},\n\nYour deposit has cleared and ${designerName} is getting started on your project right away.\n\nTrack progress here: ${dashboardUrl}\n\n— Aoibh`,
+        });
+      }
 
     } else if (stage === 'balance') {
       const { error } = await supabase
