@@ -44,9 +44,16 @@ function sanitizeFilename(name) {
 }
 
 async function sendClientEmail({ to, subject, text }) {
-  if (!process.env.RESEND_API_KEY || !to) return;
+  if (!process.env.RESEND_API_KEY) {
+    console.error("sendClientEmail skipped: RESEND_API_KEY not set");
+    return;
+  }
+  if (!to) {
+    console.error("sendClientEmail skipped: no recipient email");
+    return;
+  }
   try {
-    await fetch("https://api.resend.com/emails", {
+    const res = await fetch("https://api.resend.com/emails", {
       method: "POST",
       headers: {
         Authorization: `Bearer ${process.env.RESEND_API_KEY}`,
@@ -54,6 +61,9 @@ async function sendClientEmail({ to, subject, text }) {
       },
       body: JSON.stringify({ from: "Aoibh <hello@aoibh.ai>", to: [to], subject, text }),
     });
+    if (!res.ok) {
+      console.error("sendClientEmail rejected by Resend:", res.status, await res.text());
+    }
   } catch (err) {
     console.error("sendClientEmail failed:", err.message);
   }
