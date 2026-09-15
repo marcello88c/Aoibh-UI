@@ -319,21 +319,14 @@
       document.getElementById("designerAvatar").alt = data.designer.name;
     }
     if (data.artDirector) {
+      // dashboard-data.js guarantees a real art director (assigned at
+      // save time, or a deterministic fallback for older briefs) — never
+      // "Aoibh" here specifically, since Aoibh is the AI project manager
+      // shown in the hero card, a distinct role from the human Art
+      // Director.
       document.getElementById("artDirectorName").textContent = data.artDirector.name;
       document.getElementById("artDirectorAvatar").src = data.artDirector.img;
       document.getElementById("artDirectorAvatar").alt = data.artDirector.name;
-    } else {
-      // Older briefs from before art-director assignment existed won't
-      // have one. Never fall back to "Aoibh" here — Aoibh is the AI
-      // project manager shown in the hero card, a distinct role from
-      // the human Art Director; showing the same name/photo in both
-      // would misrepresent who's actually reviewing the work.
-      document.getElementById("artDirectorName").textContent = "Studio team";
-      // Hide the image outright rather than leaving it with no src —
-      // browsers still render a broken-image glyph for an empty/missing
-      // src on a sized <img>, which looks just as broken as the bug this
-      // is fixing.
-      document.getElementById("artDirectorAvatar").style.display = "none";
     }
     if (typeof data.confidence === "number" && data.confidence >= 80) {
       document.getElementById("matchBadge").style.display = "inline-block";
