@@ -85,7 +85,19 @@ export default async function handler(req, res) {
     }
 
     const designer = ROSTER.find((d) => d.id === brief.matched_designer_id) || null;
-    const artDirector = ART_DIRECTOR_ROSTER.find((a) => a.id === brief.art_director_id) || null;
+    // Every brief saved through match-designer.js gets a random art
+    // director assigned unconditionally, so this should never actually
+    // be needed — but for any brief that slips through without one
+    // (predates that logic, or a future bug), fall back to a
+    // deterministic pick from the same real roster rather than leaving
+    // the client with no photo/name at all. Deterministic (hashed from
+    // the brief id, not re-randomized per request) so the same brief
+    // always shows the same art director rather than a different one
+    // on every dashboard reload.
+    const artDirector = ART_DIRECTOR_ROSTER.find((a) => a.id === brief.art_director_id) || (() => {
+      const hash = String(brief.id).split("").reduce((acc, ch) => acc + ch.charCodeAt(0), 0);
+      return ART_DIRECTOR_ROSTER[hash % ART_DIRECTOR_ROSTER.length];
+    })();
 
     let deliverables = [];
     try {
