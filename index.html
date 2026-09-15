@@ -573,6 +573,7 @@
     <div class="brief-chat" id="briefChat"></div>
     <div class="brief-review hidden" id="briefReview">
       <div class="review-intro">That's everything I need. Here's your brief summary and matched designer — a member of the studio will follow up shortly.</div>
+      <div class="review-job-number" id="reviewJobNumber" style="display:none; font-size:0.85rem; color:#6b6a66; margin:-0.5rem 0 1rem;"></div>
       <div class="review-grid" id="reviewGrid"></div>
       <div class="review-designer" id="reviewDesigner"></div>
     </div>
@@ -1111,14 +1112,27 @@
       }
     }
 
-    // Job-number branch: acknowledge and hand off, no review/designer match.
-    function showJobStatus(jobNum){
+    // Job-number branch: look up the real status. Falls back to a human
+    // hand-off message if the job number doesn't match this email, or if
+    // the lookup fails for any reason — never leaves the visitor stuck.
+    async function showJobStatus(jobNum){
       form.classList.add('hidden');
       approveBtn.style.display = 'none';
       emailBtn.style.display = 'none';
       actions.classList.remove('hidden');
       statusEl.classList.remove('hidden');
-      statusEl.innerHTML = `<strong>Thanks for checking in.</strong> We're pulling the full status for job #${jobNum} now and a producer will follow up with you shortly.`;
+      statusEl.innerHTML = `<strong>Thanks for checking in.</strong> Pulling up job #${jobNum}…`;
+
+      try {
+        const res = await fetch(`/api/job-status?jobNumber=${encodeURIComponent(jobNum)}&email=${encodeURIComponent(contact.email)}`);
+        const data = await res.json();
+
+        if (!res.ok) throw new Error(data.error || 'lookup failed');
+
+        statusEl.innerHTML = `<strong>Job #${data.jobNumber} — ${(data.project || '').replace(/</g,'&lt;')}</strong><br>${data.statusLine}<br><br><a href="${data.dashboardUrl}" target="_blank">View full dashboard →</a>`;
+      } catch (err) {
+        statusEl.innerHTML = `<strong>Thanks for checking in.</strong> I couldn't find a job #${jobNum} under this email — a producer will follow up with you shortly to sort it out.`;
+      }
     }
 
     function finish(){
@@ -1543,7 +1557,14 @@
       matchInProgress = false;
 
       const d = data.designer;
-      const confidence = Math.round(data.confidence);lastBriefId = data.briefId || null;
+      const confidence = Math.round(data.confidence);
+      lastBriefId = data.briefId || null;
+
+      const jobNumberEl = document.getElementById('reviewJobNumber');
+      if (data.jobNumber){
+        jobNumberEl.textContent = `Job #${data.jobNumber} — save this if you'd like to check progress later without your dashboard link.`;
+        jobNumberEl.style.display = 'block';
+      }
 
       if (confidence < 80){
         matchedDesigner = null;
@@ -1595,6 +1616,7 @@
       review.classList.add('hidden');
       reviewGrid.innerHTML = '';
       reviewDesigner.innerHTML = '';
+      document.getElementById('reviewJobNumber').style.display = 'none';
       attachedFiles = [];
       renderFileList();
       actions.classList.add('hidden');

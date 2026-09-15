@@ -96,6 +96,7 @@ function briefText(answers) {
 // we log it and move on rather than breaking the response the user sees.
 async function saveBrief({ email, name, answers, result }) {
   let briefId = null;
+  let jobNumber = null;
   const artDirector = ART_DIRECTOR_ROSTER[Math.floor(Math.random() * ART_DIRECTOR_ROSTER.length)];
 
   if (process.env.SUPABASE_URL && process.env.SUPABASE_SERVICE_ROLE_KEY) {
@@ -124,6 +125,7 @@ async function saveBrief({ email, name, answers, result }) {
       } else {
         const rows = await supaRes.json();
         briefId = rows && rows[0] && rows[0].id ? rows[0].id : null;
+        jobNumber = rows && rows[0] && rows[0].job_number ? rows[0].job_number : null;
       }
     } catch (err) {
       console.error("saveBrief failed:", err.message);
@@ -137,7 +139,7 @@ async function saveBrief({ email, name, answers, result }) {
         .join("\n");
 
       const dashboardLine = briefId
-        ? `\n\nView dashboard: https://aoibh.ai/dashboard.html?id=${briefId}&email=${encodeURIComponent(email || "")}`
+        ? `\n\nJob #${jobNumber || "—"}\nView dashboard: https://aoibh.ai/dashboard.html?id=${briefId}&email=${encodeURIComponent(email || "")}`
         : "";
 
       await fetch("https://api.resend.com/emails", {
@@ -158,7 +160,7 @@ async function saveBrief({ email, name, answers, result }) {
     }
   }
 
-  return briefId;
+  return { briefId, jobNumber };
 }
 
 // Deterministic fallback used when the API is unavailable or misbehaves —
@@ -199,8 +201,8 @@ export default async function handler(req, res) {
   const apiKey = process.env.ANTHROPIC_API_KEY;
   if (!apiKey) {
     const fallbackResult = fallbackMatch(answers);
-    const briefId = await saveBrief({ email, name, answers, result: fallbackResult });
-    return res.status(200).json({ ...fallbackResult, briefId });
+    const { briefId, jobNumber } = await saveBrief({ email, name, answers, result: fallbackResult });
+    return res.status(200).json({ ...fallbackResult, briefId, jobNumber });
   }
 
   const rosterForPrompt = ROSTER.map(
@@ -277,15 +279,15 @@ Pick the designer now.`;
       confidence,
       source: "ai",
     };
-    const briefId = await saveBrief({ email, name, answers, result });
-    return res.status(200).json({ ...result, briefId });
+    const { briefId, jobNumber } = await saveBrief({ email, name, answers, result });
+    return res.status(200).json({ ...result, briefId, jobNumber });
   } catch (err) {
     // Network error, timeout, bad JSON, or an id not in the roster — always
     // fail soft to the deterministic match rather than leaving the client
     // with no designer at all.
     console.error("match-designer failed:", err.message);
     const fallbackResult = fallbackMatch(answers);
-    const briefId = await saveBrief({ email, name, answers, result: fallbackResult });
-    return res.status(200).json({ ...fallbackResult, briefId });
+    const { briefId, jobNumber } = await saveBrief({ email, name, answers, result: fallbackResult });
+    return res.status(200).json({ ...fallbackResult, briefId, jobNumber });
   }
 }
