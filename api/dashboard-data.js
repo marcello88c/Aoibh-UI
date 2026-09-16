@@ -15,10 +15,9 @@
 // already knows the client's email too. Good enough for today's real
 // gap (an id with no check at all); revisit once real client auth exists.
 
-// Same roster as match-designer.js — duplicated here because serverless
-// functions can't share module state across files without a shared
-// package setup. If the roster changes, update both files.
-const ROSTER = [
+// Fallback only, if Supabase's `designers` table can't be reached — see
+// fetchDesigners below, which is the real source of truth.
+const FALLBACK_ROSTER = [
   { id: "eve-berlin", name: "Eve", title: "Brand Identity Designer", location: "Berlin, DE", img: "assets/designers/eve_berlin.jpeg" },
   { id: "zac-sf", name: "Zac", title: "Product & UX Designer", location: "San Francisco, US", img: "assets/designers/zac_melbourne.jpg" },
   { id: "nicole-paris", name: "Nicole", title: "Web & Editorial Designer", location: "Paris, FR", img: "assets/designers/nicole_paris.jpeg" },
@@ -27,13 +26,36 @@ const ROSTER = [
   { id: "naomi-copenhagen", name: "Naomi", title: "Illustration & Social Content Designer", location: "Copenhagen, DK", img: "assets/designers/naomi_copenhagen.jpeg" },
 ];
 
-// Same art director roster as match-designer.js — duplicated for the same
-// reason as ROSTER above.
-const ART_DIRECTOR_ROSTER = [
+// Fallback only — see FALLBACK_ROSTER comment above.
+const FALLBACK_ART_DIRECTOR_ROSTER = [
   { id: "hannah-london", name: "Hannah", location: "London, UK", img: "assets/designers/hanna_london.jpeg" },
   { id: "michael-manchester", name: "Michael", location: "Manchester, UK", img: "assets/designers/michael_manchester.jpeg" },
   { id: "tina-amsterdam", name: "Tina", location: "Amsterdam, NL", img: "assets/designers/Tina_amsterdam.jpeg" },
 ];
+
+async function fetchDesigners(role, fallback) {
+  if (!process.env.SUPABASE_URL || !process.env.SUPABASE_SERVICE_ROLE_KEY) return fallback;
+  try {
+    const res = await fetch(
+      `${process.env.SUPABASE_URL}/rest/v1/designers?role=eq.${role}&active=eq.true&select=id,name,title,location,img&order=name.asc`,
+      {
+        headers: {
+          apikey: process.env.SUPABASE_SERVICE_ROLE_KEY,
+          Authorization: "Bearer " + process.env.SUPABASE_SERVICE_ROLE_KEY,
+        },
+      }
+    );
+    if (!res.ok) {
+      console.error("fetchDesigners error:", role, res.status, await res.text());
+      return fallback;
+    }
+    const rows = await res.json();
+    return rows.length > 0 ? rows : fallback;
+  } catch (err) {
+    console.error("fetchDesigners failed:", role, err.message);
+    return fallback;
+  }
+}
 
 export default async function handler(req, res) {
   if (req.method !== "GET") {
@@ -84,7 +106,12 @@ export default async function handler(req, res) {
       return res.status(404).json({ error: "Brief not found" });
     }
 
-    const designer = ROSTER.find((d) => d.id === brief.matched_designer_id) || null;
+    const [roster, artDirectorRoster] = await Promise.all([
+      fetchDesigners("designer", FALLBACK_ROSTER),
+      fetchDesigners("art_director", FALLBACK_ART_DIRECTOR_ROSTER),
+    ]);
+
+    const designer = roster.find((d) => d.id === brief.matched_designer_id) || null;
     // Every brief saved through match-designer.js gets a random art
     // director assigned unconditionally, so this should never actually
     // be needed — but for any brief that slips through without one
@@ -94,9 +121,9 @@ export default async function handler(req, res) {
     // the brief id, not re-randomized per request) so the same brief
     // always shows the same art director rather than a different one
     // on every dashboard reload.
-    const artDirector = ART_DIRECTOR_ROSTER.find((a) => a.id === brief.art_director_id) || (() => {
+    const artDirector = artDirectorRoster.find((a) => a.id === brief.art_director_id) || (() => {
       const hash = String(brief.id).split("").reduce((acc, ch) => acc + ch.charCodeAt(0), 0);
-      return ART_DIRECTOR_ROSTER[hash % ART_DIRECTOR_ROSTER.length];
+      return artDirectorRoster[hash % artDirectorRoster.length];
     })();
 
     let deliverables = [];

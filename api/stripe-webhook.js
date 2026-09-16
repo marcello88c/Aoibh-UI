@@ -28,13 +28,39 @@ const supabase = createClient(
   process.env.SUPABASE_SERVICE_ROLE_KEY
 );
 
-// Same roster as match-designer.js/dashboard-data.js — duplicated for the
-// same reason: serverless functions can't share module state without a
-// shared package setup. Only need names here, not full profiles.
-const DESIGNER_NAMES = {
+// Fallback only, if Supabase's `designers` table can't be reached.
+const FALLBACK_DESIGNER_NAMES = {
   "eve-berlin": "Eve", "zac-sf": "Zac", "nicole-paris": "Nicole",
   "gemma-melbourne": "Gemma", "marc-belfast": "Marc", "naomi-copenhagen": "Naomi",
 };
+
+// Looks up just designer names from Supabase's `designers` table — the
+// real source of truth (see api/match-designer.js and
+// api/dashboard-data.js, which read the same table for full profiles).
+async function fetchDesignerNames() {
+  if (!process.env.SUPABASE_URL || !process.env.SUPABASE_SERVICE_ROLE_KEY) return FALLBACK_DESIGNER_NAMES;
+  try {
+    const res = await fetch(
+      `${process.env.SUPABASE_URL}/rest/v1/designers?role=eq.designer&select=id,name`,
+      {
+        headers: {
+          apikey: process.env.SUPABASE_SERVICE_ROLE_KEY,
+          Authorization: "Bearer " + process.env.SUPABASE_SERVICE_ROLE_KEY,
+        },
+      }
+    );
+    if (!res.ok) {
+      console.error("fetchDesignerNames error:", res.status, await res.text());
+      return FALLBACK_DESIGNER_NAMES;
+    }
+    const rows = await res.json();
+    if (rows.length === 0) return FALLBACK_DESIGNER_NAMES;
+    return Object.fromEntries(rows.map((d) => [d.id, d.name]));
+  } catch (err) {
+    console.error("fetchDesignerNames failed:", err.message);
+    return FALLBACK_DESIGNER_NAMES;
+  }
+}
 
 async function sendClientEmail({ to, subject, text }) {
   if (!process.env.RESEND_API_KEY) {
@@ -110,7 +136,8 @@ export default async function handler(req, res) {
       if (error) throw error;
 
       if (brief) {
-        const designerName = DESIGNER_NAMES[brief.matched_designer_id] || "your designer";
+        const designerNames = await fetchDesignerNames();
+        const designerName = designerNames[brief.matched_designer_id] || "your designer";
         const dashboardUrl = `${process.env.SITE_URL}/dashboard.html?id=${briefId}&email=${encodeURIComponent(brief.email || "")}`;
         await sendClientEmail({
           to: brief.email,

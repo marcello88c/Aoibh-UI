@@ -17,12 +17,15 @@
 // Supabase's `briefs` table via saveBrief(), and a notification email is
 // sent via Resend if RESEND_API_KEY is configured.
 
-// Roster deliberately matches the 6 real, photographed designers shown on
-// the main site's Studio gallery (index.html #gallery) — not a separate
+// Fallback only — the real source of truth is Supabase's `designers`
+// table (see fetchDesigners below). Used only if that table can't be
+// reached, so a brief can still always be matched to someone. Roster
+// deliberately matches the 6 real, photographed designers shown on the
+// main site's Studio gallery (index.html #gallery) — not a separate
 // fictional list. Putting a real person's photo under a made-up identity
 // would be worse than no photo at all, so this roster and the gallery are
 // kept as the same 6 people, on purpose.
-const ROSTER = [
+const FALLBACK_ROSTER = [
   {
     id: "eve-berlin",
     name: "Eve",
@@ -82,11 +85,41 @@ const ROSTER = [
 // Art directors handle quality review/oversight on completed work — not
 // matched to a brief's specifics the way designers are, so assignment is
 // just a random pick among the current team rather than skill-based.
-const ART_DIRECTOR_ROSTER = [
+// Fallback only — see FALLBACK_ROSTER comment above.
+const FALLBACK_ART_DIRECTOR_ROSTER = [
   { id: "hannah-london", name: "Hannah", location: "London, UK", img: "assets/designers/hanna_london.jpeg" },
   { id: "michael-manchester", name: "Michael", location: "Manchester, UK", img: "assets/designers/michael_manchester.jpeg" },
   { id: "tina-amsterdam", name: "Tina", location: "Amsterdam, NL", img: "assets/designers/Tina_amsterdam.jpeg" },
 ];
+
+// Reads the live roster from Supabase's `designers` table — the real
+// source of truth, editable there without touching code. Falls back to
+// the hardcoded list above (fail soft, same philosophy as the rest of
+// this file) if the table can't be reached or comes back empty.
+async function fetchDesigners(role, fallback) {
+  if (!process.env.SUPABASE_URL || !process.env.SUPABASE_SERVICE_ROLE_KEY) return fallback;
+  try {
+    const res = await fetch(
+      `${process.env.SUPABASE_URL}/rest/v1/designers?role=eq.${role}&active=eq.true&select=id,name,title,experience,location,img,tags&order=name.asc`,
+      {
+        headers: {
+          apikey: process.env.SUPABASE_SERVICE_ROLE_KEY,
+          Authorization: "Bearer " + process.env.SUPABASE_SERVICE_ROLE_KEY,
+        },
+      }
+    );
+    if (!res.ok) {
+      console.error("fetchDesigners error:", role, res.status, await res.text());
+      return fallback;
+    }
+    const rows = await res.json();
+    return rows.length > 0 ? rows : fallback;
+  } catch (err) {
+    console.error("fetchDesigners failed:", role, err.message);
+    return fallback;
+  }
+}
+
 function briefText(answers) {
   return Object.values(answers || {}).filter(Boolean).join(" ").toLowerCase();
 }
@@ -94,10 +127,10 @@ function briefText(answers) {
 // Saves every completed brief to Supabase and sends a notification email
 // via Resend. Both steps fail soft — if Supabase or Resend has a problem,
 // we log it and move on rather than breaking the response the user sees.
-async function saveBrief({ email, name, answers, result }) {
+async function saveBrief({ email, name, answers, result, artDirectorRoster }) {
   let briefId = null;
   let jobNumber = null;
-  const artDirector = ART_DIRECTOR_ROSTER[Math.floor(Math.random() * ART_DIRECTOR_ROSTER.length)];
+  const artDirector = artDirectorRoster[Math.floor(Math.random() * artDirectorRoster.length)];
 
   if (process.env.SUPABASE_URL && process.env.SUPABASE_SERVICE_ROLE_KEY) {
     try {
@@ -168,11 +201,11 @@ async function saveBrief({ email, name, answers, result }) {
 // first roster entry (Eve) if nothing scores. Confidence is a base rate
 // plus a bump per matched tag, capped just under 100 — mirrors the
 // equivalent heuristic in index.html's client-side fallback.
-function fallbackMatch(answers) {
+function fallbackMatch(answers, roster) {
   const text = briefText(answers);
-  let best = ROSTER[0];
+  let best = roster[0];
   let bestScore = -1;
-  for (const designer of ROSTER) {
+  for (const designer of roster) {
     const score = designer.tags.reduce((acc, tag) => acc + (text.includes(tag) ? 1 : 0), 0);
     if (score > bestScore) {
       bestScore = score;
@@ -198,14 +231,19 @@ export default async function handler(req, res) {
   const email = (req.body && req.body.email || "").trim();
   const name = (req.body && req.body.name || "").trim();
 
+  const [roster, artDirectorRoster] = await Promise.all([
+    fetchDesigners("designer", FALLBACK_ROSTER),
+    fetchDesigners("art_director", FALLBACK_ART_DIRECTOR_ROSTER),
+  ]);
+
   const apiKey = process.env.ANTHROPIC_API_KEY;
   if (!apiKey) {
-    const fallbackResult = fallbackMatch(answers);
-    const { briefId, jobNumber } = await saveBrief({ email, name, answers, result: fallbackResult });
+    const fallbackResult = fallbackMatch(answers, roster);
+    const { briefId, jobNumber } = await saveBrief({ email, name, answers, result: fallbackResult, artDirectorRoster });
     return res.status(200).json({ ...fallbackResult, briefId, jobNumber });
   }
 
-  const rosterForPrompt = ROSTER.map(
+  const rosterForPrompt = roster.map(
     ({ id, name, title, experience, location, tags }) => ({ id, name, title, experience, location, tags })
   );
 
@@ -256,7 +294,7 @@ Pick the designer now.`;
     const raw = data.content?.[0]?.text ?? "";
     const parsed = JSON.parse(raw);
 
-    const match = ROSTER.find((d) => d.id === parsed.designerId);
+    const match = roster.find((d) => d.id === parsed.designerId);
     if (!match || typeof parsed.reason !== "string" || !parsed.reason.trim()) {
       throw new Error("Malformed or unknown designer id from model");
     }
@@ -279,15 +317,15 @@ Pick the designer now.`;
       confidence,
       source: "ai",
     };
-    const { briefId, jobNumber } = await saveBrief({ email, name, answers, result });
+    const { briefId, jobNumber } = await saveBrief({ email, name, answers, result, artDirectorRoster });
     return res.status(200).json({ ...result, briefId, jobNumber });
   } catch (err) {
     // Network error, timeout, bad JSON, or an id not in the roster — always
     // fail soft to the deterministic match rather than leaving the client
     // with no designer at all.
     console.error("match-designer failed:", err.message);
-    const fallbackResult = fallbackMatch(answers);
-    const { briefId, jobNumber } = await saveBrief({ email, name, answers, result: fallbackResult });
+    const fallbackResult = fallbackMatch(answers, roster);
+    const { briefId, jobNumber } = await saveBrief({ email, name, answers, result: fallbackResult, artDirectorRoster });
     return res.status(200).json({ ...fallbackResult, briefId, jobNumber });
   }
 }
