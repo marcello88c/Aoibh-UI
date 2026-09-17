@@ -43,6 +43,113 @@ function sanitizeFilename(name) {
   return (cleanBase || "file") + cleanExt;
 }
 
+// Lightweight AI quality check — compares an uploaded image against the
+// client's original brief text (not structured brand_specs; deliberately
+// skipped for v1, see Research/backend-architecture-proposal.md section 0).
+// Only flags genuine mismatches (wrong deliverable type, blank/broken file,
+// content unrelated to the brief) — never subjective craft/taste calls,
+// which stay a human decision. Fails soft: any error here just skips QA,
+// never blocks the actual upload.
+async function runQaCheck({ answers, fileUrl }) {
+  if (!process.env.ANTHROPIC_API_KEY) return null;
+  try {
+    const briefSummary = Object.entries(answers || {})
+      .map(([k, v]) => `${k}: ${v || "—"}`)
+      .join("\n");
+
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 15000);
+
+    const r = await fetch("https://api.anthropic.com/v1/messages", {
+      method: "POST",
+      headers: {
+        "x-api-key": process.env.ANTHROPIC_API_KEY,
+        "anthropic-version": "2023-06-01",
+        "content-type": "application/json",
+      },
+      body: JSON.stringify({
+        model: "claude-sonnet-5",
+        max_tokens: 300,
+        system: `You are doing a quick, lightweight quality check on a design
+file a freelance designer just submitted for a client's project, comparing
+it against what the client originally asked for. You are NOT critiquing
+craft, taste, or subjective creative choices — a human reviewer makes the
+real creative call. Only flag a genuine mismatch or problem: the wrong
+type of deliverable entirely (e.g. the brief asked for a logo but this is
+a webpage), an apparently blank/broken/placeholder file, or content
+clearly unrelated to the brief. When in doubt, don't flag it — err toward
+"none".
+
+Respond ONLY with JSON, no prose, no markdown fences, in this exact shape:
+{"issueType":"off_brief"|"quality_concern"|"none","confidence":<integer 0-100>,"detail":"<one sentence, under 25 words>"}`,
+        messages: [
+          {
+            role: "user",
+            content: [
+              { type: "image", source: { type: "url", url: fileUrl } },
+              { type: "text", text: `Brief answers:\n${briefSummary}\n\nCheck this file against the brief now.` },
+            ],
+          },
+        ],
+      }),
+      signal: controller.signal,
+    });
+    clearTimeout(timeout);
+
+    if (!r.ok) {
+      console.error("runQaCheck API error:", r.status, await r.text());
+      return null;
+    }
+
+    const data = await r.json();
+    const raw = data.content?.[0]?.text ?? "";
+    const parsed = JSON.parse(raw);
+
+    if (!["off_brief", "quality_concern", "none"].includes(parsed.issueType)) return null;
+    if (typeof parsed.confidence !== "number" || Number.isNaN(parsed.confidence)) return null;
+
+    return {
+      issueType: parsed.issueType,
+      confidence: Math.max(0, Math.min(100, Math.round(parsed.confidence))),
+      detail: typeof parsed.detail === "string" ? parsed.detail.trim() : "",
+    };
+  } catch (err) {
+    console.error("runQaCheck failed:", err.message);
+    return null;
+  }
+}
+
+async function saveQaCheck({ briefId, kind, fileUrl, fileName, result }) {
+  if (!result) return;
+  try {
+    const status = result.issueType === "none" ? "cleared_by_ai" : "flagged";
+    const res = await fetch(`${process.env.SUPABASE_URL}/rest/v1/qa_checks`, {
+      method: "POST",
+      headers: {
+        apikey: process.env.SUPABASE_SERVICE_ROLE_KEY,
+        Authorization: "Bearer " + process.env.SUPABASE_SERVICE_ROLE_KEY,
+        "Content-Type": "application/json",
+        Prefer: "return=minimal",
+      },
+      body: JSON.stringify({
+        brief_id: briefId,
+        kind,
+        file_url: fileUrl,
+        file_name: fileName,
+        issue_type: result.issueType,
+        confidence: result.confidence,
+        detail: result.detail,
+        status,
+      }),
+    });
+    if (!res.ok) {
+      console.error("saveQaCheck error:", res.status, await res.text());
+    }
+  } catch (err) {
+    console.error("saveQaCheck failed:", err.message);
+  }
+}
+
 async function sendClientEmail({ to, subject, text }) {
   if (!process.env.RESEND_API_KEY) {
     console.error("sendClientEmail skipped: RESEND_API_KEY not set");
@@ -167,7 +274,7 @@ export default async function handler(req, res) {
       // deliverables table — previews are proofs shown pre-balance-payment,
       // not the final files.
       const briefRes = await fetch(
-        `${process.env.SUPABASE_URL}/rest/v1/briefs?id=eq.${encodeURIComponent(briefId)}&select=preview_urls,email,name`,
+        `${process.env.SUPABASE_URL}/rest/v1/briefs?id=eq.${encodeURIComponent(briefId)}&select=preview_urls,email,name,answers`,
         {
           headers: {
             apikey: process.env.SUPABASE_SERVICE_ROLE_KEY,
@@ -216,7 +323,13 @@ export default async function handler(req, res) {
         });
       }
 
-      return res.status(200).json({ ok: true, fileUrl: publicUrl });
+      let qaResult = null;
+      if (file.contentType.startsWith("image/")) {
+        qaResult = await runQaCheck({ answers: briefRows[0].answers, fileUrl: publicUrl });
+        await saveQaCheck({ briefId, kind: "preview", fileUrl: publicUrl, fileName: file.filename, result: qaResult });
+      }
+
+      return res.status(200).json({ ok: true, fileUrl: publicUrl, qa: qaResult });
     }
 
     const insertRes = await fetch(`${process.env.SUPABASE_URL}/rest/v1/deliverables`, {
@@ -241,7 +354,33 @@ export default async function handler(req, res) {
       return res.status(502).json({ error: "File uploaded but failed to save record" });
     }
 
-    return res.status(200).json({ ok: true, fileUrl: publicUrl });
+    let qaResult = null;
+    if (file.contentType.startsWith("image/")) {
+      try {
+        const briefRes = await fetch(
+          `${process.env.SUPABASE_URL}/rest/v1/briefs?id=eq.${encodeURIComponent(briefId)}&select=answers`,
+          {
+            headers: {
+              apikey: process.env.SUPABASE_SERVICE_ROLE_KEY,
+              Authorization: "Bearer " + process.env.SUPABASE_SERVICE_ROLE_KEY,
+            },
+          }
+        );
+        if (briefRes.ok) {
+          const briefRows = await briefRes.json();
+          if (briefRows[0]) {
+            qaResult = await runQaCheck({ answers: briefRows[0].answers, fileUrl: publicUrl });
+            await saveQaCheck({ briefId, kind: "deliverable", fileUrl: publicUrl, fileName: file.filename, result: qaResult });
+          }
+        }
+      } catch (err) {
+        // QA is a nice-to-have on top of an already-saved deliverable —
+        // never let a lookup failure here undo a successful upload.
+        console.error("deliverable QA lookup failed:", err.message);
+      }
+    }
+
+    return res.status(200).json({ ok: true, fileUrl: publicUrl, qa: qaResult });
   } catch (err) {
     console.error("upload-deliverable failed:", err.message);
     return res.status(500).json({ error: "Unexpected error" });

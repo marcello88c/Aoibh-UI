@@ -62,6 +62,11 @@ what's actually here.
   - `site-mode.js` — `GET/POST /api/site-mode` — reads/writes
     `site_settings`; POST requires `x-admin-secret` matching
     `SITE_MODE_ADMIN_SECRET`
+  - `job-status.js` — `GET /api/job-status?jobNumber=<n>&email=<email>` —
+    powers the triage flow's "check an existing job" branch
+  - `qa-review.js` — `GET/POST /api/qa-review` — same `x-admin-secret`
+    gate. GET lists flagged `qa_checks`; POST records a human decision
+    (`approved_by_human` | `sent_back`). Backs `qa-review.html`
 - `Research/` — competitive research, notes, and the backend architecture
   proposal (now annotated with what's actually built vs. still planned).
 - `Moodboards/` — visual inspiration (currently empty).
@@ -88,14 +93,20 @@ proposed — see section 0 there for the full comparison:
 - `contacts` — footer contact-form submissions. `id`, `created_at`,
   `query`, `email` only.
 - `deliverables` — file pointers (`brief_id`, `file_name`, `file_url`),
-  written by `upload-deliverable.js`. No review/QA step.
+  written by `upload-deliverable.js`.
 - `site_settings` — single-row site mode config. Fixed 2026-09-04 (was
   missing a `GRANT` for `service_role`, which made every mode-switch read
   silently fail open to `"live"`).
-
-The designer roster is still a hardcoded `ROSTER` array — duplicated in
-both `api/match-designer.js` and `api/dashboard-data.js`. Update both if a
-designer changes.
+- `designers` — one row per designer/art director (`role` column
+  distinguishes them). Replaces the hardcoded `ROSTER` array that used to
+  be duplicated across `match-designer.js`, `dashboard-data.js`, and
+  `stripe-webhook.js` — those files now fetch from this table (falling
+  back to a small hardcoded list if Supabase is unreachable). Editing a
+  designer is a Table Editor row edit now, not a code change.
+- `qa_checks` — one row per AI quality check on an uploaded image
+  (`kind`: `preview` | `deliverable`). Written by `upload-deliverable.js`
+  whenever an image file is uploaded; reviewed via `qa-review.html` /
+  `api/qa-review.js`.
 
 ## How the intake flow works
 
@@ -128,13 +139,18 @@ network misbehaves. Keep that convention in any new endpoint.
 ## Open items
 
 See `Research/backend-architecture-proposal.md` section 0 for the full,
-current reconciliation of what's built vs. planned, and its list of known
-issues (the `site_settings` grant, dead duplicate files, missing auth on
-`dashboard-data`/`upload-deliverable`, a couple of malformed
-`deliverables.file_url` rows). Sections 1–10 of that document remain the
-best reference for what *isn't* built yet: formal 8-stage pipeline
-tracking, AI-assisted QA, dashboard chat, designer/staff dashboards and
+current reconciliation of what's built vs. planned. Sections 1–10 of that
+document remain the best reference for what *isn't* built yet: formal
+8-stage pipeline tracking, dashboard chat, designer/staff dashboards and
 their minimal auth, client auth, and marketing consent capture.
+
+AI QA (2026-09-17) is a lighter version of the original design: it
+compares an uploaded image against the brief's original text answers,
+not structured `brand_specs` (never built — no client ever provides
+approved colors/fonts today). The flagged-issues review page
+(`qa-review.html`) is a deliberate stand-in for the real staff dashboard,
+which doesn't exist yet — same `x-admin-secret` gate as everything else
+until real staff auth is built.
 
 `terms.html`, `privacy.html` — working drafts, both carry a visible
 "not yet reviewed by a lawyer" notice and bracketed placeholders. Fill

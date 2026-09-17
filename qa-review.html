@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Aoibh — QA Review</title>
+<style>
+  body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    background: #ffffff;
+    color: #16161a;
+    padding: 2.5rem;
+  }
+  .wrap { max-width: 720px; margin: 0 auto; }
+  h1 { font-size: 1.5rem; margin: 0 0 0.5rem; }
+  p.subtitle { color: #6b6a66; font-size: 0.9rem; margin: 0 0 2rem; }
+  label { display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 6px; }
+  input[type="text"] {
+    width: 100%;
+    padding: 0.7rem 0.9rem;
+    border: 1px solid #e5e4e0;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    margin-bottom: 1.5rem;
+    box-sizing: border-box;
+  }
+  button { cursor: pointer; }
+  .load-btn {
+    background: #16161a; color: #fff; border: none; border-radius: 999px;
+    padding: 0.7rem 1.5rem; font-size: 0.9rem; margin-bottom: 2rem;
+  }
+  #statusMsg { font-size: 0.9rem; margin-bottom: 1rem; }
+  #statusMsg.error { color: #c0392b; }
+  #emptyState { color: #6b6a66; font-size: 0.95rem; display: none; }
+  .item {
+    border: 1px solid #e5e4e0; border-radius: 12px; padding: 1.25rem;
+    margin-bottom: 1.25rem;
+  }
+  .item-top { display: flex; justify-content: space-between; gap: 1rem; margin-bottom: 0.75rem; }
+  .item-project { font-weight: 600; font-size: 1rem; }
+  .item-client { font-size: 0.8rem; color: #6b6a66; margin-top: 2px; }
+  .issue-tag {
+    font-size: 0.7rem; font-weight: 600; text-transform: uppercase;
+    padding: 3px 8px; border-radius: 999px; height: fit-content;
+  }
+  .issue-tag.off_brief { background: #fde8e8; color: #c0392b; }
+  .issue-tag.quality_concern { background: #fff6da; color: #b08d00; }
+  .item-detail { font-size: 0.9rem; line-height: 1.5; margin-bottom: 0.75rem; }
+  .item-meta { font-size: 0.78rem; color: #6b6a66; margin-bottom: 0.75rem; }
+  .item-preview img { max-width: 100%; border-radius: 8px; margin-bottom: 0.75rem; display: block; }
+  .item-actions { display: flex; gap: 0.75rem; }
+  .approve-btn, .sendback-btn {
+    flex: 1; border: none; border-radius: 999px; padding: 0.6rem 1rem;
+    font-size: 0.85rem; font-weight: 600;
+  }
+  .approve-btn { background: #1a8a4a; color: #fff; }
+  .sendback-btn { background: #fff; color: #16161a; border: 1px solid #e5e4e0; }
+  .item.resolved { opacity: 0.5; }
+  a.file-link { color: #2a6df5; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>QA Review</h1>
+  <p class="subtitle">Flagged uploads — approve to keep as-is, or send back to the designer. Cleared items never show up here at all.</p>
+
+  <label for="adminSecretInput">Admin secret</label>
+  <input type="text" id="adminSecretInput" placeholder="Same secret used to change site mode">
+  <button class="load-btn" id="loadBtn">Load flagged items</button>
+
+  <div id="statusMsg"></div>
+  <div id="emptyState">Nothing flagged right now.</div>
+  <div id="itemList"></div>
+</div>
+
+<script>
+  const adminSecretInput = document.getElementById('adminSecretInput');
+  const loadBtn = document.getElementById('loadBtn');
+  const statusMsg = document.getElementById('statusMsg');
+  const emptyState = document.getElementById('emptyState');
+  const itemList = document.getElementById('itemList');
+
+  try {
+    const saved = localStorage.getItem('aoibh_admin_secret');
+    if (saved) adminSecretInput.value = saved;
+  } catch (err) {}
+
+  function issueLabel(type) {
+    return type === 'off_brief' ? 'Off brief' : 'Quality concern';
+  }
+
+  function renderItems(items) {
+    itemList.innerHTML = '';
+    emptyState.style.display = items.length === 0 ? 'block' : 'none';
+
+    items.forEach((item) => {
+      const brief = item.briefs || {};
+      const projectName = (brief.answers && brief.answers.project) || 'Untitled project';
+      const isImage = /\.(png|jpe?g|gif|webp)$/i.test(item.file_name || '');
+
+      const el = document.createElement('div');
+      el.className = 'item';
+      el.innerHTML = `
+        <div class="item-top">
+          <div>
+            <div class="item-project">${projectName.replace(/</g,'&lt;')}</div>
+            <div class="item-client">${(brief.name || '—').replace(/</g,'&lt;')} · ${(brief.email || '—').replace(/</g,'&lt;')}</div>
+          </div>
+          <span class="issue-tag ${item.issue_type}">${issueLabel(item.issue_type)}</span>
+        </div>
+        ${isImage ? `<div class="item-preview"><img src="${item.file_url}" alt="${(item.file_name || '').replace(/</g,'&lt;')}"></div>` : ''}
+        <div class="item-detail">${(item.detail || '').replace(/</g,'&lt;')}</div>
+        <div class="item-meta">${item.kind} · ${item.confidence}% confidence · <a class="file-link" href="${item.file_url}" target="_blank">View file</a></div>
+        <div class="item-actions">
+          <button class="approve-btn">Approve as-is</button>
+          <button class="sendback-btn">Send back to designer</button>
+        </div>
+      `;
+
+      el.querySelector('.approve-btn').addEventListener('click', () => resolveItem(item.id, 'approved_by_human', el));
+      el.querySelector('.sendback-btn').addEventListener('click', () => resolveItem(item.id, 'sent_back', el));
+
+      itemList.appendChild(el);
+    });
+  }
+
+  async function resolveItem(id, status, el) {
+    const adminSecret = adminSecretInput.value.trim();
+    el.querySelectorAll('button').forEach((b) => b.disabled = true);
+    try {
+      const res = await fetch('/api/qa-review', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'x-admin-secret': adminSecret },
+        body: JSON.stringify({ id, status }),
+      });
+      if (!res.ok) throw new Error((await res.json()).error || 'Failed to update');
+      el.classList.add('resolved');
+      el.innerHTML = `<div class="item-detail">${status === 'approved_by_human' ? 'Approved' : 'Sent back'} — resolved.</div>`;
+    } catch (err) {
+      statusMsg.textContent = err.message;
+      statusMsg.className = 'error';
+      el.querySelectorAll('button').forEach((b) => b.disabled = false);
+    }
+  }
+
+  loadBtn.addEventListener('click', async () => {
+    const adminSecret = adminSecretInput.value.trim();
+    statusMsg.textContent = '';
+    statusMsg.className = '';
+
+    if (!adminSecret) {
+      statusMsg.textContent = 'Please enter the admin secret.';
+      statusMsg.className = 'error';
+      return;
+    }
+
+    try {
+      localStorage.setItem('aoibh_admin_secret', adminSecret);
+    } catch (err) {}
+
+    loadBtn.disabled = true;
+    loadBtn.textContent = 'Loading…';
+
+    try {
+      const res = await fetch('/api/qa-review', {
+        headers: { 'x-admin-secret': adminSecret },
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || 'Failed to load');
+      renderItems(data.items || []);
+    } catch (err) {
+      statusMsg.textContent = err.message;
+      statusMsg.className = 'error';
+    } finally {
+      loadBtn.disabled = false;
+      loadBtn.textContent = 'Load flagged items';
+    }
+  });
+</script>
+</body>
+</html>

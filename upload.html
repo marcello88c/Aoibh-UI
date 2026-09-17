@@ -190,10 +190,17 @@
 
       if (!res.ok) throw new Error(data.error || 'Upload failed');
 
+      let qaLine = '';
+      if (data.qa && data.qa.issueType !== 'none') {
+        qaLine = `<br><br>⚠️ AI QA flagged this: "${data.qa.detail}" — <a href="/qa-review.html">review it</a>.`;
+      } else if (data.qa) {
+        qaLine = `<br><br>AI QA: no issues found.`;
+      }
+
       if (kind === 'preview') {
-        statusMsg.innerHTML = `Preview "${label}" added. <a class="file-link" href="${data.fileUrl}" target="_blank">View file</a><br><br>It'll show up on the client dashboard automatically once their deposit is paid — no other step needed.`;
+        statusMsg.innerHTML = `Preview "${label}" added. <a class="file-link" href="${data.fileUrl}" target="_blank">View file</a><br><br>It'll show up on the client dashboard automatically once their deposit is paid — no other step needed.${qaLine}`;
       } else {
-        statusMsg.innerHTML = `Uploaded successfully. <a class="file-link" href="${data.fileUrl}" target="_blank">View file</a><br><br>Once all final files are up, use "Mark as delivered" below to reveal them on the client's dashboard and email them.`;
+        statusMsg.innerHTML = `Uploaded successfully. <a class="file-link" href="${data.fileUrl}" target="_blank">View file</a><br><br>Once all final files are up, use "Mark as delivered" below to reveal them on the client's dashboard and email them.${qaLine}`;
       }
       statusMsg.className = 'success';
       selectedFile = null;
