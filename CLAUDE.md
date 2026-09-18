@@ -50,9 +50,19 @@ what's actually here.
     not real auth)
   - `create-checkout.js` — `POST /api/create-checkout` — Stripe Checkout
     session for the deposit or balance stage
+  - `create-subscription-checkout.js` — `POST /api/create-subscription-checkout`
+    — body `{email, tier}`, `tier` is `starter`|`growth`. Stripe Checkout
+    session in `mode:'subscription'` for the pricing page's "Get started"
+    buttons. Pay-first — no subscriber row exists until the webhook
+    confirms payment (see below); this only creates the Checkout session.
   - `stripe-webhook.js` — `POST /api/stripe-webhook` — reconciles
-    `checkout.session.completed` against `briefs.payment_status`; emails
-    the client when the deposit clears
+    `checkout.session.completed` against `briefs.payment_status` (trial
+    project, `mode:'payment'`) and against the new `subscribers` table
+    (`mode:'subscription'` — creates the row, emails a welcome/sign-in
+    message). Also handles `customer.subscription.updated`/`.deleted` to
+    keep a subscriber's `status`/`current_period_start`/`current_period_end`
+    in sync on renewal, plan change, or cancellation. Emails the client
+    when the trial deposit clears.
   - `upload-deliverable.js` — `POST /api/upload-deliverable` — requires
     `x-admin-secret` matching `SITE_MODE_ADMIN_SECRET`. Also emails the
     client on the first preview of a review round (not every preview —
@@ -94,9 +104,11 @@ Required (all set in Vercel already): `ANTHROPIC_API_KEY`,
 `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`, `RESEND_API_KEY`,
 `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET`, `SITE_URL`,
 `SITE_MODE_ADMIN_SECRET`, `STAFF_ADMIN_EMAIL` (the one email allowed to
-request a staff sign-in link — see Staff auth below). Not yet present in
-a local `.env.local` for this folder — needed before running anything
-locally against real data.
+request a staff sign-in link — see Staff auth below), `STRIPE_PRICE_STARTER`,
+`STRIPE_PRICE_GROWTH` (Stripe recurring Price IDs for the two self-serve
+subscription tiers — see Subscriptions below). Not yet present in a local
+`.env.local` for this folder — needed before running anything locally
+against real data.
 
 ## Staff auth
 
@@ -107,6 +119,32 @@ for now (`STAFF_ADMIN_EMAIL`) — no per-designer accounts yet; see Open
 items. `api/site-mode.js`'s POST still uses `x-admin-secret` since it has
 no HTML page of its own (called directly when needed) — deliberately not
 migrated, nothing to gain from it yet.
+
+## Subscriptions (2026-09-18, in progress)
+
+Starter/Growth are real Stripe subscriptions now, pay-first: the pricing
+section's "Get started" buttons (`index.html`, `.pricing-cta[data-tier]`)
+open a small email-capture modal (`#subscribeOverlay`), which calls
+`api/create-subscription-checkout.js` and redirects to Stripe. No
+`subscribers` row exists until `api/stripe-webhook.js` confirms payment
+via `checkout.session.completed` (`mode:'subscription'`) — see its header
+comment for the full event list. New tables: `subscribers`
+(`stripe_customer_id`, `stripe_subscription_id`, `tier`, `status`,
+`current_period_start/end`), plus `subscriber_magic_links` /
+`subscriber_sessions` mirroring the staff-auth tables exactly, but kept
+separate on purpose (a staff token should never double as a subscriber
+token). Enterprise stays "Talk to us" — no self-serve checkout for it.
+
+Still to come (see `Research/` — actually no, this isn't written up as a
+doc, it's mid-build): subscriber login (`subscriber-login.html`,
+mirroring `login.html`), an account hub showing plan usage, wiring a
+"start a new project" flow into `match-designer.js` with a per-billing-
+period project cap (Starter 1/month, Growth 3/month — computed by
+counting `briefs.subscriber_id` rows in the current period, not a stored
+counter), and a Stripe Customer Portal link for self-serve cancel/plan
+changes. `briefs.subscriber_id` (nullable) links a project to the
+subscription that's covering it; `payment_status = 'covered_by_subscription'`
+on those rows skips the deposit/balance flow entirely.
 
 ## Database (Supabase)
 

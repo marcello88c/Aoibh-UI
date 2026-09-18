@@ -420,7 +420,7 @@
           <li>Up to 2 rounds of revisions per project</li>
           <li>Email support</li>
         </ul>
-        <a class="btn btn-ghost pricing-cta" href="#cta">Get started</a>
+        <a class="btn btn-ghost pricing-cta" href="#cta" data-tier="starter">Get started</a>
       </div>
 
       <div class="pricing-card pricing-featured reveal">
@@ -438,7 +438,7 @@
           <li>Monthly strategy call</li>
           <li>Performance reporting</li>
         </ul>
-        <a class="btn btn-primary pricing-cta" href="#cta">Get started</a>
+        <a class="btn btn-primary pricing-cta" href="#cta" data-tier="growth">Get started</a>
       </div>
 
       <div class="pricing-card reveal">
@@ -769,6 +769,17 @@
     <h3 id="pricingInfoTitle">What counts as a project?</h3>
     <p>A <strong>project</strong> is a single deliverable — one logo, one set of brand guidelines, one packaging concept, one landing page, and so on. Multi-part work like a full identity system is scoped and quoted separately.</p>
     <p>Subscriptions cover <strong>design</strong>. Anything requiring functionality — ecommerce integration, custom development, backend logic — sits outside subscription scope and is quoted separately.</p>
+  </div>
+</div>
+
+<div class="info-overlay" id="subscribeOverlay">
+  <div class="info-modal" role="dialog" aria-modal="true" aria-labelledby="subscribeModalTitle">
+    <button class="info-modal-close" id="subscribeClose" aria-label="Close">✕</button>
+    <h3 id="subscribeModalTitle">Subscribe to <span id="subscribeTierName">Starter</span></h3>
+    <p>Enter your email to continue to payment. You'll get a sign-in link afterward to start your first project — no long-term commitment, cancel any time before your next billing date.</p>
+    <input type="email" id="subscribeEmailInput" class="subscribe-modal-input" placeholder="you@company.com">
+    <button class="btn btn-primary" id="subscribeContinueBtn" style="width:100%;">Continue to payment</button>
+    <div class="subscribe-modal-error" id="subscribeError"></div>
   </div>
 </div>
 
@@ -1920,6 +1931,69 @@
 
     wireInfoModal('pricingInfoBtn', 'pricingInfoOverlay', 'pricingInfoClose');
     wireInfoModal('vettingInfoBtn', 'vettingInfoOverlay', 'vettingInfoClose');
+  })();
+
+  // ---------- Subscribe modal (Starter/Growth "Get started") ----------
+  (function(){
+    const overlay = document.getElementById('subscribeOverlay');
+    const closeBtn = document.getElementById('subscribeClose');
+    const tierNameEl = document.getElementById('subscribeTierName');
+    const emailInput = document.getElementById('subscribeEmailInput');
+    const continueBtn = document.getElementById('subscribeContinueBtn');
+    const errorEl = document.getElementById('subscribeError');
+    if (!overlay) return;
+
+    const TIER_LABELS = { starter: 'Starter', growth: 'Growth' };
+    let selectedTier = null;
+
+    function open(tier){
+      selectedTier = tier;
+      tierNameEl.textContent = TIER_LABELS[tier] || tier;
+      emailInput.value = '';
+      errorEl.textContent = '';
+      continueBtn.disabled = false;
+      continueBtn.textContent = 'Continue to payment';
+      overlay.classList.add('open');
+      emailInput.focus();
+    }
+    function close(){ overlay.classList.remove('open'); }
+
+    document.querySelectorAll('.pricing-cta[data-tier]').forEach((btn) => {
+      btn.addEventListener('click', (e) => {
+        e.preventDefault();
+        open(btn.dataset.tier);
+      });
+    });
+
+    closeBtn.addEventListener('click', close);
+    overlay.addEventListener('click', (e) => { if (e.target === overlay) close(); });
+    document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && overlay.classList.contains('open')) close(); });
+    emailInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') continueBtn.click(); });
+
+    continueBtn.addEventListener('click', async () => {
+      const email = emailInput.value.trim();
+      errorEl.textContent = '';
+      if (!email) {
+        errorEl.textContent = 'Please enter your email.';
+        return;
+      }
+      continueBtn.disabled = true;
+      continueBtn.textContent = 'Redirecting…';
+      try {
+        const res = await fetch('/api/create-subscription-checkout', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, tier: selectedTier }),
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || 'Something went wrong');
+        window.location.href = data.checkoutUrl;
+      } catch (err) {
+        errorEl.textContent = err.message;
+        continueBtn.disabled = false;
+        continueBtn.textContent = 'Continue to payment';
+      }
+    });
   })();
 </script>
 

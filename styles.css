@@ -444,6 +444,15 @@
   }
   .info-modal-steps li strong{ color:var(--ink); font-weight:600; }
 
+  .subscribe-modal-input{
+    width:100%; padding:11px 13px; margin-bottom:14px;
+    border:1px solid var(--line); border-radius:6px;
+    font-family:var(--sans); font-size:14px; color:var(--ink);
+    box-sizing:border-box;
+  }
+  .subscribe-modal-input:focus{ outline:2px solid var(--indigo); outline-offset:1px; }
+  .subscribe-modal-error{ color:#c0392b; font-size:13px; margin-top:10px; min-height:16px; }
+
   .task-review-modal{ max-width:560px; }
   .task-preview-placeholder{
     background:var(--paper-dim); border:1px dashed var(--line); border-radius:8px;
