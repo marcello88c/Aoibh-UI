@@ -107,7 +107,7 @@
     </div>
 
     <div class="hero-stats">
-      <div class="stat"><div class="num" id="statAssets">4,812</div><div class="lbl">Assets shipped this week</div></div>
+      <div class="stat"><div class="num">Every day</div><div class="lbl">New briefs enter production</div></div>
       <div class="stat"><div class="num">Global</div><div class="lbl">A growing network, not one office</div></div>
       <div class="stat"><div class="num">11 hrs</div><div class="lbl">Median brief-to-first-draft</div></div>
       <div class="stat"><div class="num">100%</div><div class="lbl">Human-reviewed before delivery</div></div>
@@ -150,7 +150,7 @@
   <div class="wrap">
     <div class="feed-head reveal">
       <div>
-        <div class="eyebrow gold"><span class="dot"></span>LIVE ON THE PLATFORM</div>
+        <div class="eyebrow gold"><span class="dot"></span>HOW WORK MOVES</div>
         <h2>Every job, visible from brief to delivery.</h2>
       </div>
       <p>Working around the globe, 24/7.</p>
@@ -158,7 +158,7 @@
 
     <div class="feed-panel">
       <div class="feed-panel-head">
-        <span>PRODUCTION_FEED — aoibh.ai/ops</span>
+        <span>PIPELINE_PREVIEW — illustrative activity</span>
         <div class="dots"><span></span><span></span><span></span></div>
       </div>
       <div class="feed-cols">
@@ -900,14 +900,6 @@
   const track = document.getElementById('feedTrack');
   // duplicate list for seamless vertical loop
   track.innerHTML = jobs.map(rowHTML).join('') + jobs.map(rowHTML).join('');
-
-  // ambient ticking stat
-  const statEl = document.getElementById('statAssets');
-  let base = 4812;
-  setInterval(() => {
-    base += Math.floor(Math.random()*3);
-    statEl.textContent = base.toLocaleString();
-  }, 4000);
 
   // reveal on scroll
   const io = new IntersectionObserver((entries)=>{
