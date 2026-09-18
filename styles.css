@@ -316,7 +316,7 @@
   .split-col{ padding:44px 40px; }
   .split-col + .split-col{ border-left:1px solid var(--line); }
   .split-col h3{ font-family:var(--serif); font-size:28px; font-weight:450; margin-top:14px; }
-  .split-col > p{ color:var(--ink-soft); font-size:14.5px; margin-top:12px; max-width:420px; line-height:1.6; }
+  .split-col > p{ color:var(--ink-soft); font-size:14.5px; margin-top:12px; max-width:420px; line-height:1.6; text-wrap:pretty; }
 
   .nodegrid{ display:grid; grid-template-columns:1fr 1fr; gap:14px 22px; margin-top:32px; }
   .nodeitem{ display:flex; justify-content:space-between; border-bottom:1px solid var(--line-soft); padding-bottom:10px; }
