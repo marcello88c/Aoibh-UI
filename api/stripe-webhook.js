@@ -101,6 +101,18 @@ function normalizeSubscriptionStatus(stripeStatus) {
   return 'past_due';
 }
 
+// Newer Stripe API versions moved current_period_start/end off the
+// Subscription object onto its first line item — fall back to the
+// top-level fields for older API versions rather than assuming either
+// shape.
+function getSubscriptionPeriod(subscription) {
+  const item = subscription.items?.data?.[0];
+  return {
+    start: item?.current_period_start ?? subscription.current_period_start,
+    end: item?.current_period_end ?? subscription.current_period_end,
+  };
+}
+
 const TIER_NAMES = { starter: 'Starter', growth: 'Growth' };
 
 async function handleTrialCheckout(session) {
@@ -169,6 +181,7 @@ async function handleSubscriptionCheckout(session) {
   }
 
   const subscription = await stripe.subscriptions.retrieve(session.subscription);
+  const { start, end } = getSubscriptionPeriod(subscription);
 
   const { error } = await supabase.from('subscribers').insert({
     email,
@@ -176,8 +189,8 @@ async function handleSubscriptionCheckout(session) {
     status: normalizeSubscriptionStatus(subscription.status),
     stripe_customer_id: session.customer,
     stripe_subscription_id: session.subscription,
-    current_period_start: new Date(subscription.current_period_start * 1000).toISOString(),
-    current_period_end: new Date(subscription.current_period_end * 1000).toISOString(),
+    current_period_start: start ? new Date(start * 1000).toISOString() : null,
+    current_period_end: end ? new Date(end * 1000).toISOString() : null,
   });
 
   if (error) {
@@ -203,12 +216,13 @@ async function handleSubscriptionCheckout(session) {
 // these dates current is what makes the cap reset each period, without a
 // separate "reset the counter" step anywhere.
 async function handleSubscriptionUpdated(subscription) {
+  const { start, end } = getSubscriptionPeriod(subscription);
   const { error } = await supabase
     .from('subscribers')
     .update({
       status: normalizeSubscriptionStatus(subscription.status),
-      current_period_start: new Date(subscription.current_period_start * 1000).toISOString(),
-      current_period_end: new Date(subscription.current_period_end * 1000).toISOString(),
+      current_period_start: start ? new Date(start * 1000).toISOString() : null,
+      current_period_end: end ? new Date(end * 1000).toISOString() : null,
     })
     .eq('stripe_subscription_id', subscription.id);
 
