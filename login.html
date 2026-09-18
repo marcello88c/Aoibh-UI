@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Aoibh — Sign in</title>
+<style>
+  body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    background: #ffffff;
+    color: #16161a;
+    padding: 2.5rem;
+  }
+  .wrap { max-width: 420px; margin: 8vh auto 0; }
+  h1 { font-size: 1.5rem; margin: 0 0 0.5rem; }
+  p.subtitle { color: #6b6a66; font-size: 0.9rem; margin: 0 0 2rem; }
+  label { display: block; font-size: 0.85rem; font-weight: 600; margin-bottom: 6px; }
+  input[type="email"] {
+    width: 100%;
+    padding: 0.7rem 0.9rem;
+    border: 1px solid #e5e4e0;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    margin-bottom: 1.5rem;
+    box-sizing: border-box;
+  }
+  button {
+    width: 100%;
+    background: #16161a;
+    color: #fff;
+    border: none;
+    border-radius: 999px;
+    padding: 0.9rem;
+    font-size: 0.95rem;
+    cursor: pointer;
+  }
+  button:disabled { opacity: 0.5; cursor: not-allowed; }
+  #statusMsg { margin-top: 1rem; font-size: 0.9rem; text-align: center; }
+  #statusMsg.success { color: #0a7d4f; }
+  #statusMsg.error { color: #c0392b; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Sign in</h1>
+  <p class="subtitle">Staff access only. Enter your email and we'll send a sign-in link.</p>
+
+  <label for="emailInput">Email</label>
+  <input type="email" id="emailInput" placeholder="you@aoibh.ai">
+
+  <button id="sendBtn">Send sign-in link</button>
+  <div id="statusMsg"></div>
+</div>
+
+<script>
+  const params = new URLSearchParams(location.search);
+  const emailInput = document.getElementById('emailInput');
+  const sendBtn = document.getElementById('sendBtn');
+  const statusMsg = document.getElementById('statusMsg');
+
+  const errorMessages = {
+    expired_link: 'That link has expired or was already used — request a new one below.',
+    invalid_link: 'That link is invalid — request a new one below.',
+    server_error: 'Something went wrong verifying that link — try again.',
+  };
+  const errorParam = params.get('error');
+  if (errorParam && errorMessages[errorParam]) {
+    statusMsg.textContent = errorMessages[errorParam];
+    statusMsg.className = 'error';
+  }
+
+  emailInput.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') sendBtn.click();
+  });
+
+  sendBtn.addEventListener('click', async () => {
+    const email = emailInput.value.trim();
+    if (!email) {
+      statusMsg.textContent = 'Please enter your email.';
+      statusMsg.className = 'error';
+      return;
+    }
+    sendBtn.disabled = true;
+    sendBtn.textContent = 'Sending…';
+    try {
+      await fetch('/api/auth-request', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email }),
+      });
+      statusMsg.textContent = 'If that email has access, a sign-in link is on its way — check your inbox.';
+      statusMsg.className = 'success';
+    } catch (err) {
+      statusMsg.textContent = 'Something went wrong — try again.';
+      statusMsg.className = 'error';
+    } finally {
+      sendBtn.disabled = false;
+      sendBtn.textContent = 'Send sign-in link';
+    }
+  });
+</script>
+</body>
+</html>

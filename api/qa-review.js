@@ -4,20 +4,47 @@
 //      'approved_by_human' or 'sent_back'. Records the human decision —
 //      the actual gate before a client ever sees anything AI flagged.
 //
-// Interim review surface only — see Research/backend-architecture-proposal.md
-// section 0. Once real staff/designer auth exists, this becomes a view
-// inside that dashboard instead of its own gated page. Same x-admin-secret
-// gate as upload-deliverable.js and site-mode.js in the meantime.
+// Requires a valid aoibh_staff_session cookie (see api/auth-session.js) —
+// real staff auth, replacing the old shared x-admin-secret gate.
+
+function getCookie(req, name) {
+  const header = req.headers.cookie || "";
+  const match = header.split(";").map((c) => c.trim()).find((c) => c.startsWith(name + "="));
+  return match ? decodeURIComponent(match.slice(name.length + 1)) : null;
+}
+
+async function requireStaffSession(req) {
+  const token = getCookie(req, "aoibh_staff_session");
+  if (!token) return null;
+  try {
+    const res = await fetch(
+      `${process.env.SUPABASE_URL}/rest/v1/staff_sessions?token=eq.${encodeURIComponent(token)}&select=email,expires_at&limit=1`,
+      {
+        headers: {
+          apikey: process.env.SUPABASE_SERVICE_ROLE_KEY,
+          Authorization: "Bearer " + process.env.SUPABASE_SERVICE_ROLE_KEY,
+        },
+      }
+    );
+    if (!res.ok) return null;
+    const rows = await res.json();
+    const session = rows[0];
+    if (!session || new Date(session.expires_at) < new Date()) return null;
+    return session.email;
+  } catch (err) {
+    console.error("requireStaffSession failed:", err.message);
+    return null;
+  }
+}
 
 export default async function handler(req, res) {
-  const providedSecret = req.headers["x-admin-secret"];
-  const ADMIN_SECRET = process.env.SITE_MODE_ADMIN_SECRET;
-  if (!ADMIN_SECRET || providedSecret !== ADMIN_SECRET) {
-    return res.status(401).json({ error: "unauthorized" });
-  }
-
   if (!process.env.SUPABASE_URL || !process.env.SUPABASE_SERVICE_ROLE_KEY) {
     return res.status(500).json({ error: "Supabase not configured" });
+  }
+
+  const staffEmail = await requireStaffSession(req);
+  if (!staffEmail) {
+    return res.status(401).json({ error: "unauthorized" });
   }
 
   if (req.method === "GET") {

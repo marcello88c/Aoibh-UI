@@ -58,9 +58,7 @@
 <div class="wrap">
   <h1>Upload Deliverable</h1>
   <p class="subtitle">Internal tool — attaches a file to a project's dashboard.</p>
-
-  <label for="adminSecretInput">Admin secret</label>
-  <input type="text" id="adminSecretInput" placeholder="Same secret used to change site mode">
+  <p class="subtitle" id="whoami" style="margin-top:-1.5rem;">Checking session…</p>
 
   <label for="briefIdInput">Project (brief) ID</label>
   <input type="text" id="briefIdInput" placeholder="Paste the brief's id from Supabase">
@@ -97,7 +95,6 @@
 </div>
 
 <script>
-  const adminSecretInput = document.getElementById('adminSecretInput');
   const briefIdInput = document.getElementById('briefIdInput');
   const kindSelect = document.getElementById('kindSelect');
   const labelField = document.getElementById('labelField');
@@ -110,13 +107,25 @@
 
   let selectedFile = null;
 
-  // Remember the admin secret in this browser only, so it doesn't need
-  // retyping on every upload. Never sent anywhere except the
-  // x-admin-secret header on our own /api/upload-deliverable calls.
-  try {
-    const saved = localStorage.getItem('aoibh_admin_secret');
-    if (saved) adminSecretInput.value = saved;
-  } catch (err) {}
+  (async () => {
+    try {
+      const res = await fetch('/api/auth-session');
+      const data = await res.json();
+      if (!data.authenticated) {
+        location.href = '/login.html';
+        return;
+      }
+      document.getElementById('whoami').innerHTML =
+        'Signed in as ' + data.email + ' · <a href="#" id="logoutLink">Sign out</a>';
+      document.getElementById('logoutLink').addEventListener('click', async (e) => {
+        e.preventDefault();
+        try { await fetch('/api/auth-logout', { method: 'POST' }); } catch (err) {}
+        location.href = '/login.html';
+      });
+    } catch (err) {
+      location.href = '/login.html';
+    }
+  })();
 
   kindSelect.addEventListener('change', () => {
     labelField.style.display = kindSelect.value === 'preview' ? 'block' : 'none';
@@ -139,16 +148,10 @@
   });
 
   uploadBtn.addEventListener('click', async () => {
-    const adminSecret = adminSecretInput.value.trim();
     const briefId = briefIdInput.value.trim();
     statusMsg.textContent = '';
     statusMsg.className = '';
 
-    if (!adminSecret) {
-      statusMsg.textContent = 'Please enter the admin secret.';
-      statusMsg.className = 'error';
-      return;
-    }
     if (!briefId) {
       statusMsg.textContent = 'Please paste a project (brief) ID.';
       statusMsg.className = 'error';
@@ -167,10 +170,6 @@
       return;
     }
 
-    try {
-      localStorage.setItem('aoibh_admin_secret', adminSecret);
-    } catch (err) {}
-
     uploadBtn.disabled = true;
     uploadBtn.textContent = 'Uploading…';
 
@@ -183,7 +182,6 @@
 
       const res = await fetch('/api/upload-deliverable', {
         method: 'POST',
-        headers: { 'x-admin-secret': adminSecret },
         body: formData,
       });
       const data = await res.json();
@@ -220,16 +218,10 @@
   const deliveredStatusMsg = document.getElementById('deliveredStatusMsg');
 
   markDeliveredBtn.addEventListener('click', async () => {
-    const adminSecret = adminSecretInput.value.trim();
     const briefId = briefIdInput.value.trim();
     deliveredStatusMsg.textContent = '';
     deliveredStatusMsg.className = '';
 
-    if (!adminSecret) {
-      deliveredStatusMsg.textContent = 'Please enter the admin secret.';
-      deliveredStatusMsg.className = 'error';
-      return;
-    }
     if (!briefId) {
       deliveredStatusMsg.textContent = 'Please paste a project (brief) ID above.';
       deliveredStatusMsg.className = 'error';
@@ -242,7 +234,7 @@
     try {
       const res = await fetch('/api/mark-delivered', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'x-admin-secret': adminSecret },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ briefId }),
       });
       const data = await res.json();

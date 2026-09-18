@@ -1,8 +1,8 @@
 # Aoibh
 
 Aoibh is an AI + human creative production studio. This is the real,
-deployed codebase — GitHub `marcello88c/Aoibh-UI`, deployed as the Vercel
-project `aoibh-ui`. It replaces an earlier local copy (`Aoibh 2.0/`) that
+deployed codebase — GitHub `simonldevir-svg/Aoibh-UI`, deployed as the
+Vercel project `aoibh-ui`. It replaces an earlier local copy (`Aoibh 2.0/`) that
 fell behind once payments and persistence were built directly against
 this repo instead. See `Research/backend-architecture-proposal.md` section
 0 for the full reconciliation between what was originally planned and
@@ -20,10 +20,15 @@ what's actually here.
   either). Renders deposit/in-progress/delivered states off
   `payment_status`. The pipeline status card is a placeholder — no live
   8-stage tracking wired yet.
+- `login.html` — staff sign-in: enter your email, get a magic link.
+  Wired to the header's "Sign in" link on `index.html`.
+- `staff.html` — post-login hub, links to the tools below. Redirects to
+  `login.html` if there's no valid session.
 - `upload.html` — internal-only page for uploading deliverables against a
-  brief (`api/upload-deliverable.js`). Requires the admin secret (same one
-  used for site-mode changes) in a field on the page, remembered via
-  `localStorage`. Not linked from the public site.
+  brief (`api/upload-deliverable.js`). Session-gated (redirects to
+  `login.html` if not signed in) — no more shared admin secret.
+- `qa-review.html` — internal-only page listing AI-flagged uploads for a
+  human decision (`api/qa-review.js`). Same session gate as `upload.html`.
 - `maintenance.html` — static page served by `middleware.js` when
   `site_settings.mode = 'maintenance'`.
 - `styles.css` — shared site CSS.
@@ -64,9 +69,21 @@ what's actually here.
     `SITE_MODE_ADMIN_SECRET`
   - `job-status.js` — `GET /api/job-status?jobNumber=<n>&email=<email>` —
     powers the triage flow's "check an existing job" branch
-  - `qa-review.js` — `GET/POST /api/qa-review` — same `x-admin-secret`
-    gate. GET lists flagged `qa_checks`; POST records a human decision
+  - `qa-review.js` — `GET/POST /api/qa-review` — staff-session gated. GET
+    lists flagged `qa_checks`; POST records a human decision
     (`approved_by_human` | `sent_back`). Backs `qa-review.html`
+  - `auth-request.js` — `POST /api/auth-request` — body `{email}`. If it
+    matches `STAFF_ADMIN_EMAIL`, emails a single-use magic sign-in link
+    (15-min expiry) via Resend. Always responds the same either way, so it
+    can't be used to probe valid emails.
+  - `auth-verify.js` — `GET /api/auth-verify?token=<token>` — the link
+    from that email. Verifies the token, creates a 30-day session, sets
+    the `aoibh_staff_session` cookie, redirects to `staff.html`.
+  - `auth-session.js` — `GET /api/auth-session` — `{authenticated, email?}`
+    for the current cookie. Called by `staff.html`/`upload.html`/
+    `qa-review.html` on load to gate rendering.
+  - `auth-logout.js` — `POST /api/auth-logout` — deletes the session row,
+    clears the cookie.
 - `Research/` — competitive research, notes, and the backend architecture
   proposal (now annotated with what's actually built vs. still planned).
 - `Moodboards/` — visual inspiration (currently empty).
@@ -76,8 +93,20 @@ what's actually here.
 Required (all set in Vercel already): `ANTHROPIC_API_KEY`,
 `SUPABASE_URL`, `SUPABASE_SERVICE_ROLE_KEY`, `RESEND_API_KEY`,
 `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET`, `SITE_URL`,
-`SITE_MODE_ADMIN_SECRET`. Not yet present in a local `.env.local` for this
-folder — needed before running anything locally against real data.
+`SITE_MODE_ADMIN_SECRET`, `STAFF_ADMIN_EMAIL` (the one email allowed to
+request a staff sign-in link — see Staff auth below). Not yet present in
+a local `.env.local` for this folder — needed before running anything
+locally against real data.
+
+## Staff auth
+
+`upload.html` and `qa-review.html` are gated by a real magic-link login
+(`login.html` → `auth-request.js` → email → `auth-verify.js` → session
+cookie), not the old shared `SITE_MODE_ADMIN_SECRET`. Single admin only
+for now (`STAFF_ADMIN_EMAIL`) — no per-designer accounts yet; see Open
+items. `api/site-mode.js`'s POST still uses `x-admin-secret` since it has
+no HTML page of its own (called directly when needed) — deliberately not
+migrated, nothing to gain from it yet.
 
 ## Database (Supabase)
 
@@ -107,6 +136,12 @@ proposed — see section 0 there for the full comparison:
   (`kind`: `preview` | `deliverable`). Written by `upload-deliverable.js`
   whenever an image file is uploaded; reviewed via `qa-review.html` /
   `api/qa-review.js`.
+- `magic_links` — single-use staff sign-in tokens (`token`, `email`,
+  `expires_at`, `used_at`). Written by `auth-request.js`, consumed by
+  `auth-verify.js`.
+- `staff_sessions` — active staff logins (`token`, `email`, `expires_at`).
+  Created by `auth-verify.js`; checked on every request to `upload.html`'s
+  and `qa-review.html`'s API endpoints; deleted on sign-out.
 
 ## How the intake flow works
 
@@ -141,8 +176,16 @@ network misbehaves. Keep that convention in any new endpoint.
 See `Research/backend-architecture-proposal.md` section 0 for the full,
 current reconciliation of what's built vs. planned. Sections 1–10 of that
 document remain the best reference for what *isn't* built yet: formal
-8-stage pipeline tracking, dashboard chat, designer/staff dashboards and
-their minimal auth, client auth, and marketing consent capture.
+8-stage pipeline tracking, dashboard chat, per-designer staff accounts,
+client auth, and marketing consent capture.
+
+Staff auth (2026-09-18) is admin-only by design — a single allowlisted
+email (`STAFF_ADMIN_EMAIL`), magic link, no passwords. Designers don't
+log in themselves yet; the admin still uploads/reviews on their behalf.
+Extending this to per-designer logins (each seeing only their own
+projects) would mean adding real emails to the `designers` table and
+checking assignment, not just identity, on each request — deliberately
+deferred until it's actually needed.
 
 AI QA (2026-09-17) is a lighter version of the original design: it
 compares an uploaded image against the brief's original text answers,

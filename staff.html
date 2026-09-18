@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Aoibh — Staff</title>
+<style>
+  body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    background: #ffffff;
+    color: #16161a;
+    padding: 2.5rem;
+  }
+  .wrap { max-width: 480px; margin: 8vh auto 0; }
+  h1 { font-size: 1.5rem; margin: 0 0 0.5rem; }
+  p.subtitle { color: #6b6a66; font-size: 0.9rem; margin: 0 0 2rem; }
+  .tools { display: flex; flex-direction: column; gap: 0.9rem; margin-bottom: 2rem; }
+  .tool-link {
+    display: block;
+    padding: 1rem 1.2rem;
+    border: 1px solid #e5e4e0;
+    border-radius: 12px;
+    text-decoration: none;
+    color: #16161a;
+  }
+  .tool-link strong { display: block; font-size: 1rem; margin-bottom: 2px; }
+  .tool-link span { font-size: 0.85rem; color: #6b6a66; }
+  #logoutBtn {
+    background: none;
+    border: 1px solid #e5e4e0;
+    border-radius: 999px;
+    padding: 0.6rem 1.2rem;
+    font-size: 0.85rem;
+    cursor: pointer;
+    color: #6b6a66;
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Staff</h1>
+  <p class="subtitle" id="whoami">Checking session…</p>
+
+  <div class="tools">
+    <a class="tool-link" href="/upload.html">
+      <strong>Upload deliverable / preview</strong>
+      <span>Attach a file to a project's dashboard.</span>
+    </a>
+    <a class="tool-link" href="/qa-review.html">
+      <strong>QA review</strong>
+      <span>Review items the AI flagged before a client sees them.</span>
+    </a>
+  </div>
+
+  <button id="logoutBtn">Sign out</button>
+</div>
+
+<script>
+  (async () => {
+    try {
+      const res = await fetch('/api/auth-session');
+      const data = await res.json();
+      if (!data.authenticated) {
+        location.href = '/login.html';
+        return;
+      }
+      document.getElementById('whoami').textContent = 'Signed in as ' + data.email;
+    } catch (err) {
+      location.href = '/login.html';
+    }
+  })();
+
+  document.getElementById('logoutBtn').addEventListener('click', async () => {
+    try { await fetch('/api/auth-logout', { method: 'POST' }); } catch (err) {}
+    location.href = '/login.html';
+  });
+</script>
+</body>
+</html>

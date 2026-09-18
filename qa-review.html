@@ -64,9 +64,8 @@
 <div class="wrap">
   <h1>QA Review</h1>
   <p class="subtitle">Flagged uploads — approve to keep as-is, or send back to the designer. Cleared items never show up here at all.</p>
+  <p class="subtitle" id="whoami" style="margin-top:-1.5rem;">Checking session…</p>
 
-  <label for="adminSecretInput">Admin secret</label>
-  <input type="text" id="adminSecretInput" placeholder="Same secret used to change site mode">
   <button class="load-btn" id="loadBtn">Load flagged items</button>
 
   <div id="statusMsg"></div>
@@ -75,16 +74,30 @@
 </div>
 
 <script>
-  const adminSecretInput = document.getElementById('adminSecretInput');
   const loadBtn = document.getElementById('loadBtn');
   const statusMsg = document.getElementById('statusMsg');
   const emptyState = document.getElementById('emptyState');
   const itemList = document.getElementById('itemList');
 
-  try {
-    const saved = localStorage.getItem('aoibh_admin_secret');
-    if (saved) adminSecretInput.value = saved;
-  } catch (err) {}
+  (async () => {
+    try {
+      const res = await fetch('/api/auth-session');
+      const data = await res.json();
+      if (!data.authenticated) {
+        location.href = '/login.html';
+        return;
+      }
+      document.getElementById('whoami').innerHTML =
+        'Signed in as ' + data.email + ' · <a href="#" id="logoutLink">Sign out</a>';
+      document.getElementById('logoutLink').addEventListener('click', async (e) => {
+        e.preventDefault();
+        try { await fetch('/api/auth-logout', { method: 'POST' }); } catch (err) {}
+        location.href = '/login.html';
+      });
+    } catch (err) {
+      location.href = '/login.html';
+    }
+  })();
 
   function issueLabel(type) {
     return type === 'off_brief' ? 'Off brief' : 'Quality concern';
@@ -126,12 +139,11 @@
   }
 
   async function resolveItem(id, status, el) {
-    const adminSecret = adminSecretInput.value.trim();
     el.querySelectorAll('button').forEach((b) => b.disabled = true);
     try {
       const res = await fetch('/api/qa-review', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'x-admin-secret': adminSecret },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ id, status }),
       });
       if (!res.ok) throw new Error((await res.json()).error || 'Failed to update');
@@ -145,27 +157,14 @@
   }
 
   loadBtn.addEventListener('click', async () => {
-    const adminSecret = adminSecretInput.value.trim();
     statusMsg.textContent = '';
     statusMsg.className = '';
-
-    if (!adminSecret) {
-      statusMsg.textContent = 'Please enter the admin secret.';
-      statusMsg.className = 'error';
-      return;
-    }
-
-    try {
-      localStorage.setItem('aoibh_admin_secret', adminSecret);
-    } catch (err) {}
 
     loadBtn.disabled = true;
     loadBtn.textContent = 'Loading…';
 
     try {
-      const res = await fetch('/api/qa-review', {
-        headers: { 'x-admin-secret': adminSecret },
-      });
+      const res = await fetch('/api/qa-review');
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || 'Failed to load');
       renderItems(data.items || []);
