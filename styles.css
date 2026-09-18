@@ -635,6 +635,33 @@
     100%{ transform:translateX(-50%); }
   }
   @media (prefers-reduced-motion: reduce){ .hero-photo-track{ animation:none; } }
+
+  /* ---- Client logo bar ---- */
+  .clients-bar{ padding:36px 0 44px; border-bottom:1px solid var(--line); }
+  .clients-bar .eyebrow{ justify-content:center; margin-bottom:22px; }
+  .clients-track-wrap{
+    overflow:hidden; width:100%;
+    mask-image:linear-gradient(90deg, transparent 0, #000 64px, #000 calc(100% - 64px), transparent 100%);
+    -webkit-mask-image:linear-gradient(90deg, transparent 0, #000 64px, #000 calc(100% - 64px), transparent 100%);
+  }
+  .clients-track{
+    display:flex; align-items:center; width:max-content; gap:72px;
+    padding:0 36px;
+    animation: clientsScroll 28s linear infinite;
+  }
+  .clients-track-wrap:hover .clients-track{ animation-play-state:paused; }
+  @keyframes clientsScroll{
+    0%{ transform:translateX(0); }
+    100%{ transform:translateX(-50%); }
+  }
+  @media (prefers-reduced-motion: reduce){ .clients-track{ animation:none; } }
+  .clients-track img{
+    flex:0 0 auto;
+    height:26px; width:auto; max-width:140px; object-fit:contain;
+    filter:grayscale(1); opacity:.5;
+    transition:opacity .2s ease, filter .2s ease;
+  }
+  .clients-track img:hover{ filter:grayscale(0); opacity:1; }
   .hero-photo-track img{
     flex:0 0 min(46vw, 460px);
     height:100%; object-fit:cover; object-position:center 20%;
