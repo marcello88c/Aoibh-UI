@@ -58,7 +58,7 @@ const FALLBACK_ROSTER = [
     name: "Gemma",
     title: "Motion & Video Designer",
     experience: "6 years",
-    location: "Melbourne, AU",
+    location: "London, UK",
     img: "assets/designers/gemma_melbourne.jpeg",
     tags: ["motion", "video", "animation", "reel", "social video", "trailer"],
   },

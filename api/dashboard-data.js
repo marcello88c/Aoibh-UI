@@ -21,7 +21,7 @@ const FALLBACK_ROSTER = [
   { id: "eve-berlin", name: "Eve", title: "Brand Identity Designer", location: "Berlin, DE", img: "assets/designers/eve_berlin.jpeg" },
   { id: "zac-sf", name: "Zac", title: "Product & UX Designer", location: "San Francisco, US", img: "assets/designers/zac_melbourne.jpg" },
   { id: "nicole-paris", name: "Nicole", title: "Web & Editorial Designer", location: "Paris, FR", img: "assets/designers/nicole_paris.jpeg" },
-  { id: "gemma-melbourne", name: "Gemma", title: "Motion & Video Designer", location: "Melbourne, AU", img: "assets/designers/gemma_melbourne.jpeg" },
+  { id: "gemma-melbourne", name: "Gemma", title: "Motion & Video Designer", location: "London, UK", img: "assets/designers/gemma_melbourne.jpeg" },
   { id: "marc-belfast", name: "Marc", title: "Packaging & Print Designer", location: "Belfast, UK", img: "assets/designers/marc_belfast.jpeg" },
   { id: "naomi-copenhagen", name: "Naomi", title: "Illustration & Social Content Designer", location: "Copenhagen, DK", img: "assets/designers/naomi_copenhagen.jpeg" },
 ];
